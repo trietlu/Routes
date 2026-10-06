@@ -4,6 +4,8 @@ An iPhone app that shows drivers three routes to a destination, ranked **Fastest
 
 ## Docs
 
+- [Getting started (owner handoff)](docs/GETTING-STARTED.md)
+
 - [Business requirements](docs/brd.md)
 - [Technical design](docs/technical-design.md)
 - [UX sketch](docs/ux-sketch.md)

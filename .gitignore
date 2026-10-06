@@ -147,3 +147,12 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Routes
+.DS_Store
+coverage/
+dist/
+.expo/
+/apps/mobile/ios/
+/apps/mobile/android/
+issue-drafts/

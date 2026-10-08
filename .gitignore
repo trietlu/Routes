@@ -156,3 +156,4 @@ dist/
 /apps/mobile/ios/
 /apps/mobile/android/
 issue-drafts/
+.claude/settings.local.json

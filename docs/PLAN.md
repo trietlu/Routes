@@ -7,7 +7,7 @@ The work is split into GitHub issues with stable IDs:
 - **R-xx** issues are for the coding agent (label `agent`).
 - **H-xx** issues are for a human (label `needs-human`). They involve accounts, credentials, legal review or real devices.
 
-The agent works through R-issues **in the order below**, one issue per PR. An issue may start only when everything in its "Blocked by" list is merged. The repo owner reviews and merges every PR, so review turnaround sets the pace. The parallel branches in the graph below let the agent keep working while a PR waits.
+The agent works through R-issues **in the order below**, one issue per PR. An issue may start only when everything in its "Blocked by" list is merged. Each issue records its dependencies twice: in a "Blocked by" section of the body, and as GitHub issue dependencies. The agent merges its own PRs once CI is green; there is no human review step.
 
 ## Principles behind the order
 
@@ -51,7 +51,7 @@ The agent works through R-issues **in the order below**, one issue per PR. An is
 | 28 | R-28 | EAS build profiles and app build workflow | 6 Release prep | R-24 |
 | 29 | R-29 | Proxy deploy workflow (Cloud Run) | 6 Release prep | R-10 |
 
-When the next numbered issue is still blocked by an unmerged PR, the agent takes the lowest-numbered issue that *is* unblocked. For example, R-03 can start while R-02 awaits review, and R-11 to R-15 can proceed alongside phase 2.
+With one agent, follow the numbered order. If an issue gets labelled `blocked`, skip to the lowest-numbered issue whose blockers are all closed. For example, if R-06 is stuck, R-07 and R-11 to R-15 can still proceed.
 
 ```mermaid
 flowchart LR
@@ -101,7 +101,7 @@ None of the R-issues wait on an H-issue to be **built and tested**. Each R-issue
 
 ## Progress tracking
 
-A pinned tracking issue lists every issue in this order as a checklist. The agent ticks an item when its PR merges. When an issue is blocked by something outside the agent's control, the agent:
+A pinned tracking issue lists every issue in this order as a checklist. The agent ticks an item when it merges the PR. When an issue is blocked by something outside the agent's control, the agent:
 
 1. comments on the issue with what's missing,
 2. adds the `blocked` label,

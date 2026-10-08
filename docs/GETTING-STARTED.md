@@ -36,8 +36,9 @@ The agent build goes through these phases:
 ## How the agent works
 
 - One issue per PR. Branch name: `r-<id>-<slug>`. The PR body says `Closes #N` and includes the ticked acceptance checklist.
-- **The agent never merges.** The owner reviews and merges every PR.
-- While a PR waits for review, the agent may start the next issue whose blockers are already merged; otherwise it waits. Review speed sets the build pace.
+- **The agent merges its own PRs** once CI is green and the acceptance checklist is met. There is no human review step; CI and the test plan are the gate.
+- Dependencies are recorded in each issue's "Blocked by" section and as GitHub issue dependencies, which appear in the issue sidebar.
+- When stuck, the agent comments on the issue, adds the `blocked` label, and moves on. It stops when nothing is actionable and posts a summary on #38. Check the `blocked` label to see what needs you.
 - It can't build or test on real Google data, Apple accounts or devices. Everything runs against a mock proxy with fixture data, so issues #1–#29 need no keys or accounts. Deploy and build workflows skip cleanly until secrets exist.
 - iOS simulator builds and Maestro E2E tests need macOS. If the agent's machine isn't a Mac, it relies on the macOS CI job added in #24, which uses paid GitHub macOS runners.
 
@@ -51,7 +52,7 @@ The agent build goes through these phases:
    ```
 
    On a Mac, also accept the Xcode license (`sudo xcodebuild -license accept`), or git won't run.
-2. **Start the agent:** point it at `AGENTS.md` and issue #38, and tell it to begin with #1.
+2. **Start the agent:** follow [AGENT-LOOP.md](AGENT-LOOP.md). It covers Mac setup, permissions, and the `/loop` prompt that keeps Claude Code working until it's done or stuck.
 3. **Start the slow human tasks early**, since account approvals can take days:
    - #31 (H-02): Google Cloud projects, APIs, keys, budgets
    - #32 (H-03): Apple Developer, App Store Connect, Expo/EAS accounts, GitHub secrets

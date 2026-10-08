@@ -5,6 +5,7 @@ An iPhone app that shows drivers three routes to a destination, ranked **Fastest
 ## Docs
 
 - [Getting started (owner handoff)](docs/GETTING-STARTED.md)
+- [Running the coding agent](docs/AGENT-LOOP.md)
 
 - [Business requirements](docs/brd.md)
 - [Technical design](docs/technical-design.md)

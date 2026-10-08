@@ -12,7 +12,7 @@ You are building **Routes**, an iPhone app that compares three driving routes by
 | [docs/test-plan.md](docs/test-plan.md) | Test IDs, canonical fixture values, definition of done |
 | [docs/PLAN.md](docs/PLAN.md) | Issue order and dependencies |
 
-If the docs conflict or leave a gap that blocks you, don't guess on product behavior. Comment on the issue, add the `blocked` label and move to the next unblocked issue. Small engineering choices that the docs don't cover (library versions, file names, internal helpers) are yours to make. Note them in the PR description.
+If the docs conflict or leave a gap that blocks you, don't guess on product behavior; treat it as stuck (see Workflow). Small engineering choices that the docs don't cover (library versions, file names, internal helpers) are yours to make. Note them in the PR description.
 
 ## Workflow
 
@@ -24,11 +24,18 @@ If the docs conflict or leave a gap that blocks you, don't guess on product beha
 6. Open one PR per issue:
    - Title: `R-xx: <issue title>`.
    - Body: `Closes #<issue number>`, the acceptance checklist with every box ticked, and any decisions you made.
-7. Keep the PR green in CI. Don't disable, skip or weaken tests or coverage thresholds to get green.
-8. **Do not merge your own PRs.** The repo owner reviews and merges every PR. Request review and stop work on that issue.
-9. Address review comments on your open PRs before starting anything new.
-10. While a PR awaits review, you may start the next issue in the plan, but only one whose "Blocked by" issues are all **merged**. If none is unblocked, stop and wait. Don't stack branches on unmerged PRs.
-11. After the owner merges, tick the item in the pinned tracking issue.
+7. Wait for CI and get it green. Don't disable, skip or weaken tests, lint rules or coverage thresholds to get green.
+8. **Merge your own PR** once every CI check passes and every acceptance box is genuinely satisfied: `gh pr merge --squash --delete-branch`. The owner does not review PRs. CI and the test plan are the gate, so hold yourself to them.
+9. After merging, update local `main`, confirm the issue closed, and tick its item in the pinned tracking issue (#38).
+10. Then take the next issue. Work one issue at a time; don't stack branches on unmerged PRs.
+
+**When you're stuck.** Stuck means a doc gap or conflict on product behavior, a requirement that needs a human (accounts, keys, devices), or CI still failing after three honest attempts at a fix. When stuck:
+
+- Comment on the issue with what you tried and what's needed, and add the `blocked` label.
+- Close any half-finished PR, or leave it as a draft.
+- Move on to the next issue whose blockers are all closed. An issue labelled `blocked` counts as not closed, so anything depending on it waits.
+
+Stop when no open `agent` issue is actionable, and summarize what's left in a comment on #38.
 
 ## Engineering rules
 

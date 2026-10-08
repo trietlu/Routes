@@ -2,6 +2,7 @@
   "permissions": {
     "defaultMode": "acceptEdits",
     "allow": [
+      "Skill(loop)",
       "Bash(npm:*)",
       "Bash(npx:*)",
       "Bash(node:*)",

@@ -18,6 +18,16 @@ If the docs conflict or leave a gap that blocks you, don't guess on product beha
 
 You run unattended, and nobody is watching the session. **Never ask for confirmation or permission to continue** ("Shall I proceed?", "Want me to…?"). Make the call, note any judgment calls in the PR description, and keep going. The only reasons to stop are listed under "When you're stuck" and in the run's stop condition. If something needs the owner, put it in a GitHub comment and label the issue `blocked`; don't ask in chat.
 
+### Shell commands
+
+Claude Code asks a human before running any command containing shell variables or substitutions, because it can't check them in advance. That stalls an unattended run. So:
+
+- **No `$?`, `$VAR`, `${…}`, `$(…)` or backticks** in Bash commands.
+- Don't append `; echo exit=$?`. The tool result already reports the exit code and output.
+- Run checks as separate, plain commands (`npm run lint`, then `npm run typecheck`, and so on) rather than one long chain. `&&` between plain commands is fine.
+- Don't silence output with `>/dev/null 2>&1`; read it instead. Pipes to `tail`, `head` or `grep` are fine.
+- If you need a value (an issue ID, a PR number), get it with one command, read the result, then use the literal value in the next command.
+
 ## Workflow
 
 1. Take the lowest-numbered open issue labelled `agent` whose "Blocked by" issues are all closed.

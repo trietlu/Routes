@@ -17,7 +17,7 @@ How to start Claude Code on the Routes build. Each run completes two issues, the
 
 ## Start the agent
 
-Run `claude` in the repo folder and paste:
+Run `claude` in the repo folder. Press Shift+Tab until the footer shows auto mode, so routine commands don't need your approval. Then paste:
 
 ```
 /loop Work the Routes build per AGENTS.md and the pinned tracking issue #38.
@@ -48,6 +48,7 @@ To run more or fewer issues per run, change the `2` in the prompt.
 There are two kinds of prompts:
 
 - **The agent asks in chat** ("Shall I proceed?"). The prompt and `AGENTS.md` forbid this. If it happens, reply "Proceed without asking for the rest of this run."
+- **The dialog says "A variable in this command can't be checked before it runs".** The agent used `$?` or `$(…)`, which `AGENTS.md` forbids, and no allowlist can approve those. Choose **"Yes, and switch to auto mode"**: Claude Code then approves safe commands itself for the rest of the session. For unattended runs, auto mode is the simplest setting. You can also switch to it with Shift+Tab at the start of a run.
 - **Claude Code shows an approval dialog** for a command. The command isn't on the allowlist in `.claude/settings.json`. Choose **"Yes, and don't ask again"**. That saves the rule to your local `.claude/settings.local.json`, which is git-ignored, so it applies only to this Mac. If a command keeps coming up, add it to `.claude/settings.json` and commit, so every machine gets it.
 - **Check the settings are active:** run `/permissions` in the session; the allow rules from `.claude/settings.json` should be listed. The first time Claude Code opens the folder it asks whether to trust the project. Say yes, or the project settings won't load.
 

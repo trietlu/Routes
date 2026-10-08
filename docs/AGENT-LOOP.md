@@ -1,6 +1,6 @@
 # Running the coding agent (Claude Code)
 
-How to start Claude Code on the Routes build and keep it working until every agent issue is done, or until it's stuck on something that needs you.
+How to start Claude Code on the Routes build. Each run completes two issues, then stops so you can check the results before starting the next run.
 
 ## One-time setup (the Mac that runs the agent)
 
@@ -32,16 +32,21 @@ Each iteration:
 4. If you're stuck (doc gap, needs a human, or CI still failing after
    three real attempts), follow the "When you're stuck" rules in
    AGENTS.md and move on.
-Stop the loop when every `agent` issue is closed, or when none of the
-remaining ones is actionable. Then post a summary on #38 of what was
-done and what's blocked, and why.
+Stop the loop after you have merged 2 issues in this run. Issues you
+label `blocked` don't count toward the 2. Stop earlier if every `agent`
+issue is closed, or if none of the remaining ones is actionable. When
+you stop, post a summary on #38: what you merged, what's blocked and
+why, and which issue is next.
 ```
+
+To run more or fewer issues per run, change the `2` in the prompt.
 
 ## While it runs
 
 - **Progress:** watch the checklist on [#38](https://github.com/trietlu/Routes/issues/38), merged PRs, and closed issues.
 - **What needs you:** issues labelled [`blocked`](https://github.com/trietlu/Routes/issues?q=is%3Aopen+label%3Ablocked). Unblock one by answering in a comment and removing the label. A running loop picks it up on its next iteration. If the loop has stopped, restart it.
-- **Resuming:** if the terminal closes or the Mac sleeps, the loop stops. Run `claude` again and paste the same `/loop` prompt. All state lives in GitHub, so the agent picks up where it left off.
+- **Next run:** when a run ends, check the summary on #38. Then run `claude` again (a fresh session is best) and paste the same `/loop` prompt to do the next two. All state lives in GitHub, so the agent picks up where it left off.
+- **Interrupted runs:** if the terminal closes or the Mac sleeps, the loop stops. Restart it the same way. Any open PR is finished first, and counts toward the new run's 2.
 - **Long runs:** Claude Code summarizes older conversation automatically. The issues, docs and `AGENTS.md` hold everything the agent needs to re-orient.
 
 ## Notes

@@ -1,0 +1,9 @@
+dist
+coverage
+node_modules
+.expo
+package-lock.json
+issue-drafts
+
+# Prose is hand-formatted; Prettier rewrites Markdown tables wholesale.
+*.md

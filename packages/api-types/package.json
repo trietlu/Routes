@@ -1,0 +1,15 @@
+{
+  "name": "@routes/api-types",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Request and response types plus zod schemas shared by the app and the proxy",
+  "license": "UNLICENSED",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --build"
+  }
+}

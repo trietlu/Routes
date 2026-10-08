@@ -1,0 +1,12 @@
+{
+  "name": "@routes/proxy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Node/TypeScript service that fronts Google Routes and Places for the app",
+  "license": "UNLICENSED",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build"
+  }
+}

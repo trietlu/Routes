@@ -1,0 +1,15 @@
+{
+  "name": "@routes/routing-core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pure TypeScript route logic: decode, dedupe, cost, rank, diff, format. No React Native, Node or I/O imports.",
+  "license": "UNLICENSED",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --build"
+  }
+}

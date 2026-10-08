@@ -21,6 +21,8 @@ Run `claude` in the repo folder and paste:
 
 ```
 /loop Work the Routes build per AGENTS.md and the pinned tracking issue #38.
+You are running unattended: never ask me whether to proceed or for
+confirmation. Decide, act, and record judgment calls in the PR.
 Each iteration:
 1. If you have an open PR, get its CI green and merge it per AGENTS.md
    (squash, delete branch), then tick it on #38.
@@ -40,6 +42,14 @@ why, and which issue is next.
 ```
 
 To run more or fewer issues per run, change the `2` in the prompt.
+
+## If it still prompts you
+
+There are two kinds of prompts:
+
+- **The agent asks in chat** ("Shall I proceed?"). The prompt and `AGENTS.md` forbid this. If it happens, reply "Proceed without asking for the rest of this run."
+- **Claude Code shows an approval dialog** for a command. The command isn't on the allowlist in `.claude/settings.json`. Choose **"Yes, and don't ask again"**. That saves the rule to your local `.claude/settings.local.json`, which is git-ignored, so it applies only to this Mac. If a command keeps coming up, add it to `.claude/settings.json` and commit, so every machine gets it.
+- **Check the settings are active:** run `/permissions` in the session; the allow rules from `.claude/settings.json` should be listed. The first time Claude Code opens the folder it asks whether to trust the project. Say yes, or the project settings won't load.
 
 ## While it runs
 

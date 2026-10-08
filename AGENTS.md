@@ -14,6 +14,10 @@ You are building **Routes**, an iPhone app that compares three driving routes by
 
 If the docs conflict or leave a gap that blocks you, don't guess on product behavior; treat it as stuck (see Workflow). Small engineering choices that the docs don't cover (library versions, file names, internal helpers) are yours to make. Note them in the PR description.
 
+## Autonomy
+
+You run unattended, and nobody is watching the session. **Never ask for confirmation or permission to continue** ("Shall I proceed?", "Want me to…?"). Make the call, note any judgment calls in the PR description, and keep going. The only reasons to stop are listed under "When you're stuck" and in the run's stop condition. If something needs the owner, put it in a GitHub comment and label the issue `blocked`; don't ask in chat.
+
 ## Workflow
 
 1. Take the lowest-numbered open issue labelled `agent` whose "Blocked by" issues are all closed.

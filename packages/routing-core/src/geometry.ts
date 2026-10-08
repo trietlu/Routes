@@ -3,16 +3,22 @@ import { type LatLng } from './polyline';
 /** Mean Earth radius in metres (IUGG). */
 export const EARTH_RADIUS_M = 6_371_008.8;
 
-const toRadians = (degrees: number): number => (degrees * Math.PI) / 180;
+/*
+ * Math functions bound once at load. Reading the global `Math` on every call
+ * is slow inside Node `vm` contexts (where Jest runs tests), which would skew
+ * the RC-PERF-01 timing; on device this is merely harmless.
+ */
+const { asin, cos, hypot, max, min, sin, sqrt } = Math;
+const RADIANS_PER_DEGREE = Math.PI / 180;
+
+const toRadians = (degrees: number): number => degrees * RADIANS_PER_DEGREE;
 
 /** Great-circle distance between two points, in metres. */
 export function haversineDistanceM(a: LatLng, b: LatLng): number {
   const dLat = toRadians(b.lat - a.lat);
   const dLng = toRadians(b.lng - a.lng);
-  const h =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRadians(a.lat)) * Math.cos(toRadians(b.lat)) * Math.sin(dLng / 2) ** 2;
-  return 2 * EARTH_RADIUS_M * Math.asin(Math.min(1, Math.sqrt(h)));
+  const h = sin(dLat / 2) ** 2 + cos(toRadians(a.lat)) * cos(toRadians(b.lat)) * sin(dLng / 2) ** 2;
+  return 2 * EARTH_RADIUS_M * asin(min(1, sqrt(h)));
 }
 
 /**
@@ -26,7 +32,7 @@ export interface Projection {
 
 export function equirectangular(referenceLat: number): Projection {
   const metresPerDegree = toRadians(1) * EARTH_RADIUS_M;
-  const metresPerDegreeLng = metresPerDegree * Math.cos(toRadians(referenceLat));
+  const metresPerDegreeLng = metresPerDegree * cos(toRadians(referenceLat));
   return {
     x: (point) => point.lng * metresPerDegreeLng,
     y: (point) => point.lat * metresPerDegree,
@@ -45,9 +51,8 @@ export function planarPointToSegmentM(
   const dx = bx - ax;
   const dy = by - ay;
   const lengthSq = dx * dx + dy * dy;
-  const t =
-    lengthSq === 0 ? 0 : Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / lengthSq));
-  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+  const t = lengthSq === 0 ? 0 : max(0, min(1, ((px - ax) * dx + (py - ay) * dy) / lengthSq));
+  return hypot(px - (ax + t * dx), py - (ay + t * dy));
 }
 
 /**

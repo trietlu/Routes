@@ -40,7 +40,15 @@ let logLines: string[];
 function setup(env: Record<string, string> = {}): void {
   logLines = [];
   app = buildApp(
-    loadConfig({ NODE_ENV: 'test', PROVIDER: 'google', GOOGLE_MAPS_API_KEY: API_KEY, ...env }),
+    loadConfig({
+      NODE_ENV: 'test',
+      PROVIDER: 'google',
+      GOOGLE_MAPS_API_KEY: API_KEY,
+      // These tests exercise the provider; repeated requests must reach Google.
+      AUTOCOMPLETE_CACHE_TTL_SEC: '0',
+      DETAILS_CACHE_TTL_SEC: '0',
+      ...env,
+    }),
     { logStream: { write: (line: string) => void logLines.push(line) } },
   );
 }

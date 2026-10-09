@@ -14,6 +14,14 @@ const EnvSchema = z
     LOG_LEVEL: z
       .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
       .default('info'),
+    // Cache TTLs and size (technical design § Caching and debounce).
+    ROUTES_CACHE_TTL_SEC: z.coerce.number().int().nonnegative().default(60),
+    AUTOCOMPLETE_CACHE_TTL_SEC: z.coerce.number().int().nonnegative().default(300),
+    DETAILS_CACHE_TTL_SEC: z.coerce.number().int().nonnegative().default(86_400),
+    CACHE_MAX_ENTRIES: z.coerce.number().int().positive().default(5000),
+    // Per-device requests per rolling hour (NFR-9).
+    RATE_LIMIT_ROUTES_PER_HOUR: z.coerce.number().int().positive().default(60),
+    RATE_LIMIT_PLACES_PER_HOUR: z.coerce.number().int().positive().default(600),
   })
   .transform((env) => ({
     nodeEnv: env.NODE_ENV,
@@ -24,6 +32,16 @@ const EnvSchema = z
     attestMode: env.ATTEST_MODE,
     upstreamTimeoutMs: env.UPSTREAM_TIMEOUT_MS,
     logLevel: env.LOG_LEVEL,
+    cache: {
+      routesTtlSec: env.ROUTES_CACHE_TTL_SEC,
+      autocompleteTtlSec: env.AUTOCOMPLETE_CACHE_TTL_SEC,
+      detailsTtlSec: env.DETAILS_CACHE_TTL_SEC,
+      maxEntries: env.CACHE_MAX_ENTRIES,
+    },
+    rateLimit: {
+      routesPerHour: env.RATE_LIMIT_ROUTES_PER_HOUR,
+      placesPerHour: env.RATE_LIMIT_PLACES_PER_HOUR,
+    },
   }))
   .refine((config) => config.provider !== 'google' || config.googleMapsApiKey !== undefined, {
     message: 'GOOGLE_MAPS_API_KEY is required when PROVIDER=google',

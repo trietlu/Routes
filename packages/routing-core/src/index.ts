@@ -7,6 +7,8 @@
 /** Package name, used to prove the workspace resolves from other packages. */
 export const PACKAGE_NAME = '@routes/routing-core';
 
+export * from './cost';
 export * from './geometry';
 export * from './overlap';
 export * from './polyline';
+export * from './rank';

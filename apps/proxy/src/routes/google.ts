@@ -5,7 +5,8 @@ import {
   type Waypoint,
 } from '@routes/api-types';
 import { type RoutesProvider } from '../providers';
-import { type CallResult, ROUTE_SOURCES, mergeCalls } from './merge';
+import { type CallResult, fetchUpstream } from '../upstream';
+import { ROUTE_SOURCES, mergeCalls } from './merge';
 
 export const COMPUTE_ROUTES_URL = 'https://routes.googleapis.com/directions/v2:computeRoutes';
 
@@ -59,10 +60,11 @@ export class GoogleRoutesProvider implements RoutesProvider {
     return mergeCalls({ tolls: tolls!, avoidTolls: avoidTolls! });
   }
 
-  private async call(request: RoutesRequest, source: RouteSource): Promise<CallResult> {
-    const signal = AbortSignal.timeout(this.options.timeoutMs);
-    try {
-      const response = await this.fetch(COMPUTE_ROUTES_URL, {
+  private call(request: RoutesRequest, source: RouteSource): Promise<CallResult> {
+    return fetchUpstream(
+      this.fetch,
+      COMPUTE_ROUTES_URL,
+      {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,14 +73,8 @@ export class GoogleRoutesProvider implements RoutesProvider {
           'X-Goog-FieldMask': ROUTES_FIELD_MASK,
         },
         body: JSON.stringify(computeRoutesBody(request, source)),
-        signal,
-      });
-      if (!response.ok) return { ok: false, reason: 'error' };
-      return { ok: true, body: await response.json() };
-    } catch {
-      // However the abort surfaces (TimeoutError, AbortError, a wrapped TypeError), the signal knows.
-      const timedOut = signal.aborted;
-      return { ok: false, reason: timedOut ? 'timeout' : 'error' };
-    }
+      },
+      this.options.timeoutMs,
+    );
   }
 }

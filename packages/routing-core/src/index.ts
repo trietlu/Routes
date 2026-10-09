@@ -8,6 +8,7 @@
 export const PACKAGE_NAME = '@routes/routing-core';
 
 export * from './cost';
+export * from './format';
 export * from './geometry';
 export * from './overlap';
 export * from './polyline';

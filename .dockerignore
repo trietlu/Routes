@@ -1,0 +1,14 @@
+**/node_modules
+**/dist
+**/coverage
+**/.expo
+**/*.tsbuildinfo
+.git
+.github
+.claude
+.env
+.env.*
+apps/mobile/*
+!apps/mobile/package.json
+docs
+issue-drafts

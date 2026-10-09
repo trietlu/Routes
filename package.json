@@ -2,7 +2,7 @@
   "name": "routes",
   "version": "0.1.0",
   "private": true,
-  "description": "Routes — compare three driving routes by time or cost and hand off to Google Maps",
+  "description": "Routes \u2014 compare three driving routes by time or cost and hand off to Google Maps",
   "license": "UNLICENSED",
   "engines": {
     "node": ">=22.0.0 <23"
@@ -14,7 +14,7 @@
   "scripts": {
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
-    "typecheck": "tsc --build --force tsconfig.json",
+    "typecheck": "tsc --build --force tsconfig.json && tsc -p apps/mobile/tsconfig.json --noEmit",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "proxy:dev": "tsc --build apps/proxy && PROVIDER=mock ATTEST_MODE=off tsx watch apps/proxy/src/server.ts",
@@ -32,5 +32,9 @@
     "ts-jest": "^29.4.4",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.0"
+  },
+  "overrides": {
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
   }
 }

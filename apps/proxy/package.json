@@ -10,6 +10,12 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@routes/api-types": "*"
+    "@routes/api-types": "*",
+    "fastify": "^5.12.5",
+    "pino": "^10.4.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.15"
   }
 }

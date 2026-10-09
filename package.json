@@ -17,6 +17,7 @@
     "typecheck": "tsc --build --force tsconfig.json",
     "test": "jest",
     "test:coverage": "jest --coverage",
+    "proxy:dev": "tsc --build apps/proxy && PROVIDER=mock ATTEST_MODE=off tsx watch apps/proxy/src/server.ts",
     "fixtures:generate": "tsc --build scripts && node scripts/dist/generate-fixtures.js"
   },
   "devDependencies": {

@@ -35,3 +35,30 @@ jobs:
 
       - name: Test with coverage
         run: npm run test:coverage
+
+  docker:
+    name: Proxy Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -f apps/proxy/Dockerfile -t routes-proxy:ci .
+
+      # PX-DOCKER-01: the container starts and answers /healthz.
+      - name: Container answers /healthz
+        run: |
+          docker run -d --name proxy -p 8080:8080 -e PROVIDER=mock routes-proxy:ci
+          for attempt in $(seq 1 30); do
+            body=$(curl -fsS http://localhost:8080/healthz || true)
+            if [ "$body" = '{"ok":true}' ]; then
+              echo "healthz: $body"
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs proxy
+          exit 1
+
+      - name: Container runs as non-root
+        run: test "$(docker inspect --format '{{.Config.User}}' routes-proxy:ci)" = "nonroot"

@@ -66,6 +66,10 @@ module.exports = {
   collectCoverageFrom: [
     'packages/*/src/**/*.ts',
     'apps/proxy/src/**/*.ts',
+    // Mobile non-UI modules (test plan §1). These globs are matched against each
+    // project's rootDir, which is apps/mobile for the mobile project. Add handoff/,
+    // api/, state/ and location/ as they land.
+    'storage/**/*.ts',
     '!**/*.test.ts',
     '!**/*.d.ts',
   ],
@@ -74,5 +78,6 @@ module.exports = {
     'packages/routing-core/src/**/*.ts': { lines: 95 },
     'packages/api-types/src/**/*.ts': { lines: 90 },
     'apps/proxy/src/**/*.ts': { lines: 85 },
+    'apps/mobile/storage/**/*.ts': { lines: 80 },
   },
 };

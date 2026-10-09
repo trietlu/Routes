@@ -1,13 +1,11 @@
-import path from 'node:path';
-import { renderRouter, screen } from 'expo-router/testing-library';
+import { screen } from 'expo-router/testing-library';
+import { renderApp, useTestStorage } from './appHarness';
 
-const APP_DIR = path.join(__dirname, '..', 'app');
-
-/** Every placeholder route renders its title (R-11 smoke test). */
-describe('placeholder routes', () => {
+/** Every route renders (smoke test). Placeholders are replaced as screens land. */
+describe('routes', () => {
   const cases: [string, string][] = [
     ['/', 'Home'],
-    ['/onboarding', 'Welcome to Routes'],
+    ['/onboarding', 'Three good ways there.'],
     ['/search', 'Search'],
     ['/results', 'Routes'],
     ['/route/B', 'Route B'],
@@ -17,7 +15,14 @@ describe('placeholder routes', () => {
   ];
 
   it.each(cases)('%s renders "%s"', async (route, title) => {
-    await renderRouter(APP_DIR, { initialUrl: route });
+    await useTestStorage((storage) => storage.preferences.setLocationPromptShown(true));
+    await renderApp(route);
     expect(await screen.findByRole('header', { name: title })).toBeTruthy();
+  });
+
+  it('first launch goes to onboarding instead of Home', async () => {
+    await useTestStorage();
+    await renderApp('/');
+    expect(await screen.findByRole('header', { name: 'Three good ways there.' })).toBeTruthy();
   });
 });

@@ -1,11 +1,10 @@
 import { Redirect } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useStorage } from '../features/app/services';
-import { PlaceholderScreen } from '../features/placeholder/PlaceholderScreen';
-import { t } from '../i18n';
+import { HomeScreen } from '../features/home/HomeScreen';
 
-/** Screen 2, Home (R-17). On first launch, onboarding comes first (FR-1). */
-export default function HomeScreen() {
+/** Screen 2, Home. On first launch, onboarding comes first (FR-1). */
+export default function HomeRoute() {
   const { preferences } = useStorage();
   const [promptShown, setPromptShown] = useState<boolean | null>(null);
   useEffect(() => {
@@ -13,5 +12,5 @@ export default function HomeScreen() {
   }, [preferences]);
   if (promptShown === null) return null;
   if (!promptShown) return <Redirect href="/onboarding" />;
-  return <PlaceholderScreen title={t('screen.home.title')} />;
+  return <HomeScreen />;
 }

@@ -1,5 +1,5 @@
 import * as Location from 'expo-location';
-import { act, fireEvent, screen } from 'expo-router/testing-library';
+import { fireEvent, screen } from 'expo-router/testing-library';
 import { a11yProblems, pressables } from './a11y';
 import { renderApp, useTestStorage } from './appHarness';
 
@@ -45,10 +45,8 @@ describe('Screen 1 — Onboarding', () => {
 
   it('UI-ONB-02: "Allow" requests foreground permission, records the prompt and goes to Home', async () => {
     const storage = await showOnboarding();
-    await act(async () => {
-      fireEvent.press(screen.getByRole('button', { name: 'Allow location access' }));
-    });
-    expect(await screen.findByRole('header', { name: 'Home' })).toBeTruthy();
+    await fireEvent.press(screen.getByRole('button', { name: 'Allow location access' }));
+    expect(await screen.findByText('Show me the')).toBeTruthy(); // Home
     expect(mocked.requestForegroundPermissionsAsync).toHaveBeenCalledTimes(1);
     expect(await storage.preferences.getLocationPromptShown()).toBe(true);
   });
@@ -60,18 +58,14 @@ describe('Screen 1 — Onboarding', () => {
       canAskAgain: false,
     });
     const storage = await showOnboarding();
-    await act(async () => {
-      fireEvent.press(screen.getByRole('button', { name: 'Allow location access' }));
-    });
-    expect(await screen.findByRole('header', { name: 'Home' })).toBeTruthy();
+    await fireEvent.press(screen.getByRole('button', { name: 'Allow location access' }));
+    expect(await screen.findByText('Show me the')).toBeTruthy(); // Home
     expect(await storage.preferences.getLocationPromptShown()).toBe(true);
   });
 
   it('UI-ONB-02: "Enter a start address" opens Search for From with no permission request', async () => {
     const storage = await showOnboarding();
-    await act(async () => {
-      fireEvent.press(screen.getByRole('button', { name: 'Enter a start address instead' }));
-    });
+    await fireEvent.press(screen.getByRole('button', { name: 'Enter a start address instead' }));
     expect(await screen.findByRole('header', { name: 'Search' })).toBeTruthy();
     expect(mocked.requestForegroundPermissionsAsync).not.toHaveBeenCalled();
     expect(await storage.preferences.getLocationPromptShown()).toBe(true);

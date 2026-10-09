@@ -68,8 +68,13 @@ const UPSERT = `
     lat = excluded.lat, lng = excluded.lng, last_used_at = excluded.last_used_at`;
 
 export function createPlacesRepo(db: SqlDatabase, now: () => number = Date.now): PlacesRepo {
-  async function upsert(id: string, kind: PlaceKind, place: PlaceInput): Promise<Place> {
-    const stored: Place = { ...place, id, kind, lastUsedAt: now() };
+  async function upsert(
+    id: string,
+    kind: PlaceKind,
+    place: PlaceInput,
+    lastUsedAt: number = now(),
+  ): Promise<Place> {
+    const stored: Place = { ...place, id, kind, lastUsedAt };
     await db.run(UPSERT, [
       id,
       kind,
@@ -95,7 +100,13 @@ export function createPlacesRepo(db: SqlDatabase, now: () => number = Date.now):
     async addRecent(place) {
       let stored: Place | undefined;
       await db.transaction(async () => {
-        stored = await upsert(recentId(place), 'recent', place);
+        // Strictly after every other recent, so the newest is first even when
+        // two picks land in the same millisecond.
+        const latest = await db.getFirst<{ latest: number | null }>(
+          `SELECT MAX(last_used_at) AS latest FROM places WHERE kind = 'recent'`,
+        );
+        const lastUsedAt = Math.max(now(), (latest?.latest ?? -Infinity) + 1);
+        stored = await upsert(recentId(place), 'recent', place, lastUsedAt);
         await db.run(
           `DELETE FROM places WHERE kind = 'recent' AND id NOT IN (
              SELECT id FROM places WHERE kind = 'recent'

@@ -42,6 +42,9 @@ const mobileProject = {
   rootDir: MOBILE_ROOT,
   testPathIgnorePatterns: ['/node_modules/', '/dist/', '/ios/', '/android/'],
   setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
+  // routing-core and api-types are measured by their own (ts-jest) projects;
+  // Babel's instrumentation of the same files would skew their merged coverage.
+  coveragePathIgnorePatterns: ['/node_modules/', '/packages/'],
   // jest-expo resolves Babel options from the working directory, which is the
   // repo root under `npm test`; point it at the app instead.
   transform: { '\\.[jt]sx?$': ['babel-jest', resolveBabelOptions(MOBILE_ROOT)] },

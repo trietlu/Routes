@@ -27,6 +27,33 @@ function tsProject({ displayName, roots }) {
   };
 }
 
+/**
+ * The Expo app: jest-expo (iOS) preset with React Native Testing Library and
+ * the native-module mocks in apps/mobile/test/mocks.
+ */
+const path = require('node:path');
+const { resolveBabelOptions } = require('jest-expo/src/resolveBabelOptions');
+
+const MOBILE_ROOT = path.join(__dirname, 'apps/mobile');
+
+const mobileProject = {
+  displayName: 'mobile',
+  preset: 'jest-expo/ios',
+  rootDir: MOBILE_ROOT,
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/ios/', '/android/'],
+  setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
+  // routing-core and api-types are measured by their own (ts-jest) projects;
+  // Babel's instrumentation of the same files would skew their merged coverage.
+  coveragePathIgnorePatterns: ['/node_modules/', '/packages/'],
+  // jest-expo resolves Babel options from the working directory, which is the
+  // repo root under `npm test`; point it at the app instead.
+  transform: { '\\.[jt]sx?$': ['babel-jest', resolveBabelOptions(MOBILE_ROOT)] },
+  moduleNameMapper: {
+    '^@routes/api-types$': '<rootDir>/../../packages/api-types/src/index.ts',
+    '^@routes/routing-core$': '<rootDir>/../../packages/routing-core/src/index.ts',
+  },
+};
+
 /** @type {import('jest').Config} */
 module.exports = {
   projects: [
@@ -34,6 +61,7 @@ module.exports = {
     tsProject({ displayName: 'routing-core', roots: ['<rootDir>/packages/routing-core/src'] }),
     tsProject({ displayName: 'proxy', roots: ['<rootDir>/apps/proxy/src'] }),
     tsProject({ displayName: 'scripts', roots: ['<rootDir>/scripts'] }),
+    mobileProject,
   ],
   collectCoverageFrom: [
     'packages/*/src/**/*.ts',

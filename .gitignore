@@ -157,3 +157,4 @@ dist/
 /apps/mobile/android/
 issue-drafts/
 .claude/settings.local.json
+/apps/mobile/expo-env.d.ts

@@ -206,19 +206,6 @@ describe('proxy app', () => {
       expect(response.body).not.toContain('secret');
     }
   });
-
-  it('the default places provider fails cleanly until R-09 lands', async () => {
-    app = buildApp(loadConfig({ NODE_ENV: 'test', LOG_LEVEL: 'silent' }));
-    const headers = { 'x-device-id': DEVICE_ID };
-    const responses = await Promise.all([
-      app.inject({ method: 'GET', url: '/places/autocomplete?q=Union&session=s', headers }),
-      app.inject({ method: 'GET', url: '/places/details?placeId=p&session=s', headers }),
-    ]);
-    for (const response of responses) {
-      expect(response.statusCode).toBe(502);
-      expect(response.json().error.code).toBe('UPSTREAM_ERROR');
-    }
-  });
 });
 
 describe('logging', () => {

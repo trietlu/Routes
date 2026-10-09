@@ -7,7 +7,8 @@ import {
   type RoutesResponse,
 } from '@routes/api-types';
 import { type Config } from './config';
-import { ProxyError } from './errors';
+import { GooglePlacesProvider } from './places/google';
+import { MockPlacesProvider } from './places/mock';
 import { GoogleRoutesProvider } from './routes/google';
 import { MockRoutesProvider } from './routes/mock';
 
@@ -30,27 +31,15 @@ export interface Providers {
   places: PlacesProvider;
 }
 
-const notYet = (what: string, issue: string): Promise<never> =>
-  Promise.reject(new ProxyError('UPSTREAM_ERROR', `${what} is not implemented yet (${issue})`));
-
-/**
- * Providers for the configured `PROVIDER`. Places land in R-09; until then
- * those calls fail with `UPSTREAM_ERROR`.
- */
+/** Providers for the configured `PROVIDER`: Google, or fixtures in mock mode. */
 export function createProviders(config: Config): Providers {
-  const routes =
-    config.provider === 'google'
-      ? new GoogleRoutesProvider({
-          // loadConfig guarantees a key when PROVIDER=google.
-          apiKey: config.googleMapsApiKey!,
-          timeoutMs: config.upstreamTimeoutMs,
-        })
-      : new MockRoutesProvider();
-  return {
-    routes,
-    places: {
-      autocomplete: () => notYet('Autocomplete', 'R-09'),
-      details: () => notYet('Place details', 'R-09'),
-    },
-  };
+  if (config.provider === 'google') {
+    const options = {
+      // loadConfig guarantees a key when PROVIDER=google.
+      apiKey: config.googleMapsApiKey!,
+      timeoutMs: config.upstreamTimeoutMs,
+    };
+    return { routes: new GoogleRoutesProvider(options), places: new GooglePlacesProvider(options) };
+  }
+  return { routes: new MockRoutesProvider(), places: new MockPlacesProvider() };
 }

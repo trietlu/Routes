@@ -1,9 +1,9 @@
 import { type ProviderRoute, type RouteSource, type RoutesResponse } from '@routes/api-types';
 import { ProxyError } from '../errors';
+import { type CallResult } from '../upstream';
 import { normalizeComputeRoutes } from './normalize';
 
-/** Outcome of one `computeRoutes` call. */
-export type CallResult = { ok: true; body: unknown } | { ok: false; reason: 'error' | 'timeout' };
+export { type CallResult };
 
 /** The two calls per trip, in merge order. */
 export const ROUTE_SOURCES: readonly RouteSource[] = ['tolls', 'avoidTolls'];

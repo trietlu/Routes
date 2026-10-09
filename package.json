@@ -16,7 +16,8 @@
     "format": "prettier --write .",
     "typecheck": "tsc --build --force tsconfig.json",
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "fixtures:generate": "tsc --build scripts && node scripts/dist/generate-fixtures.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",

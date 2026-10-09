@@ -1,0 +1,12 @@
+{
+  "id": "fixture-upstream-error",
+  "displayName": {
+    "text": "Error Test",
+    "languageCode": "en"
+  },
+  "formattedAddress": "500 Test Way",
+  "location": {
+    "latitude": 39.75719,
+    "longitude": -105.04878
+  }
+}

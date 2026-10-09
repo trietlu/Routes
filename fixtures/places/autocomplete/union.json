@@ -1,0 +1,58 @@
+{
+  "suggestions": [
+    {
+      "placePrediction": {
+        "place": "places/fixture-union-station",
+        "placeId": "fixture-union-station",
+        "text": {
+          "text": "Union Station, 100 Union Plaza"
+        },
+        "structuredFormat": {
+          "mainText": {
+            "text": "Union Station"
+          },
+          "secondaryText": {
+            "text": "100 Union Plaza"
+          }
+        },
+        "distanceMeters": 14645
+      }
+    },
+    {
+      "placePrediction": {
+        "place": "places/fixture-union-street-market",
+        "placeId": "fixture-union-street-market",
+        "text": {
+          "text": "Union Street Market, 42 Union St"
+        },
+        "structuredFormat": {
+          "mainText": {
+            "text": "Union Street Market"
+          },
+          "secondaryText": {
+            "text": "42 Union St"
+          }
+        },
+        "distanceMeters": 6920
+      }
+    },
+    {
+      "placePrediction": {
+        "place": "places/fixture-union-st-9th-ave",
+        "placeId": "fixture-union-st-9th-ave",
+        "text": {
+          "text": "Union St & 9th Ave, Intersection"
+        },
+        "structuredFormat": {
+          "mainText": {
+            "text": "Union St & 9th Ave"
+          },
+          "secondaryText": {
+            "text": "Intersection"
+          }
+        },
+        "distanceMeters": 10944
+      }
+    }
+  ]
+}

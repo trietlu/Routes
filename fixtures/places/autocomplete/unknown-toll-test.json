@@ -1,0 +1,22 @@
+{
+  "suggestions": [
+    {
+      "placePrediction": {
+        "place": "places/fixture-unknown-toll",
+        "placeId": "fixture-unknown-toll",
+        "text": {
+          "text": "Unknown Toll Test, 7 Test Way"
+        },
+        "structuredFormat": {
+          "mainText": {
+            "text": "Unknown Toll Test"
+          },
+          "secondaryText": {
+            "text": "7 Test Way"
+          }
+        },
+        "distanceMeters": 15000
+      }
+    }
+  ]
+}

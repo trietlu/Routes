@@ -1,0 +1,74 @@
+{
+  "routes": [
+    {
+      "distanceMeters": 9000,
+      "duration": "900s",
+      "polyline": {
+        "encodedPolyline": "_qpqFj|x_SuD?sDAuD?sDAuD?sDAuD?sD?uDAsD?uDAsD?uD?sDAuD?sDAuD?sDAuD?sD?uDAsD?uDAsD?uDAsD?uD?sDAuD?uDAsD?uD?sDA}BaD{BaD{BcD}BaD{BaD}BaD{BaD}BcD{BaD}BaD{BaD{BaD}BcD{BaD}BaD{BaD}BcD{BaD}BaD{BaD}BaD{BcD{BaD}BaD?kFAkF?iF?kFAkF?iF?kFAkF?kF?iF?kFAkF?iF?kFAkF?iF?kFAkF?kF?iFAkF?kF?iFAkF?kF?kFAiF?kF?kFAiF?kF?kFAkF"
+      },
+      "description": "Elm St",
+      "legs": [
+        {
+          "steps": [
+            {
+              "distanceMeters": 3321,
+              "navigationInstruction": {
+                "maneuver": "DEPART",
+                "instructions": "Head north on Clarkson St"
+              }
+            },
+            {
+              "distanceMeters": 2357,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Elm St"
+              }
+            },
+            {
+              "distanceMeters": 3322,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Test Way\nDestination will be on the right: Partial Error Test"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "distanceMeters": 9600,
+      "duration": "1020s",
+      "polyline": {
+        "encodedPolyline": "_qpqFj|x_SLiFLkFLiFLiFLkFLiFLiFJiFLkFLiFLiFLkFLiFLiFLkFLiFLiFLiFLkFLiFLiFLkFJiFLiFLkFLiFLiFLkFLiFLiFLiFLkFLiFLiFLkFLiF}BaD{BaD}BcD{BaD}BaD{BaD}BaD{BcD}BaD{BaD{BaD}BcD{BaD}BaD{BaD}BaD{BcD}BaD{BaD{BaD}BcD{BaD}BaD{BaDuDPsDPsDPsDPsDPuDPsDPsDPsDPsDPuDPsDPsDPsDPsDPuDPsDPsDPsDPsDPuDPsDPsDPsDPsDPuDPsDPsDPsDPsDPuDPsDPsDPsDPsDPuDP"
+      },
+      "description": "Birch St",
+      "legs": [
+        {
+          "steps": [
+            {
+              "distanceMeters": 3621,
+              "navigationInstruction": {
+                "maneuver": "DEPART",
+                "instructions": "Head east on 13th Ave"
+              }
+            },
+            {
+              "distanceMeters": 2357,
+              "navigationInstruction": {
+                "maneuver": "TURN_LEFT",
+                "instructions": "Turn left onto Birch St"
+              }
+            },
+            {
+              "distanceMeters": 3622,
+              "navigationInstruction": {
+                "maneuver": "TURN_LEFT",
+                "instructions": "Turn left onto Test Way\nDestination will be on the right: Partial Error Test"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

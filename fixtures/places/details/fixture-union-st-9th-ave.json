@@ -1,0 +1,12 @@
+{
+  "id": "fixture-union-st-9th-ave",
+  "displayName": {
+    "text": "Union St & 9th Ave",
+    "languageCode": "en"
+  },
+  "formattedAddress": "Intersection",
+  "location": {
+    "latitude": 39.81834,
+    "longitude": -104.92715
+  }
+}

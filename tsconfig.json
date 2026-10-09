@@ -4,6 +4,7 @@
   "references": [
     { "path": "./packages/api-types" },
     { "path": "./packages/routing-core" },
-    { "path": "./apps/proxy" }
+    { "path": "./apps/proxy" },
+    { "path": "./scripts" }
   ]
 }

@@ -1,0 +1,12 @@
+{
+  "id": "fixture-unknown-toll",
+  "displayName": {
+    "text": "Unknown Toll Test",
+    "languageCode": "en"
+  },
+  "formattedAddress": "7 Test Way",
+  "location": {
+    "latitude": 39.84712,
+    "longitude": -104.88504
+  }
+}

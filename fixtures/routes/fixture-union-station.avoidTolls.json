@@ -1,0 +1,74 @@
+{
+  "routes": [
+    {
+      "distanceMeters": 17059,
+      "duration": "1620s",
+      "polyline": {
+        "encodedPolyline": "_qpqFj|x_SmD|@mD|@mD|@mD|@oD~@mD|@mD|@mD|@mD|@mD|@mD|@mD|@oD|@mD|@mD~@mD|@mD|@mD|@mD|@mD|@mD|@oD|@mD|@mD|@mD~@mD|@mD|@mD|@mD|@mD|@oD|@mD|@mD|@mD~@mD|@mD|@mD|@mD|@oD|@mD|@mD|@mD|@mD|@mD~@mD|@mD|@mD|@oD|@mD|@mD|@mD|@mD|@mD|@mD~@mD|@oD|@mD|@mD|@mD|@mD|@mD|@mD|@mD~@mD|@oD|@oCkCmCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCmCmCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCmCkCoCkCCkFAiFCkFAiFCiFAkFAiFCkFAiFCkFAiFCkFAiFAkFCiFAkFCiFAkFCiFAiFAkFCiFAkFCiFAkFCiFAkFAiFCkFAiFCkFAiFCkFAiFCkFAiFAiFCkFAiFCkFAiFCkFAiFAkFCiFAkFCiFAkFCiFAkFAiFCiFAkFCiFAkFCiFAkFAiFCkFAiFCkFAiFCkFAiFAkF"
+      },
+      "description": "Elm Ave & 3rd St",
+      "legs": [
+        {
+          "steps": [
+            {
+              "distanceMeters": 6530,
+              "navigationInstruction": {
+                "maneuver": "DEPART",
+                "instructions": "Head north on Elm Ave"
+              }
+            },
+            {
+              "distanceMeters": 4000,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto 3rd St"
+              }
+            },
+            {
+              "distanceMeters": 6529,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Union Plaza\nDestination will be on the right: Union Station"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "distanceMeters": 14323,
+      "duration": "1860s",
+      "polyline": {
+        "encodedPolyline": "_qpqFj|x_Si@aFk@_Fi@aFk@aFi@_Fk@aFi@aFk@_Fi@aFk@aFi@_Fk@aFi@aFk@_Fi@aFk@aFi@_Fk@aFi@aFk@_Fi@aFk@aFi@_Fk@aFi@aFk@_Fi@aFk@aFi@_Fk@aFi@aFk@_Fi@aFk@aFi@_Fk@aFi@aFk@aFi@_Fk@aFi@aFk@_Fi@aFk@aFi@_Fk@aFi@aFk@_Fi@aFk@aFi@_Fk@aFoCkCoCkCmCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCmCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCmCkCsDHqDHqDFqDHqDHsDHqDFqDHqDHqDFsDHqDHqDHqDFqDHsDHqDFqDHqDHqDHsDFqDHqDHqDFqDHqDHsDHqDFqDHqDHqDFsDHqDHqDHqDFqDHsDHqDFqDHqDHqDHsDFqDHqDHqDFqDHsDHqDHqDFqDHqDHqDF"
+      },
+      "description": "Main St",
+      "legs": [
+        {
+          "steps": [
+            {
+              "distanceMeters": 5162,
+              "navigationInstruction": {
+                "maneuver": "DEPART",
+                "instructions": "Head east on Colfax Ave"
+              }
+            },
+            {
+              "distanceMeters": 4000,
+              "navigationInstruction": {
+                "maneuver": "TURN_LEFT",
+                "instructions": "Turn left onto Main St"
+              }
+            },
+            {
+              "distanceMeters": 5161,
+              "navigationInstruction": {
+                "maneuver": "TURN_LEFT",
+                "instructions": "Turn left onto Wynkoop St\nDestination will be on the right: Union Station"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

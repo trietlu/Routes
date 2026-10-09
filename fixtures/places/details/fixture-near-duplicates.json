@@ -1,0 +1,12 @@
+{
+  "id": "fixture-near-duplicates",
+  "displayName": {
+    "text": "Near Duplicates Test",
+    "languageCode": "en"
+  },
+  "formattedAddress": "4 Test Way",
+  "location": {
+    "latitude": 39.79316,
+    "longitude": -104.89674
+  }
+}

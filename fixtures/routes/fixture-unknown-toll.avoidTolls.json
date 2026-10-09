@@ -1,0 +1,39 @@
+{
+  "routes": [
+    {
+      "distanceMeters": 17703,
+      "duration": "1800s",
+      "polyline": {
+        "encodedPolyline": "_qpqFj|x_Sm@_Fm@_Fo@_Fm@_Fm@_Fm@_Fm@aFm@_Fo@_Fm@_Fm@_Fm@_Fm@_Fo@_Fm@_Fm@_Fm@_Fm@_Fo@aFm@_Fm@_Fm@_Fm@_Fm@_Fo@_Fm@_Fm@_Fm@_Fm@_Fo@_Fm@aFm@_Fm@_Fm@_Fm@_Fo@_Fm@_Fm@_Fm@_Fm@_Fo@_Fm@_Fm@aFm@_Fm@_Fm@_Fo@_Fm@_Fm@_Fm@_Fm@_Fo@_Fm@_Fm@_Fm@_Fm@aFo@_Fm@_Fm@_Fm@_Fm@_Fm@_Fo@_Fm@_FoCkCoCmCoCkCoCkCoCkCmCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCmCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCmCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCqDDsDBqDDqDBqDBqDDsDBqDDqDBqDDsDBqDBqDDqDBsDDqDBqDDqDBqDDsDBqDBqDDqDBsDDqDBqDDqDBsDBqDDqDBqDDqDBsDDqDBqDDqDBsDBqDDqDBqDDsDBqDDqDBqDDqDBsDBqDDqDBqDDsDBqDDqDBqDBsDDqDBqDDqDBqDDsDBqDDqDBqDBsDDqDB"
+      },
+      "description": "Federal Blvd",
+      "legs": [
+        {
+          "steps": [
+            {
+              "distanceMeters": 6352,
+              "navigationInstruction": {
+                "maneuver": "DEPART",
+                "instructions": "Head east on 8th Ave"
+              }
+            },
+            {
+              "distanceMeters": 5000,
+              "navigationInstruction": {
+                "maneuver": "TURN_LEFT",
+                "instructions": "Turn left onto Federal Blvd"
+              }
+            },
+            {
+              "distanceMeters": 6351,
+              "navigationInstruction": {
+                "maneuver": "TURN_LEFT",
+                "instructions": "Turn left onto Test Way\nDestination will be on the right: Unknown Toll Test"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "fixture-slow",
+  "displayName": {
+    "text": "Slow Test",
+    "languageCode": "en"
+  },
+  "formattedAddress": "2000 Test Way",
+  "location": {
+    "latitude": 39.82553,
+    "longitude": -104.90609
+  }
+}

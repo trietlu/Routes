@@ -1,0 +1,22 @@
+{
+  "suggestions": [
+    {
+      "placePrediction": {
+        "place": "places/fixture-partial-error",
+        "placeId": "fixture-partial-error",
+        "text": {
+          "text": "Partial Error Test, 501 Test Way"
+        },
+        "structuredFormat": {
+          "mainText": {
+            "text": "Partial Error Test"
+          },
+          "secondaryText": {
+            "text": "501 Test Way"
+          }
+        },
+        "distanceMeters": 7071
+      }
+    }
+  ]
+}

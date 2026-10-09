@@ -1,0 +1,22 @@
+{
+  "suggestions": [
+    {
+      "placePrediction": {
+        "place": "places/fixture-slow",
+        "placeId": "fixture-slow",
+        "text": {
+          "text": "Slow Test, 2000 Test Way"
+        },
+        "structuredFormat": {
+          "mainText": {
+            "text": "Slow Test"
+          },
+          "secondaryText": {
+            "text": "2000 Test Way"
+          }
+        },
+        "distanceMeters": 12000
+      }
+    }
+  ]
+}

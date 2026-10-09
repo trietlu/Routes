@@ -11,11 +11,13 @@
   },
   "dependencies": {
     "@routes/api-types": "*",
+    "@routes/routing-core": "*",
     "fastify": "^5.12.5",
     "pino": "^10.4.0",
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "nock": "^14.0.17",
     "tsx": "^4.23.15"
   }
 }

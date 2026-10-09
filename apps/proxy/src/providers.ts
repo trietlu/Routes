@@ -8,6 +8,8 @@ import {
 } from '@routes/api-types';
 import { type Config } from './config';
 import { ProxyError } from './errors';
+import { GoogleRoutesProvider } from './routes/google';
+import { MockRoutesProvider } from './routes/mock';
 
 /**
  * Fetches and normalizes routes for a trip. Implementations throw
@@ -32,13 +34,20 @@ const notYet = (what: string, issue: string): Promise<never> =>
   Promise.reject(new ProxyError('UPSTREAM_ERROR', `${what} is not implemented yet (${issue})`));
 
 /**
- * Providers for the configured `PROVIDER`. The Google and mock
- * implementations land in R-08 (routes) and R-09 (places); until then every
- * call fails with `UPSTREAM_ERROR`.
+ * Providers for the configured `PROVIDER`. Places land in R-09; until then
+ * those calls fail with `UPSTREAM_ERROR`.
  */
-export function createProviders(_config: Config): Providers {
+export function createProviders(config: Config): Providers {
+  const routes =
+    config.provider === 'google'
+      ? new GoogleRoutesProvider({
+          // loadConfig guarantees a key when PROVIDER=google.
+          apiKey: config.googleMapsApiKey!,
+          timeoutMs: config.upstreamTimeoutMs,
+        })
+      : new MockRoutesProvider();
   return {
-    routes: { computeRoutes: () => notYet('Routes', 'R-08') },
+    routes,
     places: {
       autocomplete: () => notYet('Autocomplete', 'R-09'),
       details: () => notYet('Place details', 'R-09'),

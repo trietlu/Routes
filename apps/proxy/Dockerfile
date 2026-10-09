@@ -12,6 +12,7 @@ COPY apps/proxy/package.json apps/proxy/
 COPY apps/mobile/package.json apps/mobile/
 RUN npm ci --workspace @routes/proxy --include-workspace-root --ignore-scripts --no-audit --no-fund
 COPY packages/api-types packages/api-types
+COPY packages/routing-core packages/routing-core
 COPY apps/proxy apps/proxy
 RUN npx tsc --build apps/proxy
 
@@ -33,6 +34,8 @@ ENV NODE_ENV=production PORT=8080
 COPY --from=deps /repo/node_modules node_modules
 COPY --from=build /repo/packages/api-types/package.json packages/api-types/
 COPY --from=build /repo/packages/api-types/dist packages/api-types/dist
+COPY --from=build /repo/packages/routing-core/package.json packages/routing-core/
+COPY --from=build /repo/packages/routing-core/dist packages/routing-core/dist
 COPY --from=build /repo/apps/proxy/package.json apps/proxy/
 COPY --from=build /repo/apps/proxy/dist apps/proxy/dist
 # Mock mode (PROVIDER=mock) serves these instead of calling Google.

@@ -1,7 +1,4 @@
-import { PlaceholderScreen } from '../features/placeholder/PlaceholderScreen';
-import { t } from '../i18n';
+import { OnboardingScreen } from '../features/onboarding/OnboardingScreen';
 
-/** Screen 1, Onboarding (R-16). */
-export default function OnboardingScreen() {
-  return <PlaceholderScreen title={t('screen.onboarding.title')} />;
-}
+/** Screen 1, Onboarding. */
+export default OnboardingScreen;

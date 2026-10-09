@@ -5,3 +5,6 @@ export const openSettings = jest.fn(async () => undefined);
 export const createURL = jest.fn((path: string) => `routes://${path.replace(/^\//, '')}`);
 export const useURL = jest.fn(() => null);
 export const parse = jest.fn((url: string) => ({ scheme: 'routes', path: url, queryParams: {} }));
+export const getInitialURL = jest.fn(async () => null);
+export const getLinkingURL = jest.fn(() => null);
+export const addEventListener = jest.fn(() => ({ remove: jest.fn() }));

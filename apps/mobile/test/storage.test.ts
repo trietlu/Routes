@@ -85,6 +85,16 @@ describe('storage', () => {
     expect(recents.filter((p) => p.placeId === 'place-5')).toHaveLength(1);
   });
 
+  it('APP-STORE-02: the newest pick is first even within the same millisecond', async () => {
+    const db = createTestDatabase();
+    await migrate(db);
+    const places = createPlacesRepo(db, () => 5_000); // a frozen clock
+    await places.addRecent(place(1));
+    await places.addRecent(place(2));
+    await places.addRecent(place(1));
+    expect((await places.listRecents()).map((p) => p.placeId)).toEqual(['place-1', 'place-2']);
+  });
+
   it('APP-STORE-02: a place without a place ID is matched by its coordinates', async () => {
     const { places } = await setup();
     await places.addRecent(place(1, { placeId: null }));

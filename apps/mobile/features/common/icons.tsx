@@ -1,0 +1,87 @@
+import Svg, { Circle, Path } from 'react-native-svg';
+
+/** Small line icons. Decorative: their buttons carry the labels. */
+interface IconProps {
+  color: string;
+  size?: number;
+}
+
+const hidden = {
+  accessibilityElementsHidden: true,
+  importantForAccessibility: 'no-hide-descendants',
+} as const;
+
+export function SwapIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" {...hidden}>
+      <Path
+        d="M8 4v16M8 4 4 8M8 4l4 4M16 20V4M16 20l-4-4M16 20l4-4"
+        stroke={color}
+        strokeWidth={2}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
+export function ClockIcon({ color, size = 20 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" {...hidden}>
+      <Circle cx={12} cy={12} r={9} stroke={color} strokeWidth={2} fill="none" />
+      <Path d="M12 7v5l3 2" stroke={color} strokeWidth={2} fill="none" strokeLinecap="round" />
+    </Svg>
+  );
+}
+
+export function HomeIcon({ color, size = 20 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" {...hidden}>
+      <Path
+        d="M4 11 12 4l8 7v9H4z"
+        stroke={color}
+        strokeWidth={2}
+        fill="none"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
+export function WorkIcon({ color, size = 20 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" {...hidden}>
+      <Path
+        d="M4 8h16v11H4zM9 8V5h6v3"
+        stroke={color}
+        strokeWidth={2}
+        fill="none"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
+export function CrosshairIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" {...hidden}>
+      <Circle cx={12} cy={12} r={6} stroke={color} strokeWidth={2} fill="none" />
+      <Path
+        d="M12 2v4M12 18v4M2 12h4M18 12h4"
+        stroke={color}
+        strokeWidth={2}
+        strokeLinecap="round"
+      />
+    </Svg>
+  );
+}
+
+export function PinIcon({ color, size = 18 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" {...hidden}>
+      <Path d="M12 22s7-7 7-12a7 7 0 1 0-14 0c0 5 7 12 7 12z" fill={color} />
+      <Circle cx={12} cy={10} r={2.5} fill="#FFFFFF" />
+    </Svg>
+  );
+}

@@ -207,11 +207,10 @@ describe('proxy app', () => {
     }
   });
 
-  it('the default providers fail cleanly until R-08 and R-09 land', async () => {
+  it('the default places provider fails cleanly until R-09 lands', async () => {
     app = buildApp(loadConfig({ NODE_ENV: 'test', LOG_LEVEL: 'silent' }));
     const headers = { 'x-device-id': DEVICE_ID };
     const responses = await Promise.all([
-      app.inject({ method: 'POST', url: '/routes', headers, payload: ROUTES_BODY }),
       app.inject({ method: 'GET', url: '/places/autocomplete?q=Union&session=s', headers }),
       app.inject({ method: 'GET', url: '/places/details?placeId=p&session=s', headers }),
     ]);

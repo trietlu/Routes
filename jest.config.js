@@ -68,14 +68,16 @@ module.exports = {
     'apps/proxy/src/**/*.ts',
     // Mobile non-UI modules (test plan §1). Jest has matched these globs against
     // the repo root in CI but against the project's rootDir (apps/mobile) locally,
-    // so each folder is listed both ways. Add handoff/ and location/
-    // the same way as they land.
+    // so each folder is listed both ways. Add handoff/ the same
+    // way when it lands.
     'apps/mobile/storage/**/*.ts',
     'storage/**/*.ts',
     'apps/mobile/api/**/*.{ts,tsx}',
     'api/**/*.{ts,tsx}',
     'apps/mobile/state/**/*.{ts,tsx}',
     'state/**/*.{ts,tsx}',
+    'apps/mobile/location/**/*.ts',
+    'location/**/*.ts',
     '!**/*.test.ts',
     '!**/*.d.ts',
   ],
@@ -87,5 +89,6 @@ module.exports = {
     'apps/mobile/storage/**/*.ts': { lines: 80 },
     'apps/mobile/api/**/*.{ts,tsx}': { lines: 80 },
     'apps/mobile/state/**/*.{ts,tsx}': { lines: 80 },
+    'apps/mobile/location/**/*.ts': { lines: 80 },
   },
 };

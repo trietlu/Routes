@@ -45,7 +45,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         NSLocationWhenInUseUsageDescription: LOCATION_USAGE,
         // Lets Linking.canOpenURL("comgooglemaps://") detect Google Maps (FR-17).
         LSApplicationQueriesSchemes: ['comgooglemaps'],
-        // No UIBackgroundModes: location is foreground only (NFR-4).
+        // No background modes: location is foreground only (NFR-4, APP-LOC-03).
       },
       // The react-native-maps Google provider needs a key; Apple Maps does not.
       ...(googleMapsIosKey ? { config: { googleMapsApiKey: googleMapsIosKey } } : {}),

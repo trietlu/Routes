@@ -1,0 +1,74 @@
+{
+  "routes": [
+    {
+      "distanceMeters": 11500,
+      "duration": "1140s",
+      "polyline": {
+        "encodedPolyline": "_qpqFj|x_SsDEqDEsDGqDEsDEqDEsDGqDEsDEqDEsDGqDEsDEqDEsDEsDGqDEsDEqDEsDGqDEsDEqDEsDEqDGsDEqDEsDEqDGsDEqDEsDEsDGqDEsDEqDEsDEqDGsDEqDEsDEoCmCqCmCqCmCqCmCoCmCqCmCqCmCoCkCqCmCqCmCoCmCqCmCqCmCoCmCqCmCqCkCoCmCqCmCqCmCoCmCqCmCqCmCoCmCqCmCqCkCoCmCqCmCqCmCoCmCqCmCqCmCoCmCqCkCu@}Ew@}Eu@}Ew@}Eu@}Ew@}Eu@}Ew@{Eu@}Ew@}Eu@}Eu@}Ew@}Eu@}Ew@}Eu@{Ew@}Eu@}Ew@}Eu@}Ew@}Eu@}Eu@{Ew@}Eu@}Ew@}Eu@}Ew@}Eu@}Ew@}Eu@{Eu@}Ew@}Eu@}Ew@}Eu@}Ew@}Eu@}Ew@{Eu@}Ew@}E"
+      },
+      "description": "Lincoln Ave",
+      "legs": [
+        {
+          "steps": [
+            {
+              "distanceMeters": 4083,
+              "navigationInstruction": {
+                "maneuver": "DEPART",
+                "instructions": "Head north on Grant St"
+              }
+            },
+            {
+              "distanceMeters": 3333,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Lincoln Ave"
+              }
+            },
+            {
+              "distanceMeters": 4084,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Test Way\nDestination will be on the right: Two Routes Test"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "distanceMeters": 12600,
+      "duration": "1380s",
+      "polyline": {
+        "encodedPolyline": "_qpqFj|x_S[gF]iF[gF]gF[iF[gF]gF[gF[iF]gF[gF]iF[gF[gF]iF[gF]gF[gF[iF]gF[gF[iF]gF[gF]iF[gF[gF]iF[gF]gF[gF[iF]gF[gF[iF]gF[gF]iF[gF[gF]iF[gF]gF[gF[iF]gFoCmCqCmCqCmCoCmCqCkCqCmCoCmCqCmCqCmCoCmCqCmCqCmCoCkCqCmCqCmCoCmCqCmCqCmCoCmCqCmCqCmCoCkCqCmCqCmCoCmCqCmCqCmCqCmCoCmCqCkCqCmCoCmCqCmCsD\\sDZsD\\qDZsD\\sD\\sDZsD\\sDZsD\\sD\\qDZsD\\sDZsD\\sD\\sDZsD\\sDZsD\\qD\\sDZsD\\sDZsD\\sD\\sDZsD\\sD\\qDZsD\\sDZsD\\sD\\sDZsD\\sDZqD\\sD\\sDZsD\\sDZsD\\sD\\sDZsD\\"
+      },
+      "description": "River Rd",
+      "legs": [
+        {
+          "steps": [
+            {
+              "distanceMeters": 4633,
+              "navigationInstruction": {
+                "maneuver": "DEPART",
+                "instructions": "Head east on Speer Blvd"
+              }
+            },
+            {
+              "distanceMeters": 3333,
+              "navigationInstruction": {
+                "maneuver": "TURN_LEFT",
+                "instructions": "Turn left onto River Rd"
+              }
+            },
+            {
+              "distanceMeters": 4634,
+              "navigationInstruction": {
+                "maneuver": "TURN_LEFT",
+                "instructions": "Turn left onto Test Way\nDestination will be on the right: Two Routes Test"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

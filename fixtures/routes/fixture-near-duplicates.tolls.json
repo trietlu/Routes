@@ -1,0 +1,148 @@
+{
+  "routes": [
+    {
+      "distanceMeters": 12500,
+      "duration": "1260s",
+      "polyline": {
+        "encodedPolyline": "_qpqFj|x_SoDg@qDg@oDe@oDg@qDg@oDg@oDg@oDe@qDg@oDg@oDg@qDg@oDg@oDe@qDg@oDg@oDg@oDg@qDe@oDg@oDg@qDg@oDg@oDe@qDg@oDg@oDg@oDg@qDg@oDe@oDg@qDg@oDg@oDg@qDe@oDg@oDg@oDg@qDg@oDe@oDg@qDg@oDg@oDg@qDe@oDg@kB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DmB}DkB}DmB{DkB}DmB{DTgFRgFReFRgFRgFRgFRgFReFRgFRgFTgFReFRgFRgFRgFRgFReFRgFRgFRgFTgFReFRgFRgFRgFReFRgFRgFRgFRgFTeFRgFRgFRgFRgFReFRgFRgFRgFReFTgFRgFRgFRgFReFRgF"
+      },
+      "description": "Pine St",
+      "legs": [
+        {
+          "steps": [
+            {
+              "distanceMeters": 4583,
+              "navigationInstruction": {
+                "maneuver": "DEPART",
+                "instructions": "Head north on Downing St"
+              }
+            },
+            {
+              "distanceMeters": 3333,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Pine St"
+              }
+            },
+            {
+              "distanceMeters": 4584,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Test Way\nDestination will be on the right: Near Duplicates Test"
+              }
+            }
+          ]
+        }
+      ],
+      "travelAdvisory": {
+        "tollInfo": {
+          "estimatedPrice": [
+            {
+              "currencyCode": "USD",
+              "units": "2",
+              "nanos": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "distanceMeters": 12800,
+      "duration": "1290s",
+      "polyline": {
+        "encodedPolyline": "_qpqFj|x_SoDg@qDg@oDe@oDg@qDg@oDg@oDg@oDe@qDg@oDg@oDg@qDg@oDg@oDe@qDg@oDg@oDg@oDg@qDe@oDg@oDg@qDg@oDg@oDe@qDg@oDg@oDg@oDg@qDg@oDe@oDg@qDg@oDg@oDg@qDe@oDg@oDg@oDg@qDg@oDe@oDg@qDg@oDg@oDg@qDe@oDg@oBcEoBaEqBcEoBaEoBcEoBaEoBcEqBaEoBaEoBcEkBhBkBfBgBsDgBsDgBsDeBsDgBqDgBsDgBsDgBsDgBsDgBsDgBsDeBsDgBsDjBiBjBgBqBcEoBaEoBcEoBaEoBcEqBaEoBcEoBaEoBcEqBaETgFRgFReFRgFRgFRgFRgFReFRgFRgFTgFReFRgFRgFRgFRgFReFRgFRgFRgFTgFReFRgFRgFRgFReFRgFRgFRgFRgFTeFRgFRgFRgFRgFReFRgFRgFRgFReFTgFRgFRgFRgFReFRgF"
+      },
+      "description": "Pine St & Cedar Ave",
+      "legs": [
+        {
+          "steps": [
+            {
+              "distanceMeters": 4583,
+              "navigationInstruction": {
+                "maneuver": "DEPART",
+                "instructions": "Head north on Downing St"
+              }
+            },
+            {
+              "distanceMeters": 1042,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Pine St"
+              }
+            },
+            {
+              "distanceMeters": 150,
+              "navigationInstruction": {
+                "maneuver": "TURN_LEFT",
+                "instructions": "Turn left onto Cedar Ave"
+              }
+            },
+            {
+              "distanceMeters": 1250,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Cedar Ave"
+              }
+            },
+            {
+              "distanceMeters": 150,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Cedar Ave"
+              }
+            },
+            {
+              "distanceMeters": 1042,
+              "navigationInstruction": {
+                "maneuver": "TURN_LEFT",
+                "instructions": "Turn left onto Pine St"
+              }
+            },
+            {
+              "distanceMeters": 4583,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Test Way\nDestination will be on the right: Near Duplicates Test"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "distanceMeters": 14500,
+      "duration": "1380s",
+      "polyline": {
+        "encodedPolyline": "_qpqFj|x_SsD?qD@sD?sD@qD?sD@sD?qD?sD@sD?qD@sD?sD@qD?sD@sD?qD?sD@sD?qD@sD?sD@qD?sD?sD@qD?sD@sD?qD@sD?sD?qD@sD?sD@qD?sD@sD?qD@sD?sD?qD@sD?sD@qD?sD@sD?qD?sD@sD?qD@sD?sD@qD?sD?sD@qD?mB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{Dr@_Fp@_Fp@_Fr@_Fp@}Er@_Fp@_Fr@_Fp@_Fp@_Fr@}Ep@_Fr@_Fp@_Fr@_Fp@}Ep@_Fr@_Fp@_Fr@_Fp@_Fr@}Ep@_Fp@_Fr@_Fp@_Fr@}Ep@_Fr@_Fp@_Fp@_Fr@_Fp@}Er@_Fp@_Fr@_Fp@_Fp@}Er@_Fp@_Fr@_Fp@_Fr@_Fp@}Ep@_Fr@_Fp@_Fr@_Fp@}Er@_Fp@_Fp@_Fr@_Fp@_Fr@}Ep@_F"
+      },
+      "description": "Ridge Rd",
+      "legs": [
+        {
+          "steps": [
+            {
+              "distanceMeters": 5583,
+              "navigationInstruction": {
+                "maneuver": "DEPART",
+                "instructions": "Head north on Josephine St"
+              }
+            },
+            {
+              "distanceMeters": 3333,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Ridge Rd"
+              }
+            },
+            {
+              "distanceMeters": 5584,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Test Way\nDestination will be on the right: Near Duplicates Test"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

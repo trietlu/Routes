@@ -1,0 +1,12 @@
+{
+  "id": "fixture-union-station",
+  "displayName": {
+    "text": "Union Station",
+    "languageCode": "en"
+  },
+  "formattedAddress": "100 Union Plaza",
+  "location": {
+    "latitude": 39.82553,
+    "longitude": -104.90609
+  }
+}

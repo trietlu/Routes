@@ -1,0 +1,12 @@
+{
+  "id": "fixture-two-routes",
+  "displayName": {
+    "text": "Two Routes Test",
+    "languageCode": "en"
+  },
+  "formattedAddress": "2 Test Way",
+  "location": {
+    "latitude": 39.81115,
+    "longitude": -104.92013
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "routes": [
+    {
+      "distanceMeters": 15772,
+      "duration": "1320s",
+      "polyline": {
+        "encodedPolyline": "_qpqFj|x_SoDh@qDh@oDh@oDh@oDh@qDf@oDh@oDh@oDh@qDh@oDh@oDh@oDh@qDh@oDh@oDf@qDh@oDh@oDh@oDh@qDh@oDh@oDh@oDh@qDh@oDf@oDh@oDh@qDh@oDh@oDh@qDh@oDh@oDh@oDh@qDf@oDh@oDh@oDh@qDh@oDh@oDh@oDh@qDh@oDh@oDf@qDh@oDh@oDh@oDh@qDh@oDh@oDh@oDh@qDh@oDf@oDh@qDh@oDh@oCkCoCkCoCkCoCmCoCkCmCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCmCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCQgFQgFQgFSgFQgFQgFSgFQgFQgFQgFSgFQgFQgFSgFQgFQgFQiFSgFQgFQgFSgFQgFQgFQgFSgFQgFQgFSgFQgFQgFQgFSgFQgFQgFSgFQgFQiFQgFSgFQgFQgFSgFQgFQgFQgFSgFQgFQgFSgFQgFQgFQgFSgFQgFQgFSgFQgFQiFQgF"
+      },
+      "description": "Hwy 12",
+      "legs": [
+        {
+          "steps": [
+            {
+              "distanceMeters": 5886,
+              "navigationInstruction": {
+                "maneuver": "DEPART",
+                "instructions": "Head north on Broadway"
+              }
+            },
+            {
+              "distanceMeters": 4000,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Hwy 12"
+              }
+            },
+            {
+              "distanceMeters": 5886,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Union Plaza\nDestination will be on the right: Union Station"
+              }
+            }
+          ]
+        }
+      ],
+      "travelAdvisory": {
+        "tollInfo": {
+          "estimatedPrice": [
+            {
+              "currencyCode": "USD",
+              "units": "2",
+              "nanos": 500000000
+            },
+            {
+              "currencyCode": "USD",
+              "units": "1",
+              "nanos": 250000000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "distanceMeters": 17059,
+      "duration": "1620s",
+      "polyline": {
+        "encodedPolyline": "_qpqFj|x_SmD|@mD|@mD|@mD|@oD~@mD|@mD|@mD|@mD|@mD|@mD|@mD|@oD|@mD|@mD~@mD|@mD|@mD|@mD|@mD|@mD|@oD|@mD|@mD|@mD~@mD|@mD|@mD|@mD|@mD|@oD|@mD|@mD|@mD~@mD|@mD|@mD|@mD|@oD|@mD|@mD|@mD|@mD|@mD~@mD|@mD|@mD|@oD|@mD|@mD|@mD|@mD|@mD|@mD~@mD|@oD|@mD|@mD|@mD|@mD|@mD|@mD|@mD~@mD|@oD|@oCkCmCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCmCmCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCmCkCoCkCCkFAiFCkFAiFCiFAkFAiFCkFAiFCkFAiFCkFAiFAkFCiFAkFCiFAkFCiFAiFAkFCiFAkFCiFAkFCiFAkFAiFCkFAiFCkFAiFCkFAiFCkFAiFAiFCkFAiFCkFAiFCkFAiFAkFCiFAkFCiFAkFCiFAkFAiFCiFAkFCiFAkFCiFAkFAiFCkFAiFCkFAiFCkFAiFAkF"
+      },
+      "description": "Elm Ave & 3rd St",
+      "legs": [
+        {
+          "steps": [
+            {
+              "distanceMeters": 6530,
+              "navigationInstruction": {
+                "maneuver": "DEPART",
+                "instructions": "Head north on Elm Ave"
+              }
+            },
+            {
+              "distanceMeters": 4000,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto 3rd St"
+              }
+            },
+            {
+              "distanceMeters": 6529,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Union Plaza\nDestination will be on the right: Union Station"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "suggestions": [
+    {
+      "placePrediction": {
+        "place": "places/fixture-near-duplicates",
+        "placeId": "fixture-near-duplicates",
+        "text": {
+          "text": "Near Duplicates Test, 4 Test Way"
+        },
+        "structuredFormat": {
+          "mainText": {
+            "text": "Near Duplicates Test"
+          },
+          "secondaryText": {
+            "text": "4 Test Way"
+          }
+        },
+        "distanceMeters": 10000
+      }
+    }
+  ]
+}

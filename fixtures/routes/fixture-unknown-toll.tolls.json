@@ -1,0 +1,77 @@
+{
+  "routes": [
+    {
+      "distanceMeters": 19312,
+      "duration": "1440s",
+      "polyline": {
+        "encodedPolyline": "_qpqFj|x_SoDb@qDb@oD`@oDb@qDb@oDb@oDb@qD`@oDb@oDb@qDb@oDb@oD`@qDb@oDb@oDb@qDb@oD`@oDb@qDb@oDb@oD`@qDb@oDb@oDb@qDb@oD`@oDb@qDb@oDb@oDb@qD`@oDb@oDb@qDb@oDb@oD`@oDb@qDb@oDb@oDb@qD`@oDb@oDb@qDb@oDb@oD`@qDb@oDb@oDb@qDb@oD`@oDb@qDb@oDb@oDb@qD`@oDb@oDb@qDb@oD`@oDb@qDb@oDb@oDb@qD`@oDb@oDb@qDb@oDb@oD`@qDb@oCkCoCkCoCkCmCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCmCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCmCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCWgFUeFWeFUeFWgFWeFUeFWeFUgFWeFWeFUeFWgFUeFWeFUeFWgFWeFUeFWeFUgFWeFWeFUeFWgFUeFWeFWeFUgFWeFUeFWgFWeFUeFWeFUgFWeFWeFUeFWgFUeFWeFWeFUgFWeFUeFWeFWgFUeFWeFUeFWgFWeFUeFWeFUgFWeFWeFUeFWgFUeFWeFUeFWgFWeFUeFWeFUgFWeFWeFUeFWgF"
+      },
+      "description": "Toll Rd 7",
+      "legs": [
+        {
+          "steps": [
+            {
+              "distanceMeters": 7156,
+              "navigationInstruction": {
+                "maneuver": "DEPART",
+                "instructions": "Head north on Logan St"
+              }
+            },
+            {
+              "distanceMeters": 5000,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Toll Rd 7"
+              }
+            },
+            {
+              "distanceMeters": 7156,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Test Way\nDestination will be on the right: Unknown Toll Test"
+              }
+            }
+          ]
+        }
+      ],
+      "travelAdvisory": {
+        "tollInfo": {}
+      }
+    },
+    {
+      "distanceMeters": 17703,
+      "duration": "1800s",
+      "polyline": {
+        "encodedPolyline": "_qpqFj|x_Sm@_Fm@_Fo@_Fm@_Fm@_Fm@_Fm@aFm@_Fo@_Fm@_Fm@_Fm@_Fm@_Fo@_Fm@_Fm@_Fm@_Fm@_Fo@aFm@_Fm@_Fm@_Fm@_Fm@_Fo@_Fm@_Fm@_Fm@_Fm@_Fo@_Fm@aFm@_Fm@_Fm@_Fm@_Fo@_Fm@_Fm@_Fm@_Fm@_Fo@_Fm@_Fm@aFm@_Fm@_Fm@_Fo@_Fm@_Fm@_Fm@_Fm@_Fo@_Fm@_Fm@_Fm@_Fm@aFo@_Fm@_Fm@_Fm@_Fm@_Fm@_Fo@_Fm@_FoCkCoCmCoCkCoCkCoCkCmCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCmCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCoCkCoCkCoCkCoCkCmCmCoCkCoCkCoCkCoCkCoCkCoCmCoCkCqDDsDBqDDqDBqDBqDDsDBqDDqDBqDDsDBqDBqDDqDBsDDqDBqDDqDBqDDsDBqDBqDDqDBsDDqDBqDDqDBsDBqDDqDBqDDqDBsDDqDBqDDqDBsDBqDDqDBqDDsDBqDDqDBqDDqDBsDBqDDqDBqDDsDBqDDqDBqDBsDDqDBqDDqDBqDDsDBqDDqDBqDBsDDqDB"
+      },
+      "description": "Federal Blvd",
+      "legs": [
+        {
+          "steps": [
+            {
+              "distanceMeters": 6352,
+              "navigationInstruction": {
+                "maneuver": "DEPART",
+                "instructions": "Head east on 8th Ave"
+              }
+            },
+            {
+              "distanceMeters": 5000,
+              "navigationInstruction": {
+                "maneuver": "TURN_LEFT",
+                "instructions": "Turn left onto Federal Blvd"
+              }
+            },
+            {
+              "distanceMeters": 6351,
+              "navigationInstruction": {
+                "maneuver": "TURN_LEFT",
+                "instructions": "Turn left onto Test Way\nDestination will be on the right: Unknown Toll Test"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "suggestions": [
+    {
+      "placePrediction": {
+        "place": "places/fixture-one-route",
+        "placeId": "fixture-one-route",
+        "text": {
+          "text": "One Route Test, 1 Test Way"
+        },
+        "structuredFormat": {
+          "mainText": {
+            "text": "One Route Test"
+          },
+          "secondaryText": {
+            "text": "1 Test Way"
+          }
+        },
+        "distanceMeters": 5000
+      }
+    }
+  ]
+}

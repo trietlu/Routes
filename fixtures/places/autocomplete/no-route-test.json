@@ -1,0 +1,22 @@
+{
+  "suggestions": [
+    {
+      "placePrediction": {
+        "place": "places/fixture-no-route",
+        "placeId": "fixture-no-route",
+        "text": {
+          "text": "No Route Test, 0 Test Way"
+        },
+        "structuredFormat": {
+          "mainText": {
+            "text": "No Route Test"
+          },
+          "secondaryText": {
+            "text": "0 Test Way"
+          }
+        },
+        "distanceMeters": 5000
+      }
+    }
+  ]
+}

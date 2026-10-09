@@ -1,0 +1,39 @@
+{
+  "routes": [
+    {
+      "distanceMeters": 11800,
+      "duration": "1500s",
+      "polyline": {
+        "encodedPolyline": "_qpqFj|x_SBkFBkFBkFBiF@kFBkFBkFBkFBkFBkFBiFBkF@kFBkFBkFBkFBkFBiFBkFBkF@kFBkFBkFBkFBiFBkFBkFBkF@kFBkFBkFBiFBkFBkFBkFBkF@kFBkFBiFBkFBkFBkFmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB{DkB}DmB}DkB{DmB}DkB{DmB}DkB{DmB}DkB{DmB}DkB{DmB}DkB{DmB}DkB{DmB}DkB{DmB}DkB{DmB}DkB{DmB}DkB{DmB}DmD{@oD}@mD}@oD{@mD}@oD}@mD{@oD}@oD}@mD{@oD}@mD}@oD{@mD}@oD{@mD}@oD}@mD{@oD}@mD}@oD{@mD}@oD}@mD{@oD}@mD}@oD{@oD}@mD}@oD{@mD}@oD}@mD{@oD}@mD}@oD{@mD}@oD}@mD{@oD}@mD}@oD{@"
+      },
+      "description": "Lake Dr",
+      "legs": [
+        {
+          "steps": [
+            {
+              "distanceMeters": 4233,
+              "navigationInstruction": {
+                "maneuver": "DEPART",
+                "instructions": "Head east on York St"
+              }
+            },
+            {
+              "distanceMeters": 3333,
+              "navigationInstruction": {
+                "maneuver": "TURN_LEFT",
+                "instructions": "Turn left onto Lake Dr"
+              }
+            },
+            {
+              "distanceMeters": 4234,
+              "navigationInstruction": {
+                "maneuver": "TURN_LEFT",
+                "instructions": "Turn left onto Test Way\nDestination will be on the right: Near Duplicates Test"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

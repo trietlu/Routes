@@ -1,0 +1,39 @@
+{
+  "routes": [
+    {
+      "distanceMeters": 6200,
+      "duration": "720s",
+      "polyline": {
+        "encodedPolyline": "_qpqFj|x_SoDVoDTqDVoDVoDToDVoDVoDTqDVoDToDVoDVoDToDVqDVoDToDVoDVoDTqDVoDVoDToDVmCiCkCiCmCiCkCgCmCiCkCiCmCiCkCiCmCgCkCiCmCiCkCiCmCiCmCgCkCiCmCiCkCiC_@aF_@aF_@cF_@aFa@aF_@cF_@aF_@aF_@cF_@aF_@aF_@cF_@aF_@cFa@aF_@aF_@cF_@aF_@aF_@cF_@aF_@aF_@cF"
+      },
+      "description": "Oak St",
+      "legs": [
+        {
+          "steps": [
+            {
+              "distanceMeters": 2267,
+              "navigationInstruction": {
+                "maneuver": "DEPART",
+                "instructions": "Head north on Pearl St"
+              }
+            },
+            {
+              "distanceMeters": 1667,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Oak St"
+              }
+            },
+            {
+              "distanceMeters": 2266,
+              "navigationInstruction": {
+                "maneuver": "TURN_RIGHT",
+                "instructions": "Turn right onto Test Way\nDestination will be on the right: One Route Test"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

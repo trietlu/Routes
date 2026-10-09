@@ -1,0 +1,12 @@
+{
+  "id": "fixture-no-route",
+  "displayName": {
+    "text": "No Route Test",
+    "languageCode": "en"
+  },
+  "formattedAddress": "0 Test Way",
+  "location": {
+    "latitude": 39.71222,
+    "longitude": -104.94352
+  }
+}

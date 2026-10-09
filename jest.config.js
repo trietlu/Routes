@@ -19,6 +19,7 @@ function tsProject({ displayName, roots }) {
     displayName,
     roots,
     testEnvironment: 'node',
+    testPathIgnorePatterns: ['/node_modules/', '/dist/'],
     moduleNameMapper,
     transform: {
       '^.+\\.tsx?$': ['ts-jest', { tsconfig: { isolatedModules: true } }],
@@ -32,6 +33,7 @@ module.exports = {
     tsProject({ displayName: 'api-types', roots: ['<rootDir>/packages/api-types/src'] }),
     tsProject({ displayName: 'routing-core', roots: ['<rootDir>/packages/routing-core/src'] }),
     tsProject({ displayName: 'proxy', roots: ['<rootDir>/apps/proxy/src'] }),
+    tsProject({ displayName: 'scripts', roots: ['<rootDir>/scripts'] }),
   ],
   collectCoverageFrom: [
     'packages/*/src/**/*.ts',

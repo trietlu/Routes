@@ -1,0 +1,12 @@
+{
+  "id": "fixture-union-street-market",
+  "displayName": {
+    "text": "Union Street Market",
+    "languageCode": "en"
+  },
+  "formattedAddress": "42 Union St",
+  "location": {
+    "latitude": 39.79136,
+    "longitude": -104.9482
+  }
+}

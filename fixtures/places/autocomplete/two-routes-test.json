@@ -1,0 +1,22 @@
+{
+  "suggestions": [
+    {
+      "placePrediction": {
+        "place": "places/fixture-two-routes",
+        "placeId": "fixture-two-routes",
+        "text": {
+          "text": "Two Routes Test, 2 Test Way"
+        },
+        "structuredFormat": {
+          "mainText": {
+            "text": "Two Routes Test"
+          },
+          "secondaryText": {
+            "text": "2 Test Way"
+          }
+        },
+        "distanceMeters": 10000
+      }
+    }
+  ]
+}

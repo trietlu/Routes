@@ -1,0 +1,12 @@
+{
+  "id": "fixture-partial-error",
+  "displayName": {
+    "text": "Partial Error Test",
+    "languageCode": "en"
+  },
+  "formattedAddress": "501 Test Way",
+  "location": {
+    "latitude": 39.78417,
+    "longitude": -104.93182
+  }
+}

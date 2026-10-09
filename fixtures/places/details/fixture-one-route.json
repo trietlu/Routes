@@ -1,0 +1,12 @@
+{
+  "id": "fixture-one-route",
+  "displayName": {
+    "text": "One Route Test",
+    "languageCode": "en"
+  },
+  "formattedAddress": "1 Test Way",
+  "location": {
+    "latitude": 39.77517,
+    "longitude": -104.95521
+  }
+}

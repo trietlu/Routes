@@ -1,0 +1,22 @@
+{
+  "suggestions": [
+    {
+      "placePrediction": {
+        "place": "places/fixture-upstream-error",
+        "placeId": "fixture-upstream-error",
+        "text": {
+          "text": "Error Test, 500 Test Way"
+        },
+        "structuredFormat": {
+          "mainText": {
+            "text": "Error Test"
+          },
+          "secondaryText": {
+            "text": "500 Test Way"
+          }
+        },
+        "distanceMeters": 5385
+      }
+    }
+  ]
+}

@@ -4,12 +4,20 @@ import { ERROR_HTTP_STATUS, type ErrorCode, type ErrorResponse } from '@routes/a
 export class ProxyError extends Error {
   readonly code: ErrorCode;
   readonly statusCode: number;
+  /** Extra response headers, e.g. `Retry-After` on `RATE_LIMITED`. */
+  readonly headers: Readonly<Record<string, string>>;
 
-  constructor(code: ErrorCode, message: string, statusCode: number = ERROR_HTTP_STATUS[code]) {
+  constructor(
+    code: ErrorCode,
+    message: string,
+    statusCode: number = ERROR_HTTP_STATUS[code],
+    headers: Readonly<Record<string, string>> = {},
+  ) {
     super(message);
     this.name = 'ProxyError';
     this.code = code;
     this.statusCode = statusCode;
+    this.headers = headers;
   }
 }
 

@@ -125,3 +125,25 @@ export function resamplePolyline(points: readonly LatLng[], stepM: number): LatL
   }
   return samples;
 }
+
+/**
+ * The point `fraction` (0–1) of the way along a polyline by distance, e.g.
+ * 0.5 for the midpoint where the map puts a route's bubble. Null when empty.
+ */
+export function pointAlongPolyline(points: readonly LatLng[], fraction: number): LatLng | null {
+  const first = points[0];
+  if (first === undefined) return null;
+  const target = polylineLengthM(points) * min(1, max(0, fraction));
+  let travelled = 0;
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1]!;
+    const b = points[i]!;
+    const length = haversineDistanceM(a, b);
+    if (length > 0 && travelled + length >= target) {
+      const t = (target - travelled) / length;
+      return { lat: a.lat + (b.lat - a.lat) * t, lng: a.lng + (b.lng - a.lng) * t };
+    }
+    travelled += length;
+  }
+  return points[points.length - 1]!;
+}

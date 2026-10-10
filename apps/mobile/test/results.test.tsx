@@ -5,6 +5,9 @@ import { ApiError, type ApiClient } from '../api';
 import { a11yProblems, pressables } from './a11y';
 import { renderApp, useTestApi, useTestStorage } from './appHarness';
 import { fixtureRoutes } from './fixtures';
+import { mapMethods } from './mocks/react-native-maps';
+import { LIGHT } from '../theme';
+import { SELECTED_WIDTH, SHEET_MARGIN, UNSELECTED_WIDTH } from '../features/results/ResultsMap';
 
 const mocked = Location as unknown as Record<string, jest.Mock>;
 
@@ -280,5 +283,104 @@ describe('Screen 4 — Results sheet', () => {
     await screen.findByTestId('route-card-C');
     expect(pressables(screen.root).length).toBeGreaterThanOrEqual(7);
     expect(a11yProblems(screen.root)).toEqual([]);
+  });
+});
+
+describe('Screen 4 — Results map', () => {
+  const line = (letter: string) =>
+    screen.getByTestId(`route-line-${letter}`, { includeHiddenElements: true });
+  const bubble = (letter: string) =>
+    screen.getByTestId(`route-bubble-${letter}`, { includeHiddenElements: true });
+
+  it('UI-RES-04: three polylines in the A/B/C colors; the selected one is wider and on top; bubbles read "A · 22 min"', async () => {
+    await openResults();
+    await screen.findByTestId('route-card-C');
+    expect(screen.getAllByTestId(/^route-line-/, { includeHiddenElements: true })).toHaveLength(3);
+    expect(line('A').props).toMatchObject({
+      strokeColor: LIGHT.routeA,
+      strokeWidth: SELECTED_WIDTH,
+      zIndex: 3,
+      tappable: true,
+    });
+    expect(line('B').props).toMatchObject({
+      strokeColor: `${LIGHT.routeB}99`,
+      strokeWidth: UNSELECTED_WIDTH,
+      zIndex: 1,
+    });
+    expect(line('C').props).toMatchObject({
+      strokeColor: `${LIGHT.routeC}99`,
+      strokeWidth: UNSELECTED_WIDTH,
+      zIndex: 1,
+    });
+    expect(line('A').props.coordinates.length).toBeGreaterThan(10);
+
+    for (const [letter, text] of [
+      ['A', 'A · 22 min'],
+      ['B', 'B · 27 min'],
+      ['C', 'C · 31 min'],
+    ]) {
+      expect(
+        within(bubble(letter!)).getByText(text!, { includeHiddenElements: true }),
+      ).toBeTruthy();
+    }
+
+    // Selecting B by its card moves the emphasis.
+    await fireEvent.press(screen.getByTestId('route-card-B'));
+    expect(line('B').props).toMatchObject({
+      strokeColor: LIGHT.routeB,
+      strokeWidth: SELECTED_WIDTH,
+      zIndex: 3,
+    });
+    expect(line('A').props).toMatchObject({ strokeWidth: UNSELECTED_WIDTH, zIndex: 1 });
+  });
+
+  it('UI-RES-05: pressing polyline C, or bubble B, selects that route', async () => {
+    await openResults();
+    await screen.findByTestId('route-card-C');
+    await fireEvent.press(line('C'));
+    expect(screen.getByTestId('route-card-C')).toHaveProp('accessibilityState', { selected: true });
+    expect(screen.getByRole('button', { name: 'Go with route C' })).toBeTruthy();
+    await fireEvent.press(bubble('B'));
+    expect(screen.getByRole('button', { name: 'Go with route B' })).toBeTruthy();
+  });
+
+  it('UI-RES-06: fitToCoordinates keeps the routes above the sheet, on load and on mode change', async () => {
+    mapMethods.fitToCoordinates.mockClear();
+    await openResults();
+    await screen.findByTestId('route-card-C');
+    await fireEvent(screen.getByTestId('results-sheet'), 'layout', {
+      nativeEvent: { layout: { x: 0, y: 400, width: 390, height: 420 } },
+    });
+    const lastCall = () =>
+      mapMethods.fitToCoordinates.mock.calls.at(-1) as [
+        unknown[],
+        { edgePadding: { bottom: number } },
+      ];
+    await waitFor(() => expect(lastCall()[1].edgePadding.bottom).toBe(420 + SHEET_MARGIN));
+    expect(lastCall()[1].edgePadding.bottom).toBeGreaterThanOrEqual(420);
+    // Every route's points are in the fit.
+    const total = ['A', 'B', 'C'].reduce((sum, l) => sum + line(l).props.coordinates.length, 0);
+    expect(lastCall()[0]).toHaveLength(total);
+
+    const calls = mapMethods.fitToCoordinates.mock.calls.length;
+    await fireEvent.press(screen.getByRole('radio', { name: 'Cheapest' }));
+    await waitFor(() =>
+      expect(mapMethods.fitToCoordinates.mock.calls.length).toBeGreaterThan(calls),
+    );
+  });
+
+  it('UI-A11Y-04: bubbles include the letter, in text and in their label', async () => {
+    await openResults();
+    await screen.findByTestId('route-card-A');
+    expect(bubble('A')).toHaveProp('accessibilityLabel', 'Route A, 22 minutes');
+    expect(bubble('B')).toHaveProp('accessibilityLabel', 'Route B, 27 minutes');
+    expect(bubble('C')).toHaveProp('accessibilityLabel', 'Route C, 31 minutes');
+  });
+
+  it('the start and destination pins stay with the routes', async () => {
+    await openResults();
+    await screen.findByTestId('route-card-A');
+    expect(screen.getByTestId('pin-start', { includeHiddenElements: true })).toBeTruthy();
+    expect(screen.getByTestId('pin-destination', { includeHiddenElements: true })).toBeTruthy();
   });
 });

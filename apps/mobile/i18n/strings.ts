@@ -77,6 +77,8 @@ export const APP_STRINGS = {
   'results.offline': "You're offline",
   'results.rateLimited': 'Too many requests. Try again in a minute.',
   'results.retry': 'Retry',
+  'results.bubble': '{letter} · {duration}',
+  'results.bubbleLabel': 'Route {letter}, {duration}',
   'results.startPin': 'Start',
   'results.destinationPin': 'Destination',
   'onboarding.title': 'Three good ways there.',

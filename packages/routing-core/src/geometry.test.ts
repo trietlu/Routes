@@ -1,5 +1,6 @@
 import {
   haversineDistanceM,
+  pointAlongPolyline,
   pointToSegmentDistanceM,
   polylineLengthM,
   resamplePolyline,
@@ -84,3 +85,27 @@ function minHaversineToSegment(
   }
   return best;
 }
+
+describe('pointAlongPolyline', () => {
+  const start = { lat: 38.8977, lng: -77.0365 };
+  // 1 km east, then 1 km north.
+  const lShape = walk(start, [
+    { eastM: 1000, northM: 0 },
+    { eastM: 0, northM: 1000 },
+  ]);
+
+  it('finds the midpoint by distance, not by vertex count', () => {
+    const mid = pointAlongPolyline(lShape, 0.5)!;
+    expect(haversineDistanceM(mid, lShape[10]!)).toBeLessThan(1); // the corner, 1 km in
+    const quarter = pointAlongPolyline(lShape, 0.25)!;
+    expect(haversineDistanceM(start, quarter)).toBeCloseTo(500, -1);
+  });
+
+  it('clamps the fraction and handles short polylines', () => {
+    expect(pointAlongPolyline(lShape, -1)).toEqual(start);
+    expect(pointAlongPolyline(lShape, 2)).toEqual(lShape[lShape.length - 1]);
+    expect(pointAlongPolyline([], 0.5)).toBeNull();
+    expect(pointAlongPolyline([start], 0.5)).toEqual(start);
+    expect(pointAlongPolyline([start, start], 0.5)).toEqual(start);
+  });
+});

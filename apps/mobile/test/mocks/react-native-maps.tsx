@@ -15,7 +15,12 @@ const idOr = (props: Props, fallback: string): string =>
 
 const MapView = forwardRef<typeof mapMethods, Props>(function MapView(props, ref) {
   useImperativeHandle(ref, () => mapMethods);
-  return <View testID={idOr(props, 'map-view')}>{props.children as ReactNode}</View>;
+  // Carries its props (provider, region…) so tests can read them back.
+  return (
+    <View {...props} testID={idOr(props, 'map-view')}>
+      {props.children as ReactNode}
+    </View>
+  );
 });
 
 /** Overlays render as plain views carrying their props, so tests can inspect them. */

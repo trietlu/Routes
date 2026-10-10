@@ -1,4 +1,5 @@
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { type ApiErrorKind } from '../../api/errors';
@@ -43,6 +44,7 @@ export function ResultsScreen() {
         ? t('results.onlyOne')
         : t('results.onlyN', { n: ranked.onlyN });
 
+  const [sheetHeight, setSheetHeight] = useState(0);
   const goHome = () => (router.canGoBack() ? router.back() : router.replace('/'));
 
   const errorState = (kind: ApiErrorKind) => (
@@ -62,7 +64,15 @@ export function ResultsScreen() {
 
   return (
     <View style={[styles.fill, { backgroundColor: theme.colors.background }]}>
-      <ResultsMap start={ranked.start} destination={ranked.destination} />
+      <ResultsMap
+        start={ranked.start}
+        destination={ranked.destination}
+        options={ranked.options}
+        selected={selected}
+        mode={mode}
+        onSelect={select}
+        sheetHeight={sheetHeight}
+      />
       <SafeAreaView
         edges={['top']}
         style={[styles.top, { padding: theme.spacing.md, gap: theme.spacing.sm }]}
@@ -91,6 +101,8 @@ export function ResultsScreen() {
       </SafeAreaView>
 
       <View
+        onLayout={(event) => setSheetHeight(event.nativeEvent.layout.height)}
+        testID="results-sheet"
         style={[
           styles.sheet,
           {

@@ -1,0 +1,14 @@
+# From Home: open Search for To, type ${QUERY}, pick suggestion ${PLACE_ID}.
+appId: com.routes.app.dev
+---
+- tapOn:
+    id: 'field-to'
+- tapOn:
+    id: 'search-input'
+- inputText: ${QUERY}
+- extendedWaitUntil:
+    visible:
+      id: 'suggestion-${PLACE_ID}'
+    timeout: 10000
+- tapOn:
+    id: 'suggestion-${PLACE_ID}'

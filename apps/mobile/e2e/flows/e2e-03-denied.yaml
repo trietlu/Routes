@@ -1,0 +1,20 @@
+# E2E-03: permission denied → "Enter a start address" and "Turn on in Settings".
+appId: com.routes.app.dev
+---
+- setLocation:
+    latitude: 39.7392
+    longitude: -104.9903
+- launchApp:
+    clearState: true
+    permissions:
+      location: deny
+- extendedWaitUntil:
+    visible: 'Allow location access'
+    timeout: 30000
+- tapOn: 'Allow location access'
+- extendedWaitUntil:
+    visible:
+      id: 'field-from'
+      text: 'From: Enter a start address'
+    timeout: 20000
+- assertVisible: 'Turn on in Settings'

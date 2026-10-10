@@ -1,0 +1,9 @@
+# Results → route A's detail.
+appId: com.routes.app.dev
+---
+- runFlow: results-union.yaml
+- tapOn: 'Go with route A'
+- extendedWaitUntil:
+    visible:
+      id: 'cost-card'
+    timeout: 10000

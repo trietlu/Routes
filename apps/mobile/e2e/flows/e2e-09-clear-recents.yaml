@@ -1,0 +1,15 @@
+# E2E-09: clear recents → list empty.
+appId: com.routes.app.dev
+---
+- runFlow: ../common/results-union.yaml
+- tapOn: 'Back to Home'
+- extendedWaitUntil:
+    visible: 'Union Station, 100 Union Plaza'
+    timeout: 10000
+- tapOn: 'Clear recent destinations'
+- extendedWaitUntil:
+    visible: 'Clear recent destinations?'
+    timeout: 5000
+- tapOn: 'Clear'
+- assertNotVisible: 'Union Station, 100 Union Plaza'
+- assertNotVisible: 'RECENT'

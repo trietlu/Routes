@@ -1,0 +1,12 @@
+# E2E-04: search "Union" → Union Station → 3 cards; card A 22 min, $5.12 (test plan §2).
+appId: com.routes.app.dev
+---
+- runFlow: ../common/results-union.yaml
+- assertVisible: '3 routes'
+- assertVisible:
+    id: 'route-card-A'
+    text: "Route A, fastest, 22 minutes, 9.8 miles, via Hwy 12, estimated cost \\$5\\.12 including \\$3\\.75 toll"
+- assertVisible:
+    id: 'route-card-B'
+- assertVisible:
+    id: 'route-card-C'

@@ -1,0 +1,13 @@
+# E2E-12: "No Route Test" → "No driving route found".
+appId: com.routes.app.dev
+---
+- runFlow: ../common/home.yaml
+- runFlow:
+    file: ../common/search-to.yaml
+    env:
+      QUERY: 'No Route Test'
+      PLACE_ID: 'fixture-no-route'
+- extendedWaitUntil:
+    visible: 'No driving route found'
+    timeout: 10000
+- assertVisible: 'Change destination'

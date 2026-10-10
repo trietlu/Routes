@@ -1,0 +1,13 @@
+# Fresh install → onboarding → Allow → Home with "Current location".
+appId: com.routes.app.dev
+---
+- runFlow: launch-granted.yaml
+- extendedWaitUntil:
+    visible: 'Allow location access'
+    timeout: 30000
+- tapOn: 'Allow location access'
+- extendedWaitUntil:
+    visible:
+      id: 'field-from'
+      text: 'From: Current location.*'
+    timeout: 20000

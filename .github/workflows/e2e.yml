@@ -115,6 +115,7 @@ jobs:
           tail -n 20 xcodebuild.log
 
       - name: Boot a simulator and install the app
+        timeout-minutes: 20
         run: |
           device=$(xcrun simctl list devices available -j | node -e '
             const d = JSON.parse(require("fs").readFileSync(0, "utf8")).devices;
@@ -125,11 +126,28 @@ jobs:
             }
             process.exit(1);')
           echo "Using simulator $device"
-          xcrun simctl boot "$device"
-          xcrun simctl bootstatus "$device" -b
+          # Hosted runners sometimes hang in bootstatus; bound each try and retry on a clean device.
+          booted=no
+          for attempt in 1 2 3; do
+            xcrun simctl boot "$device" || true
+            xcrun simctl bootstatus "$device" -b &
+            waiter=$!
+            ( sleep 240; kill "$waiter" 2>/dev/null ) &
+            watchdog=$!
+            if wait "$waiter"; then
+              kill "$watchdog" 2>/dev/null || true
+              booted=yes
+              break
+            fi
+            echo "Boot attempt $attempt timed out; erasing and retrying"
+            xcrun simctl shutdown "$device" || true
+            xcrun simctl erase "$device" || true
+          done
+          if [ "$booted" != yes ]; then exit 1; fi
           xcrun simctl install "$device" apps/mobile/ios/build/Build/Products/Release-iphonesimulator/Routes.app
 
       - name: Run flows (E2E-01 to E2E-15, E2E-17)
+        timeout-minutes: 40
         run: maestro test apps/mobile/e2e/flows --format junit --output e2e-report.xml
 
       - name: Run E2E-16 (offline)

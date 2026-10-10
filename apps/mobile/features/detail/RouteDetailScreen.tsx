@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, Share, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   DEFAULT_VEHICLE,
@@ -14,6 +14,14 @@ import {
   formatMoney,
   selectKeySteps,
 } from '@routes/routing-core';
+import {
+  APP_STORE_URL,
+  type HandoffEndpoint,
+  buildDirectionsUrl,
+  buildShareText,
+  expoLinker,
+  openInGoogleMaps,
+} from '../../handoff';
 import { coreT, t } from '../../i18n';
 import { formatClockTime } from '../../i18n/time';
 import { useCurrentLocation } from '../../location';
@@ -25,19 +33,13 @@ import { BackIcon, ManeuverIcon, PinIcon, ShareIcon } from '../common/icons';
 import { useNow } from '../common/useNow';
 import { fieldView } from '../home/HomeScreen';
 import { ResultsMap } from '../results/ResultsMap';
+import { NotInstalledSheet } from './NotInstalledSheet';
 
 const asLetter = (value: string | undefined): OptionId =>
   (OPTION_IDS as readonly string[]).includes(value ?? '') ? (value as OptionId) : 'A';
 
 /** Screen 5, Route detail (FR-15, FR-20; US-8). */
-export function RouteDetailScreen({
-  onShare = () => undefined,
-  onOpenInGoogleMaps = () => undefined,
-}: {
-  /** Wired in R-23. */
-  onShare?: (option: RouteOption) => void;
-  onOpenInGoogleMaps?: (option: RouteOption) => void;
-}) {
+export function RouteDetailScreen() {
   const theme = useTheme();
   const router = useRouter();
   const letter = asLetter(useLocalSearchParams<{ letter: string }>().letter);
@@ -50,12 +52,47 @@ export function RouteDetailScreen({
   const now = useNow();
   const [sheetHeight, setSheetHeight] = useState(0);
   const [allSteps, setAllSteps] = useState(false);
+  const [notInstalledUrl, setNotInstalledUrl] = useState<string | null>(null);
+  const start = useTrip((s) => s.start);
 
   // Back returns to Results with this route still selected.
   useEffect(() => select(letter), [letter, select]);
 
   const option = ranked.options.find((o) => o.id === letter);
   const destinationName = fieldView(destination, location, t('home.whereTo')).text;
+
+  /** The directions link for this trip (FR-16); null until both ends are resolved. */
+  const directionsUrl = (): string | null => {
+    if (!ranked.start || !ranked.destination || start === null || destination === null) return null;
+    const endpoint = (end: typeof start, point: { lat: number; lng: number }): HandoffEndpoint =>
+      end === 'current'
+        ? { kind: 'current', lat: point.lat, lng: point.lng }
+        : { kind: 'place', name: end!.name, placeId: end!.placeId, lat: end!.lat, lng: end!.lng };
+    return buildDirectionsUrl(
+      endpoint(start, ranked.start),
+      endpoint(destination, ranked.destination),
+    );
+  };
+
+  const openGoogleMaps = async () => {
+    const url = directionsUrl();
+    if (!url) return;
+    const { result } = await openInGoogleMaps(url);
+    if (result === 'notInstalled') setNotInstalledUrl(url);
+  };
+
+  const share = async (shared: RouteOption) => {
+    const url = directionsUrl();
+    if (!url) return;
+    await Share.share({ message: buildShareText(shared, destinationName, url) }).catch(
+      () => undefined,
+    );
+  };
+
+  const fromSheet = (url: string) => {
+    setNotInstalledUrl(null);
+    void expoLinker.openURL(url).catch(() => undefined);
+  };
 
   if (!option) {
     return (
@@ -267,7 +304,7 @@ export function RouteDetailScreen({
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('detail.share')}
-            onPress={() => onShare(option)}
+            onPress={() => void share(option)}
             testID="share"
             style={[
               styles.shareButton,
@@ -279,12 +316,18 @@ export function RouteDetailScreen({
           <View style={styles.fill}>
             <PrimaryButton
               label={t('detail.openInGoogleMaps')}
-              onPress={() => onOpenInGoogleMaps(option)}
+              onPress={() => void openGoogleMaps()}
               testID="open-google-maps"
             />
           </View>
         </SafeAreaView>
       </View>
+      <NotInstalledSheet
+        visible={notInstalledUrl !== null}
+        onOpenInBrowser={() => notInstalledUrl && fromSheet(notInstalledUrl)}
+        onGetGoogleMaps={() => fromSheet(APP_STORE_URL)}
+        onCancel={() => setNotInstalledUrl(null)}
+      />
     </View>
   );
 }

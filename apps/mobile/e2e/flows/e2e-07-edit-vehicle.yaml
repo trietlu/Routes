@@ -1,0 +1,23 @@
+# E2E-07: detail → Set your vehicle → 40 mpg, $4.00 → Save → route A costs $4.73.
+appId: com.routes.app.dev
+---
+- runFlow: ../common/detail-a.yaml
+- tapOn: 'Set your vehicle'
+- extendedWaitUntil:
+    visible: 'Your vehicle'
+    timeout: 10000
+- tapOn:
+    id: 'vehicle-mpg'
+- eraseText: 10
+- inputText: '40'
+- tapOn:
+    id: 'vehicle-price'
+- eraseText: 10
+- inputText: '4.00'
+- hideKeyboard
+- tapOn:
+    id: 'vehicle-save'
+- extendedWaitUntil:
+    visible: "\\$4\\.73"
+    timeout: 10000
+- assertVisible: 'Fuel uses your vehicle settings.'

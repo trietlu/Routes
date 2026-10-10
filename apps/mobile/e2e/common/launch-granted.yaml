@@ -1,0 +1,11 @@
+# Fresh install, location allowed, simulator at the fixture origin (fixtures/index.json).
+appId: com.routes.app.dev
+---
+- setLocation:
+    latitude: 39.7392
+    longitude: -104.9903
+- launchApp:
+    clearState: true
+    permissions:
+      # iOS values: always | inuse | never | unset. The app asks for When In Use only.
+      location: inuse

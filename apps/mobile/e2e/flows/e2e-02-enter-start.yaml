@@ -1,0 +1,22 @@
+# E2E-02: first launch → "Enter a start address instead" → pick a start → Home shows it.
+appId: com.routes.app.dev
+---
+- runFlow: ../common/launch-granted.yaml
+- extendedWaitUntil:
+    visible: 'Enter a start address instead'
+    timeout: 30000
+- tapOn: 'Enter a start address instead'
+- tapOn:
+    id: 'search-input'
+- inputText: 'Union'
+- extendedWaitUntil:
+    visible:
+      id: 'suggestion-fixture-union-street-market'
+    timeout: 10000
+- tapOn:
+    id: 'suggestion-fixture-union-street-market'
+- extendedWaitUntil:
+    visible:
+      id: 'field-from'
+      text: 'From: Union Street Market.*'
+    timeout: 10000

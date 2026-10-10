@@ -1,0 +1,17 @@
+# E2E-14: "Set Home" → pick Union Station → the Home row shows its address.
+appId: com.routes.app.dev
+---
+- runFlow: ../common/home.yaml
+- tapOn: 'Set Home'
+- tapOn:
+    id: 'search-input'
+- inputText: 'Union'
+- extendedWaitUntil:
+    visible:
+      id: 'suggestion-fixture-union-station'
+    timeout: 10000
+- tapOn:
+    id: 'suggestion-fixture-union-station'
+- extendedWaitUntil:
+    visible: 'Home, 100 Union Plaza'
+    timeout: 10000

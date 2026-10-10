@@ -273,6 +273,12 @@ Run on the iOS simulator against `npm run proxy:dev` (mock). `EXPO_PUBLIC_MAP_PR
 | E2E-16 | Airplane-style offline (proxy stopped) → "You're offline" / error banner with Retry; recents listed | FR-21 |
 | E2E-17 | Performance smoke: time from tapping a result to 3 cards visible < 3 s (mock proxy) | NFR-1 |
 
+Notes on the implementation (`apps/mobile/e2e`):
+
+- **Offline (E2E-16).** The flow is split in two: `offline/e2e-16a-prepare.yaml` runs while the proxy is up and leaves a recent. The runner then stops the proxy, and `offline/e2e-16b-offline.yaml` checks that recents are still listed and a route request shows "You're offline" with Retry.
+- **Card checks.** Each route card is a single VoiceOver element, so flows check its accessibility label (for example "Route A, fastest, 22 minutes, … estimated cost $5.12 …").
+- **Performance (E2E-17).** The flow uses Maestro's 3 s wait, `extendedWaitUntil` with `timeout: 3000`, as the time limit.
+
 ## 9. Manual tests (`MAN-`) — human, real iPhone, before beta
 
 | ID | Test | Req |

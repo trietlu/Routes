@@ -1,0 +1,172 @@
+name: E2E
+
+# Maestro flows on the iOS simulator against the mock proxy (test plan §8).
+on:
+  pull_request:
+    paths:
+      - 'apps/mobile/**'
+      - 'apps/proxy/**'
+      - 'packages/**'
+      - 'fixtures/**'
+      - '.github/workflows/e2e.yml'
+      - 'package.json'
+      - 'package-lock.json'
+  push:
+    branches: [main]
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: Maestro E2E (iOS simulator)
+    # Expo SDK 57's ExpoModulesJSI needs Swift tools 6.2, i.e. Xcode 26 or newer.
+    runs-on: macos-26
+    timeout-minutes: 90
+    env:
+      EXPO_PUBLIC_MAP_PROVIDER: default
+      EXPO_PUBLIC_PROXY_URL: http://localhost:8080
+      EXPO_PUBLIC_APP_ENV: development
+      # Fresh installs get new device IDs, but keep the mock proxy out of the way anyway.
+      RATE_LIMIT_ROUTES_PER_HOUR: '10000'
+      RATE_LIMIT_PLACES_PER_HOUR: '10000'
+      MAESTRO_CLI_NO_ANALYTICS: '1'
+      MAESTRO_DRIVER_STARTUP_TIMEOUT: '180000'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select the latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Start the mock proxy
+        run: |
+          nohup npm run proxy:dev > proxy.log 2>&1 &
+          for attempt in $(seq 1 60); do
+            if curl -fsS http://localhost:8080/healthz; then exit 0; fi
+            sleep 2
+          done
+          cat proxy.log
+          exit 1
+
+      - name: Prebuild the iOS project
+        working-directory: apps/mobile
+        run: npx expo prebuild --platform ios --no-install
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            apps/mobile/ios/Pods
+            ~/Library/Caches/CocoaPods
+          key: pods-${{ runner.os }}-${{ hashFiles('package-lock.json', 'apps/mobile/app.config.ts') }}
+
+      - name: Install pods
+        working-directory: apps/mobile/ios
+        run: pod install
+
+      - name: Cache derived data
+        uses: actions/cache@v4
+        with:
+          path: apps/mobile/ios/build
+          key: derived-${{ runner.os }}-${{ hashFiles('package-lock.json', 'apps/mobile/app.config.ts') }}-${{ github.sha }}
+          restore-keys: derived-${{ runner.os }}-${{ hashFiles('package-lock.json', 'apps/mobile/app.config.ts') }}-
+
+      - name: Build the app (Release, simulator)
+        working-directory: apps/mobile/ios
+        run: |
+          xcodebuild -version
+          set +e
+          xcodebuild \
+            -workspace Routes.xcworkspace \
+            -scheme Routes \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            build > xcodebuild.log 2>&1
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ]; then
+            # Show the real errors, not just the summary at the end.
+            grep -nE "error:|error [A-Z]|fatal|failed with exit code" xcodebuild.log | head -n 80 || true
+            tail -n 120 xcodebuild.log
+            exit "$status"
+          fi
+          tail -n 20 xcodebuild.log
+
+      - name: Boot a simulator and install the app
+        timeout-minutes: 20
+        run: |
+          device=$(xcrun simctl list devices available -j | node -e '
+            const d = JSON.parse(require("fs").readFileSync(0, "utf8")).devices;
+            const ios = Object.keys(d).filter((k) => k.includes("iOS")).sort().reverse();
+            for (const runtime of ios) {
+              const phone = d[runtime].find((x) => /^iPhone \d+$/.test(x.name)) || d[runtime].find((x) => x.name.startsWith("iPhone"));
+              if (phone) { console.log(phone.udid); process.exit(0); }
+            }
+            process.exit(1);')
+          echo "Using simulator $device"
+          # Hosted runners sometimes hang in bootstatus; bound each try and retry on a clean device.
+          booted=no
+          for attempt in 1 2 3; do
+            xcrun simctl boot "$device" || true
+            xcrun simctl bootstatus "$device" -b &
+            waiter=$!
+            ( sleep 240; kill "$waiter" 2>/dev/null ) &
+            watchdog=$!
+            if wait "$waiter"; then
+              kill "$watchdog" 2>/dev/null || true
+              booted=yes
+              break
+            fi
+            echo "Boot attempt $attempt timed out; erasing and retrying"
+            xcrun simctl shutdown "$device" || true
+            xcrun simctl erase "$device" || true
+          done
+          if [ "$booted" != yes ]; then exit 1; fi
+          xcrun simctl install "$device" apps/mobile/ios/build/Build/Products/Release-iphonesimulator/Routes.app
+
+      - name: Run flows (E2E-01 to E2E-15, E2E-17)
+        timeout-minutes: 40
+        run: maestro test apps/mobile/e2e/flows --format junit --output e2e-report.xml
+
+      - name: Run E2E-16 (offline)
+        run: |
+          maestro test apps/mobile/e2e/offline/e2e-16a-prepare.yaml
+          # Stop the proxy: route requests now fail as a network error.
+          pkill -f "apps/proxy/src/server.ts" || true
+          sleep 2
+          if curl -fsS http://localhost:8080/healthz; then echo "proxy still up"; exit 1; fi
+          maestro test apps/mobile/e2e/offline/e2e-16b-offline.yaml
+
+      - name: Upload screenshots and logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-e2e
+          path: |
+            ~/.maestro/tests
+            e2e-report.xml
+            proxy.log
+            apps/mobile/ios/xcodebuild.log
+          if-no-files-found: ignore

@@ -1,0 +1,13 @@
+# Home → Search "Union" → Union Station → Results with three cards.
+appId: com.routes.app.dev
+---
+- runFlow: home.yaml
+- runFlow:
+    file: search-to.yaml
+    env:
+      QUERY: 'Union'
+      PLACE_ID: 'fixture-union-station'
+- extendedWaitUntil:
+    visible:
+      id: 'route-card-C'
+    timeout: 10000

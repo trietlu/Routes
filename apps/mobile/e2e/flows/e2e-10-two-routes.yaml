@@ -1,0 +1,13 @@
+# E2E-10: "Two Routes Test" → "Only 2 routes found".
+appId: com.routes.app.dev
+---
+- runFlow: ../common/home.yaml
+- runFlow:
+    file: ../common/search-to.yaml
+    env:
+      QUERY: 'Two Routes Test'
+      PLACE_ID: 'fixture-two-routes'
+- extendedWaitUntil:
+    visible: 'Only 2 routes found'
+    timeout: 10000
+- assertVisible: 'Best of 2'

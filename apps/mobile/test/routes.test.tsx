@@ -23,7 +23,7 @@ describe('routes', () => {
 
   const cases: [string, string][] = [
     ['/onboarding', 'Three good ways there.'],
-    ['/route/B', 'Route B'],
+    ['/route/B', 'Loading route'],
     ['/vehicle', 'Your vehicle'],
     ['/set-place/home', 'Set Home'],
     ['/set-place/work', 'Set Work'],

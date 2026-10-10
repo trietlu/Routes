@@ -34,6 +34,9 @@ interface ResultsMapProps {
   onSelect: (letter: OptionId) => void;
   /** Measured sheet height, so the camera keeps routes above it (FR-12). */
   sheetHeight: number;
+  /** Lettered time bubbles; Route detail shows one route and hides them. */
+  bubbles?: boolean;
+  testID?: string;
 }
 
 const toCoord = (point: LatLng) => ({ latitude: point.lat, longitude: point.lng });
@@ -51,6 +54,8 @@ export function ResultsMap({
   mode,
   onSelect,
   sheetHeight,
+  bubbles = true,
+  testID = 'results-map',
 }: ResultsMapProps) {
   const theme = useTheme();
   const map = useRef<MapView>(null);
@@ -97,7 +102,7 @@ export function ResultsMap({
       provider={provider}
       style={StyleSheet.absoluteFill}
       initialRegion={initialRegion}
-      testID="results-map"
+      testID={testID}
     >
       {lines.map(({ option, coords }) => {
         const isSelected = option.id === selected;
@@ -116,7 +121,7 @@ export function ResultsMap({
         );
       })}
       {lines.map(({ option, bubble }) => {
-        if (!bubble) return null;
+        if (!bubbles || !bubble) return null;
         const isSelected = option.id === selected;
         const color = routeColor(theme.colors, option.id);
         return (

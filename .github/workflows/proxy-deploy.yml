@@ -14,6 +14,12 @@ on:
       - 'package-lock.json'
       - '.github/workflows/proxy-deploy.yml'
   workflow_dispatch:
+  # Pull requests that change the workflow only run the configuration check;
+  # deploy jobs never run for a pull request.
+  pull_request:
+    paths:
+      - '.github/workflows/proxy-deploy.yml'
+      - '.github/actions/cloud-run-deploy/**'
 
 concurrency:
   group: proxy-deploy
@@ -52,7 +58,7 @@ jobs:
   staging:
     name: Build, push and deploy to staging
     needs: config
-    if: needs.config.outputs.enabled == 'true'
+    if: needs.config.outputs.enabled == 'true' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment: staging
     permissions:
@@ -96,7 +102,7 @@ jobs:
   production:
     name: Promote to production
     needs: [config, staging]
-    if: needs.config.outputs.enabled == 'true' && vars.GCP_PROJECT_PRODUCTION != ''
+    if: needs.config.outputs.enabled == 'true' && github.event_name != 'pull_request' && vars.GCP_PROJECT_PRODUCTION != ''
     runs-on: ubuntu-latest
     # Required reviewers on this environment make promotion a manual approval.
     environment: production

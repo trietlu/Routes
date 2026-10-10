@@ -15,9 +15,14 @@ describe('routes', () => {
     expect(await screen.findByLabelText('Destination')).toBeTruthy();
   });
 
+  it('/results renders the Results sheet', async () => {
+    await useTestStorage((storage) => storage.preferences.setLocationPromptShown(true));
+    await renderApp('/results');
+    expect(await screen.findByText('Ranked by travel time')).toBeTruthy();
+  });
+
   const cases: [string, string][] = [
     ['/onboarding', 'Three good ways there.'],
-    ['/results', 'Routes'],
     ['/route/B', 'Route B'],
     ['/vehicle', 'Your vehicle'],
     ['/set-place/home', 'Set Home'],

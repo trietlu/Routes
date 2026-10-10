@@ -15,6 +15,11 @@ export interface RankedRoutes {
   options: RouteOption[];
   onlyN: number | null;
   errorKind: ApiErrorKind | null;
+  /** The resolved trip ends, for map pins; null until known. */
+  start: Waypoint | null;
+  destination: Waypoint | null;
+  /** Fetches the routes again (Retry). */
+  retry: () => void;
 }
 
 /** A place's waypoint, or the current coordinates for `current` (null until known). */
@@ -51,20 +56,25 @@ export function useRankedRoutes(): RankedRoutes {
     staleTime: 60_000,
   });
   const coordinates = current.data ?? null;
-  const routes = useRoutes(toWaypoint(start, coordinates), toWaypoint(destination, coordinates));
+  const startPoint = toWaypoint(start, coordinates);
+  const destinationPoint = toWaypoint(destination, coordinates);
+  const routes = useRoutes(startPoint, destinationPoint);
 
   const ranked = useMemo(
     () => (routes.data ? rankRoutes(routes.data.routes, mode, vehicle) : null),
     [routes.data, mode, vehicle],
   );
 
-  if (ranked)
-    return { status: 'success', options: ranked.options, onlyN: ranked.onlyN, errorKind: null };
-  if (routes.isError) {
-    return { status: 'error', options: [], onlyN: null, errorKind: errorKind(routes.error) };
-  }
-  if (routes.isFetching || current.isFetching) {
-    return { status: 'loading', options: [], onlyN: null, errorKind: null };
-  }
-  return { status: 'idle', options: [], onlyN: null, errorKind: null };
+  const base = {
+    options: [] as RouteOption[],
+    onlyN: null,
+    errorKind: null,
+    start: startPoint,
+    destination: destinationPoint,
+    retry: () => void routes.refetch(),
+  };
+  if (ranked) return { ...base, status: 'success', options: ranked.options, onlyN: ranked.onlyN };
+  if (routes.isError) return { ...base, status: 'error', errorKind: errorKind(routes.error) };
+  if (routes.isFetching || current.isFetching) return { ...base, status: 'loading' };
+  return { ...base, status: 'idle' };
 }

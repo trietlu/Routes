@@ -9,6 +9,9 @@ interface PlaceRowProps {
   subtitle?: string;
   accessibilityLabel: string;
   onPress: () => void;
+  /** Extra actions (e.g. Change, Remove): long press, or VoiceOver's actions rotor. */
+  actions?: readonly { name: string; label: string; run: () => void }[];
+  onLongPress?: () => void;
   testID?: string;
 }
 
@@ -19,6 +22,8 @@ export function PlaceRow({
   subtitle,
   accessibilityLabel,
   onPress,
+  actions,
+  onLongPress,
   testID,
 }: PlaceRowProps) {
   const theme = useTheme();
@@ -27,6 +32,11 @@ export function PlaceRow({
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       onPress={onPress}
+      onLongPress={onLongPress}
+      accessibilityActions={actions?.map(({ name, label }) => ({ name, label }))}
+      onAccessibilityAction={(event) =>
+        actions?.find((action) => action.name === event.nativeEvent.actionName)?.run()
+      }
       testID={testID}
       style={({ pressed }) => [
         styles.row,

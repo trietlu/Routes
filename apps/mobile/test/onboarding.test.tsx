@@ -66,7 +66,7 @@ describe('Screen 1 — Onboarding', () => {
   it('UI-ONB-02: "Enter a start address" opens Search for From with no permission request', async () => {
     const storage = await showOnboarding();
     await fireEvent.press(screen.getByRole('button', { name: 'Enter a start address instead' }));
-    expect(await screen.findByRole('header', { name: 'Search' })).toBeTruthy();
+    expect(await screen.findByLabelText('Start address')).toBeTruthy(); // Search, From field
     expect(mocked.requestForegroundPermissionsAsync).not.toHaveBeenCalled();
     expect(await storage.preferences.getLocationPromptShown()).toBe(true);
   });

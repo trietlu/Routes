@@ -9,9 +9,14 @@ describe('routes', () => {
     expect(await screen.findByText('Show me the')).toBeTruthy();
   });
 
+  it('/search renders the search field', async () => {
+    await useTestStorage((storage) => storage.preferences.setLocationPromptShown(true));
+    await renderApp('/search');
+    expect(await screen.findByLabelText('Destination')).toBeTruthy();
+  });
+
   const cases: [string, string][] = [
     ['/onboarding', 'Three good ways there.'],
-    ['/search', 'Search'],
     ['/results', 'Routes'],
     ['/route/B', 'Route B'],
     ['/vehicle', 'Your vehicle'],

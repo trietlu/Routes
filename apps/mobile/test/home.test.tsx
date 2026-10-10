@@ -182,7 +182,7 @@ describe('Screen 2 — Home', () => {
   it('tapping From or To opens Search', async () => {
     await showHome();
     await fireEvent.press(toField());
-    expect(await screen.findByRole('header', { name: 'Search' })).toBeTruthy();
+    expect(await screen.findByLabelText('Destination')).toBeTruthy(); // Search, To field
   });
 
   it('UI-HOME-08: offline → banner with Retry; recents stay tappable', async () => {

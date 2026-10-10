@@ -1,0 +1,131 @@
+name: Proxy deploy
+
+# Builds the proxy image, pushes it to Artifact Registry, deploys it to Cloud
+# Run staging and smoke-tests it. Production gets the same image digest after
+# approval through the `production` environment. See docs/deploy.md.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/proxy/**'
+      - 'packages/api-types/**'
+      - 'packages/routing-core/**'
+      - 'fixtures/**'
+      - 'package-lock.json'
+      - '.github/workflows/proxy-deploy.yml'
+  workflow_dispatch:
+  # Pull requests that change the workflow only run the configuration check;
+  # deploy jobs never run for a pull request.
+  pull_request:
+    paths:
+      - '.github/workflows/proxy-deploy.yml'
+      - '.github/actions/cloud-run-deploy/**'
+
+concurrency:
+  group: proxy-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  REGION: ${{ vars.GCP_REGION || 'us-central1' }}
+  SERVICE: ${{ vars.CLOUD_RUN_SERVICE || 'routes-proxy' }}
+  ARTIFACT_PROJECT: ${{ vars.GCP_ARTIFACT_PROJECT || vars.GCP_PROJECT_STAGING }}
+  ARTIFACT_REPO: ${{ vars.GCP_ARTIFACT_REPO || 'routes' }}
+  MAPS_SECRET: ${{ vars.GOOGLE_MAPS_SECRET_NAME || 'google-maps-api-key' }}
+
+jobs:
+  config:
+    name: Check deploy configuration
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.check.outputs.enabled }}
+    steps:
+      - id: check
+        env:
+          WIF_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          SERVICE_ACCOUNT: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          PROJECT_STAGING: ${{ vars.GCP_PROJECT_STAGING }}
+        run: |
+          if [ -n "$WIF_PROVIDER" ] && [ -n "$SERVICE_ACCOUNT" ] && [ -n "$PROJECT_STAGING" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice title=Proxy deploy skipped::GCP_WORKLOAD_IDENTITY_PROVIDER, GCP_SERVICE_ACCOUNT or GCP_PROJECT_STAGING is not set. See docs/deploy.md."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  staging:
+    name: Build, push and deploy to staging
+    needs: config
+    if: needs.config.outputs.enabled == 'true' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment: staging
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      image: ${{ steps.push.outputs.image }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud (Workload Identity Federation)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Build and push the image
+        id: push
+        run: |
+          registry="${REGION}-docker.pkg.dev"
+          image="${registry}/${ARTIFACT_PROJECT}/${ARTIFACT_REPO}/${SERVICE}"
+          gcloud auth configure-docker "$registry" --quiet
+          docker build -f apps/proxy/Dockerfile -t "${image}:${GITHUB_SHA}" .
+          docker push "${image}:${GITHUB_SHA}"
+          digest=$(docker inspect --format='{{index .RepoDigests 0}}' "${image}:${GITHUB_SHA}")
+          echo "image=${digest}" >> "$GITHUB_OUTPUT"
+          echo "Pushed ${digest}"
+
+      - name: Deploy to Cloud Run (staging)
+        uses: ./.github/actions/cloud-run-deploy
+        with:
+          project: ${{ vars.GCP_PROJECT_STAGING }}
+          image: ${{ steps.push.outputs.image }}
+          attest-mode: ${{ vars.ATTEST_MODE_STAGING || vars.ATTEST_MODE || 'off' }}
+          min-instances: ${{ vars.CLOUD_RUN_MIN_INSTANCES_STAGING || '0' }}
+          lb-only: ${{ vars.CLOUD_RUN_INGRESS_LB_ONLY || 'false' }}
+          health-url: ${{ vars.STAGING_HEALTH_URL }}
+
+  production:
+    name: Promote to production
+    needs: [config, staging]
+    if: needs.config.outputs.enabled == 'true' && github.event_name != 'pull_request' && vars.GCP_PROJECT_PRODUCTION != ''
+    runs-on: ubuntu-latest
+    # Required reviewers on this environment make promotion a manual approval.
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud (Workload Identity Federation)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy the staging image digest to Cloud Run (production)
+        uses: ./.github/actions/cloud-run-deploy
+        with:
+          project: ${{ vars.GCP_PROJECT_PRODUCTION }}
+          image: ${{ needs.staging.outputs.image }}
+          attest-mode: ${{ vars.ATTEST_MODE_PRODUCTION || vars.ATTEST_MODE || 'enforce' }}
+          min-instances: ${{ vars.CLOUD_RUN_MIN_INSTANCES_PRODUCTION || '1' }}
+          lb-only: ${{ vars.CLOUD_RUN_INGRESS_LB_ONLY || 'false' }}
+          health-url: ${{ vars.PRODUCTION_HEALTH_URL }}

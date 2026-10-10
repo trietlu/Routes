@@ -49,7 +49,7 @@ jobs:
       - name: Container answers /healthz
         run: |
           docker run -d --name proxy -p 8080:8080 -e PROVIDER=mock routes-proxy:ci
-          for attempt in $(seq 1 30); do
+          for _ in $(seq 1 30); do
             body=$(curl -fsS http://localhost:8080/healthz || true)
             if [ "$body" = '{"ok":true}' ]; then
               echo "healthz: $body"
@@ -62,3 +62,16 @@ jobs:
 
       - name: Container runs as non-root
         run: test "$(docker inspect --format '{{.Config.User}}' routes-proxy:ci)" = "nonroot"
+
+  actionlint:
+    name: Lint workflows (actionlint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install actionlint
+        run: bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/v1.7.7/scripts/download-actionlint.bash) 1.7.7
+
+      # shellcheck is preinstalled on ubuntu-latest, so run scripts are checked too.
+      - name: Run actionlint
+        run: ./actionlint -color

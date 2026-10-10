@@ -1,0 +1,84 @@
+name: Deploy the proxy to Cloud Run
+description: Deploys one image digest to the routes-proxy service and smoke-tests /healthz.
+
+inputs:
+  project:
+    description: Google Cloud project to deploy to.
+    required: true
+  image:
+    description: Image reference by digest (registry/path@sha256:…).
+    required: true
+  attest-mode:
+    description: ATTEST_MODE for the service (off | enforce).
+    required: true
+  min-instances:
+    description: Minimum warm instances (NFR-1 cold starts).
+    required: true
+  lb-only:
+    description: 'true to accept traffic only from the HTTPS load balancer (Cloud Armor).'
+    required: false
+    default: 'false'
+  health-url:
+    description: Public /healthz URL to smoke-test when ingress is load-balancer only.
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Deploy
+      shell: bash
+      env:
+        PROJECT: ${{ inputs.project }}
+        IMAGE: ${{ inputs.image }}
+        ATTEST_MODE: ${{ inputs.attest-mode }}
+        MIN_INSTANCES: ${{ inputs.min-instances }}
+        LB_ONLY: ${{ inputs.lb-only }}
+      run: |
+        ingress=all
+        if [ "$LB_ONLY" = "true" ]; then ingress=internal-and-cloud-load-balancing; fi
+        gcloud run deploy "$SERVICE" \
+          --project "$PROJECT" \
+          --region "$REGION" \
+          --image "$IMAGE" \
+          --platform managed \
+          --allow-unauthenticated \
+          --ingress "$ingress" \
+          --min-instances "$MIN_INSTANCES" \
+          --max-instances 20 \
+          --concurrency 80 \
+          --cpu 1 \
+          --memory 512Mi \
+          --timeout 30s \
+          --port 8080 \
+          --set-env-vars "NODE_ENV=production,PROVIDER=google,ATTEST_MODE=${ATTEST_MODE}" \
+          --set-secrets "GOOGLE_MAPS_API_KEY=${MAPS_SECRET}:latest" \
+          --quiet
+
+    - name: Smoke-test /healthz
+      shell: bash
+      env:
+        PROJECT: ${{ inputs.project }}
+        HEALTH_URL: ${{ inputs.health-url }}
+        LB_ONLY: ${{ inputs.lb-only }}
+      run: |
+        url="$HEALTH_URL"
+        if [ -z "$url" ]; then
+          if [ "$LB_ONLY" = "true" ]; then
+            echo "::warning::Ingress is load-balancer only and no health URL is set; skipping the smoke test."
+            exit 0
+          fi
+          base=$(gcloud run services describe "$SERVICE" --project "$PROJECT" --region "$REGION" --format 'value(status.url)')
+          url="${base}/healthz"
+        fi
+        for attempt in 1 2 3 4 5 6; do
+          body=$(curl -fsS "$url" || true)
+          if [ "$body" = '{"ok":true}' ]; then
+            echo "healthz: $body"
+            exit 0
+          fi
+          echo "Attempt $attempt: no healthy answer yet"
+          sleep 10
+        done
+        echo "::error::$url did not return {\"ok\":true}"
+        exit 1

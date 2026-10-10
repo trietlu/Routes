@@ -108,3 +108,47 @@ export function CloseIcon({ color, size = 16 }: IconProps) {
     </Svg>
   );
 }
+
+export function ShareIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" {...hidden}>
+      <Path
+        d="M12 15V3M12 3 7 8M12 3l5 5M5 13v7h14v-7"
+        stroke={color}
+        strokeWidth={2}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
+/** Arrow for a navigation step, from Google's maneuver name. */
+export function ManeuverIcon({ maneuver, color, size = 22 }: IconProps & { maneuver: string }) {
+  const paths: Record<string, string> = {
+    left: 'M15 19v-7a3 3 0 0 0-3-3H6M9 6 6 9l3 3',
+    right: 'M9 19v-7a3 3 0 0 1 3-3h6M15 6l3 3-3 3',
+    straight: 'M12 20V5M8 9l4-4 4 4',
+    uturn: 'M8 20V9a4 4 0 0 1 8 0v4M13 10l3 3 3-3',
+  };
+  const kind = maneuver.includes('LEFT')
+    ? 'left'
+    : maneuver.includes('RIGHT')
+      ? 'right'
+      : maneuver.includes('UTURN')
+        ? 'uturn'
+        : 'straight';
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" {...hidden}>
+      <Path
+        d={paths[kind]!}
+        stroke={color}
+        strokeWidth={2}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}

@@ -88,7 +88,7 @@ describe('i18n', () => {
   });
 
   it('t looks up strings and fills placeholders', () => {
-    expect(t('screen.route.title', { letter: 'A' })).toBe('Route A');
+    expect(t('results.goWith', { letter: 'A' })).toBe('Go with route A');
     expect(t('app.name')).toBe('Routes');
   });
 

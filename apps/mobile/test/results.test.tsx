@@ -155,7 +155,9 @@ describe('Screen 4 — Results sheet', () => {
       selected: false,
     });
     await fireEvent.press(screen.getByRole('button', { name: 'Go with route B' }));
-    expect(await screen.findByRole('header', { name: 'Route B' })).toBeTruthy();
+    expect(
+      await screen.findByRole('header', { name: 'via Elm Ave & 3rd St · Union Station' }),
+    ).toBeTruthy(); // Route detail
   });
 
   it('a mode change selects the new A', async () => {

@@ -7,7 +7,7 @@ appId: com.routes.app.dev
 - launchApp:
     clearState: true
     permissions:
-      location: deny
+      location: never
 - extendedWaitUntil:
     visible: 'Allow location access'
     timeout: 30000

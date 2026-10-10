@@ -7,4 +7,5 @@ appId: com.routes.app.dev
 - launchApp:
     clearState: true
     permissions:
-      location: allow
+      # iOS values: always | inuse | never | unset. The app asks for When In Use only.
+      location: inuse

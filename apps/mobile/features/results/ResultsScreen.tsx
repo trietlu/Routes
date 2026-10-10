@@ -14,6 +14,7 @@ import { fieldView } from '../home/HomeScreen';
 import { ModeToggle } from '../home/ModeToggle';
 import { ResultsMap } from './ResultsMap';
 import { RouteCard } from './RouteCard';
+import { VehiclePrompt } from './VehiclePrompt';
 
 const ERROR_COPY: Record<ApiErrorKind, () => string> = {
   noRoute: () => t('results.noRoute'),
@@ -127,6 +128,7 @@ export function ResultsScreen() {
             <ModeToggle mode={mode} onChange={setMode} />
           </View>
 
+          {ranked.status === 'success' ? <VehiclePrompt /> : null}
           {ranked.status === 'success'
             ? ranked.options.map((option) => (
                 <RouteCard

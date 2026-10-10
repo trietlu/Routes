@@ -127,7 +127,7 @@ describe('Screen 2 — Home', () => {
     ]);
     await waitFor(() => expect(within(fromField()).getByText('Current location')).toBeTruthy());
     await fireEvent.press(screen.getByRole('button', { name: 'Harbor Clinic, 22 Harbor Rd' }));
-    expect(await screen.findByRole('header', { name: 'Routes' })).toBeTruthy(); // Results
+    expect(await screen.findByText('Ranked by travel time')).toBeTruthy(); // Results
     expect((await storage.places.listRecents())[0]!.placeId).toBe('harbor-clinic');
   });
 
@@ -175,7 +175,7 @@ describe('Screen 2 — Home', () => {
     );
     await waitFor(() => expect(within(fromField()).getByText('Current location')).toBeTruthy());
     await fireEvent.press(screen.getByRole('button', { name: 'Work, 2 Work Ave' }));
-    expect(await screen.findByRole('header', { name: 'Routes' })).toBeTruthy();
+    expect(await screen.findByText('Ranked by travel time')).toBeTruthy(); // Results
     expect((await storage.places.listRecents()).map((p) => p.placeId)).toEqual(['work-1']);
   });
 
@@ -192,7 +192,7 @@ describe('Screen 2 — Home', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Retry' }));
     await waitFor(() => expect(within(fromField()).getByText('Current location')).toBeTruthy());
     await fireEvent.press(screen.getByRole('button', { name: 'Union Station, 100 Union Plaza' }));
-    expect(await screen.findByRole('header', { name: 'Routes' })).toBeTruthy();
+    expect(await screen.findByText('Ranked by travel time')).toBeTruthy(); // Results
   });
 
   it('UI-A11Y-01 / UI-A11Y-02: every pressable has a role, a label and a 44 pt target', async () => {

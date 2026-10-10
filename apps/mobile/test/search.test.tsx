@@ -165,7 +165,7 @@ describe('Screen 3 — Search', () => {
     );
     await fireEvent.changeText(input(), 'Union');
     await fireEvent.press(await screen.findByText('Union Station'));
-    expect(await screen.findByRole('header', { name: 'Routes' })).toBeTruthy();
+    expect(await screen.findByText('Ranked by travel time')).toBeTruthy(); // Results
     expect(client.details).toHaveBeenCalledWith({
       placeId: 'fixture-union-station',
       session: expect.any(String),
@@ -218,7 +218,7 @@ describe('Screen 3 — Search', () => {
       ),
     );
     await fireEvent.press(screen.getByRole('button', { name: 'Work, 2 Work Ave' }));
-    expect(await screen.findByRole('header', { name: 'Routes' })).toBeTruthy();
+    expect(await screen.findByText('Ranked by travel time')).toBeTruthy(); // Results
     expect((await storage.places.listRecents())[0]!.placeId).toBe('work-1');
   });
 

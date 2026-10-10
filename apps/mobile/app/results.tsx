@@ -1,7 +1,4 @@
-import { PlaceholderScreen } from '../features/placeholder/PlaceholderScreen';
-import { t } from '../i18n';
+import { ResultsScreen } from '../features/results/ResultsScreen';
 
-/** Screen 4, Results (R-19, R-20). */
-export default function ResultsScreen() {
-  return <PlaceholderScreen title={t('screen.results.title')} />;
-}
+/** Screen 4, Results. */
+export default ResultsScreen;

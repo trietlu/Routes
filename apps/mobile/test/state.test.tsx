@@ -265,11 +265,13 @@ describe('trip state', () => {
   it('is idle until both ends are known, loading while fetching, and reports error kinds', async () => {
     const client = fakeClient();
     const { result } = await renderHook(() => useTripAndRoutes(), { wrapper: wrapper({ client }) });
-    expect(result.current.ranked).toEqual({
+    expect(result.current.ranked).toMatchObject({
       status: 'idle',
       options: [],
       onlyN: null,
       errorKind: null,
+      start: null,
+      destination: null,
     });
 
     // Current location unavailable: nothing to route yet.
@@ -305,6 +307,15 @@ describe('trip state', () => {
     });
     await waitFor(() => expect(failed.result.current.ranked.status).toBe('error'));
     expect(failed.result.current.ranked.errorKind).toBe('noRoute');
+
+    // Retry fetches again.
+    failing.routes.mockResolvedValueOnce({ routes: fixtureRoutes('fixture-union-station') });
+    await act(async () => failed.result.current.ranked.retry());
+    await waitFor(() => expect(failed.result.current.ranked.status).toBe('success'));
+    expect(failed.result.current.ranked).toMatchObject({
+      start: { lat: HOME.lat, lng: HOME.lng },
+      destination: { placeId: 'fixture-union-station', lat: UNION.lat, lng: UNION.lng },
+    });
   });
 
   it('toWaypoint maps places and current location', () => {

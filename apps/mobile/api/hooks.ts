@@ -28,6 +28,8 @@ export function useAutocomplete(query: string, start: LatLngPoint | null) {
       client.autocomplete({ q, lat: start?.lat, lng: start?.lng, session: session.current() }),
     enabled: q.length >= AUTOCOMPLETE_MIN_QUERY_LENGTH,
     staleTime: AUTOCOMPLETE_STALE_MS,
+    // Typing moves on quickly; the screen offers its own Retry (UX screen 3).
+    retry: false,
   });
 }
 

@@ -1,13 +1,8 @@
 import { useLocalSearchParams } from 'expo-router';
-import { PlaceholderScreen } from '../../features/placeholder/PlaceholderScreen';
-import { t } from '../../i18n';
+import { SearchScreen } from '../../features/search/SearchScreen';
 
-/** S2, Set Home or Work (R-18). */
-export default function SetPlaceScreen() {
+/** S2, Set Home or Work: Search that saves the pick. */
+export default function SetPlaceRoute() {
   const { kind } = useLocalSearchParams<{ kind: string }>();
-  return (
-    <PlaceholderScreen
-      title={t(kind === 'work' ? 'screen.setPlace.work' : 'screen.setPlace.home')}
-    />
-  );
+  return <SearchScreen target={{ kind: 'saved', saved: kind === 'work' ? 'work' : 'home' }} />;
 }

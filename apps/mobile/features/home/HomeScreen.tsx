@@ -1,5 +1,4 @@
-import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'expo-router';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { isDeviceOffline, useNetworkStatus } from '../../api/network';
@@ -7,6 +6,8 @@ import { t } from '../../i18n';
 import { type CurrentLocation, openAppSettings, useCurrentLocation } from '../../location';
 import { type Endpoint, useTrip } from '../../state';
 import { type Place, type PlaceInput, type SavedKind } from '../../storage/places';
+import { useStoredPlaces } from '../search/useStoredPlaces';
+import { useDefaultStart } from './useDefaultStart';
 import { MIN_TOUCH_TARGET, useTheme } from '../../theme';
 import { useStorage } from '../app/services';
 import { AppText } from '../common/AppText';
@@ -53,33 +54,12 @@ export function HomeScreen() {
   const start = useTrip((s) => s.start);
   const destination = useTrip((s) => s.destination);
   const mode = useTrip((s) => s.mode);
-  const { setStart, setDestination, swap, setMode } = useTrip((s) => s);
+  const { setDestination, swap, setMode } = useTrip((s) => s);
 
-  const [recents, setRecents] = useState<Place[]>([]);
-  const [saved, setSaved] = useState<Record<SavedKind, Place | null>>({ home: null, work: null });
+  const { recents, saved, reload } = useStoredPlaces();
 
-  const reload = useCallback(async () => {
-    const [list, home, work] = await Promise.all([
-      places.listRecents(),
-      places.getSaved('home'),
-      places.getSaved('work'),
-    ]);
-    setRecents(list);
-    setSaved({ home, work });
-  }, [places]);
-
-  // Reload when Home comes back into view, e.g. after Search saved a recent.
-  useFocusEffect(
-    useCallback(() => {
-      void reload();
-    }, [reload]),
-  );
-
-  // With location available and no start chosen, start from here (FR-2).
+  useDefaultStart(location);
   const locationReady = location.state === 'ready';
-  useEffect(() => {
-    if (locationReady && start === null) setStart('current');
-  }, [locationReady, start, setStart]);
 
   const coords = location.state === 'ready' ? location.coords : null;
   const locationOff = location.state === 'denied' || location.state === 'unavailable';
@@ -129,6 +109,8 @@ export function HomeScreen() {
       );
     }
     const title = t(kind === 'home' ? 'home.home' : 'home.work');
+    const change = () => router.push({ pathname: '/set-place/[kind]', params: { kind } });
+    const remove = () => void places.removeSaved(kind).then(reload);
     return (
       <PlaceRow
         key={kind}
@@ -137,6 +119,18 @@ export function HomeScreen() {
         subtitle={place.address}
         accessibilityLabel={t('home.placeLabel', { name: title, address: place.address })}
         onPress={() => void choose(toInput(place))}
+        // S2: long press (or the VoiceOver actions rotor) offers Change and Remove.
+        onLongPress={() =>
+          Alert.alert(title, place.address, [
+            { text: t('home.change'), onPress: change },
+            { text: t('home.remove'), style: 'destructive', onPress: remove },
+            { text: t('home.cancel'), style: 'cancel' },
+          ])
+        }
+        actions={[
+          { name: 'change', label: t('home.change'), run: change },
+          { name: 'remove', label: t('home.remove'), run: remove },
+        ]}
         testID={`saved-${kind}`}
       />
     );

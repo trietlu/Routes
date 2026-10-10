@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { renderRouter } from 'expo-router/testing-library';
-import { configureStorageOpener } from '../features/app/services';
+import { type ApiClient } from '../api';
+import { configureApiClient, configureStorageOpener } from '../features/app/services';
 import { type Storage, createStorage } from '../storage';
 import { createTestDatabase } from './nodeSqlite';
 
@@ -19,4 +20,10 @@ export async function useTestStorage(
 /** Renders the real app (all routes and the root layout) at `url`. */
 export async function renderApp(url: string) {
   return renderRouter(APP_DIR, { initialUrl: url });
+}
+
+/** Points the app at a fake proxy client for the next render. */
+export function useTestApi(client: ApiClient): ApiClient {
+  configureApiClient(() => client);
+  return client;
 }

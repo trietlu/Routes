@@ -1,14 +1,22 @@
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
-import { ApiProvider, createAppApiClient, wireOnlineManager } from '../../api';
+import { type ApiClient, ApiProvider, createAppApiClient, wireOnlineManager } from '../../api';
 import { deviceLocationSource } from '../../location';
 import { StateProvider } from '../../state';
 import { type Storage, openStorage } from '../../storage';
 
 let openAppStorage: () => Promise<Storage> = openStorage;
+let makeApiClient: (getDeviceId: () => Promise<string>) => ApiClient = createAppApiClient;
 
 /** Swaps how storage opens; tests use an in-memory database. */
 export function configureStorageOpener(opener: () => Promise<Storage>): void {
   openAppStorage = opener;
+}
+
+/** Swaps the proxy client; screen tests use a fake. */
+export function configureApiClient(
+  factory: (getDeviceId: () => Promise<string>) => ApiClient,
+): void {
+  makeApiClient = factory;
 }
 
 const StorageContext = createContext<Storage | null>(null);
@@ -37,7 +45,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
 }
 
 function LoadedProviders({ storage, children }: { storage: Storage; children: ReactNode }) {
-  const [client] = useState(() => createAppApiClient(() => storage.preferences.getDeviceId()));
+  const [client] = useState(() => makeApiClient(() => storage.preferences.getDeviceId()));
   return (
     <StorageContext.Provider value={storage}>
       <ApiProvider client={client}>

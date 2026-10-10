@@ -122,6 +122,17 @@ export const APP_STRINGS = {
   'results.vehiclePrompt': 'Using {mpg} mpg at {price}/gal.',
   'results.setVehicle': 'Set your vehicle',
   'results.dismiss': 'Dismiss',
+  'share.priced':
+    'Route {letter} via {via} to {destination}: {duration}, {distance}, est. {trip} (incl. {toll} toll). {url}',
+  'share.noTolls':
+    'Route {letter} via {via} to {destination}: {duration}, {distance}, est. {trip} (no tolls). {url}',
+  'share.unknownToll':
+    'Route {letter} via {via} to {destination}: {duration}, {distance}, est. {fuel} + toll (toll price unknown). {url}',
+  'notInstalled.title': "Google Maps isn't installed",
+  'notInstalled.body': 'Open this route in your browser, or get the Google Maps app.',
+  'notInstalled.openInBrowser': 'Open in browser',
+  'notInstalled.getGoogleMaps': 'Get Google Maps',
+  'notInstalled.cancel': 'Cancel',
   'onboarding.title': 'Three good ways there.',
   'onboarding.body':
     "Routes compares the fastest and the cheapest ways to get where you're going. Share your location and we'll fill in where you're starting from.",

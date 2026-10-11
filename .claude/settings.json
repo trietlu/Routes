@@ -1,6 +1,5 @@
 {
   "permissions": {
-    "defaultMode": "acceptEdits",
     "allow": [
       "Skill(loop)",
       "Bash(npm:*)",
@@ -95,7 +94,8 @@
       "WebFetch(domain:developer.apple.com)",
       "WebFetch(domain:cloud.google.com)",
       "WebFetch(domain:docs.sentry.io)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(xcode-select -p)"
     ],
     "deny": [
       "Bash(sudo:*)",
@@ -110,6 +110,7 @@
       "Bash(rm -rf ~:*)",
       "Read(./.env)",
       "Read(./.env.*)"
-    ]
+    ],
+    "defaultMode": "acceptEdits"
   }
 }

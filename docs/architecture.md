@@ -220,7 +220,7 @@ sequenceDiagram
 | CI | `.github/workflows/ci.yml`: lint, typecheck and Jest with coverage (ubuntu); proxy Docker build and `/healthz` check; actionlint | [developer.md](developer.md#ci) |
 | Proxy | `.github/workflows/proxy-deploy.yml` to Cloud Run staging, then production (manual approval). Skips until GCP is configured. | [deploy.md](deploy.md) |
 | App | EAS Build, Submit and Update (planned, R-28) | [technical-design.md](technical-design.md#hosting-and-deployment) |
-| E2E | Maestro on a macOS runner (in progress, R-24) | [test-plan.md](test-plan.md#8-end-to-end-tests--maestro-e2e-) |
+| E2E | Maestro flows in `apps/mobile/e2e/` on a `macos-26` runner (`.github/workflows/e2e.yml`) | [test-plan.md](test-plan.md#8-end-to-end-tests--maestro-e2e-) |
 
 ## Invariants to preserve
 

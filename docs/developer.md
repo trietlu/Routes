@@ -124,7 +124,7 @@ npx jest -t "RC-RANK-02"                     # one test by ID
 | Lint, typecheck and test | ubuntu | `npm ci`, lint, typecheck, `test:coverage` |
 | Proxy Docker image | ubuntu | Builds `apps/proxy/Dockerfile`, checks `/healthz` and the non-root user |
 | actionlint | ubuntu | Workflow files |
-| Maestro E2E (`e2e.yml`) | macOS 26 | iOS Release build with Xcode 26 and Maestro flows against the mock proxy. It runs on PRs that touch the app, proxy, packages or fixtures, and on `main`. Screenshots and logs are uploaded on failure. |
+| Maestro E2E (`e2e.yml`) | macOS 26 | iOS Release build with Xcode 26 and Maestro flows against the mock proxy. It runs only when a push changes code (the app, proxy, packages, fixtures or dependencies). Pushes that change only docs, Markdown or CI configuration skip it. Screenshots and logs are uploaded on failure. |
 
 `proxy-deploy.yml` deploys the proxy after merges and skips until GCP is configured. See [deploy.md](deploy.md).
 

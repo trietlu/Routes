@@ -1,0 +1,15 @@
+# E2E-16, part 2 (proxy stopped by the runner): recents stay listed; a route
+# request fails as "You're offline" with Retry (FR-21).
+appId: com.routes.app.dev
+---
+- launchApp
+- extendedWaitUntil:
+    visible: 'Union Station, 100 Union Plaza'
+    timeout: 20000
+- tapOn: 'Union Station, 100 Union Plaza'
+- extendedWaitUntil:
+    visible: "You're offline"
+    timeout: 15000
+- assertVisible: 'Retry'
+- tapOn: 'Back to Home'
+- assertVisible: 'Union Station, 100 Union Plaza'

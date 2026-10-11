@@ -1,0 +1,5 @@
+# E2E-16, part 1 (proxy running): leave Union Station in recents.
+appId: com.routes.app.dev
+---
+- runFlow: ../common/results-union.yaml
+- stopApp

@@ -1,0 +1,15 @@
+# E2E-11: "Error Test" → "Couldn't load routes" with Retry; the map is still there.
+appId: com.routes.app.dev
+---
+- runFlow: ../common/home.yaml
+- runFlow:
+    file: ../common/search-to.yaml
+    env:
+      QUERY: 'Error Test'
+      PLACE_ID: 'fixture-upstream-error'
+- extendedWaitUntil:
+    visible: "Couldn't load routes"
+    timeout: 15000
+- assertVisible: 'Retry'
+- assertVisible:
+    id: 'results-map'

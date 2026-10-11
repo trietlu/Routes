@@ -88,7 +88,7 @@ npx jest -t "RC-RANK-02"                     # one test by ID
 - **No network.** Proxy tests stub Google with `nock`, and the app tests use a fake API client.
 - **Coverage gates:** routing-core ≥ 95%, api-types ≥ 90%, proxy ≥ 85%, mobile non-UI modules ≥ 80%. They are set in `jest.config.js`.
 - **Screen tests** render the real app with `test/appHarness.tsx`. Use the helpers in `test/flows.tsx` (`grantLocation`, `fakeRoutesClient`, `openUnionResults`, `openDetail`) to jump straight to a screen. Native modules are mocked in `apps/mobile/test/mocks/`. Check accessibility with `a11yProblems(root)` from `test/a11y.ts`; R-25 extends it to every screen.
-- **E2E.** Maestro flows live in `apps/mobile/e2e/` (R-24). They need macOS, a booted simulator and `npm run proxy:dev`.
+- **E2E.** Maestro flows live in `apps/mobile/e2e/`: `flows/` holds E2E-01 to E2E-15 and E2E-17, `common/` holds shared steps, and `offline/` holds the two-part E2E-16. To run them you need macOS, Xcode 26 or newer (Expo SDK 57 needs Swift 6.2), a Release build booted in the simulator, and `npm run proxy:dev`; then run `npm run e2e`. Maestro matches accessibility labels, so a route card is checked by its spoken label. `apps/mobile/README.md` covers E2E-16.
 
 ## Common changes
 
@@ -117,14 +117,14 @@ npx jest -t "RC-RANK-02"                     # one test by ID
 
 ## CI
 
-`.github/workflows/ci.yml` runs on every PR and on pushes to `main`:
+`.github/workflows/ci.yml` runs on every PR and on pushes to `main`. `e2e.yml` runs the Maestro suite:
 
 | Job | Runs on | Checks |
 |---|---|---|
 | Lint, typecheck and test | ubuntu | `npm ci`, lint, typecheck, `test:coverage` |
 | Proxy Docker image | ubuntu | Builds `apps/proxy/Dockerfile`, checks `/healthz` and the non-root user |
 | actionlint | ubuntu | Workflow files |
-| E2E (R-24, in progress) | macOS | iOS Release build and Maestro flows against the mock proxy |
+| Maestro E2E (`e2e.yml`) | macOS 26 | iOS Release build with Xcode 26 and Maestro flows against the mock proxy. It runs on PRs that touch the app, proxy, packages or fixtures, and on `main`. Screenshots and logs are uploaded on failure. |
 
 `proxy-deploy.yml` deploys the proxy after merges and skips until GCP is configured. See [deploy.md](deploy.md).
 

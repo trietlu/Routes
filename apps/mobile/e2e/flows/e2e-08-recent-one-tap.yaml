@@ -1,0 +1,13 @@
+# E2E-08: back to Home → Union Station in recents → one tap → Results.
+appId: com.routes.app.dev
+---
+- runFlow: ../common/results-union.yaml
+- tapOn: 'Back to Home'
+- extendedWaitUntil:
+    visible: 'Union Station, 100 Union Plaza'
+    timeout: 10000
+- tapOn: 'Union Station, 100 Union Plaza'
+- extendedWaitUntil:
+    visible:
+      id: 'route-card-A'
+    timeout: 10000

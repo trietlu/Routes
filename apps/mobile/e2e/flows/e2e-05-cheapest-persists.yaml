@@ -1,0 +1,16 @@
+# E2E-05: Cheapest → first card 31 min, CHEAPEST; relaunch → Home toggle shows Cheapest.
+appId: com.routes.app.dev
+---
+- runFlow: ../common/results-union.yaml
+- tapOn: 'Cheapest'
+- assertVisible: 'Ranked by trip cost'
+- assertVisible:
+    id: 'route-card-A'
+    text: 'Route A, cheapest, 31 minutes.*'
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible:
+      id: 'mode-cheapest'
+      selected: true
+    timeout: 20000

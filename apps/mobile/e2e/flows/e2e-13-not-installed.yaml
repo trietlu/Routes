@@ -1,0 +1,12 @@
+# E2E-13: Open in Google Maps on a simulator without it → S3 sheet → Cancel.
+appId: com.routes.app.dev
+---
+- runFlow: ../common/detail-a.yaml
+- tapOn: 'Open in Google Maps'
+- extendedWaitUntil:
+    visible: "Google Maps isn't installed"
+    timeout: 10000
+- assertVisible: 'Open in browser'
+- assertVisible: 'Get Google Maps'
+- tapOn: 'Cancel'
+- assertNotVisible: "Google Maps isn't installed"

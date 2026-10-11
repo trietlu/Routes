@@ -1,0 +1,18 @@
+# E2E-15: swap start and destination on Home.
+appId: com.routes.app.dev
+---
+- runFlow: ../common/results-union.yaml
+- tapOn: 'Back to Home'
+- extendedWaitUntil:
+    visible:
+      id: 'field-to'
+      text: 'To: Union Station.*'
+    timeout: 10000
+- tapOn:
+    id: 'swap'
+- assertVisible:
+    id: 'field-from'
+    text: 'From: Union Station.*'
+- assertVisible:
+    id: 'field-to'
+    text: 'To: Current location.*'

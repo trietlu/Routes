@@ -41,3 +41,22 @@ At runtime, read them with `getAppConfig()` from `config/env.ts`.
 ## Tests
 
 Tests run from the root with `npm test`, as the `mobile` Jest project (jest-expo iOS preset plus React Native Testing Library). To run only these: `npx jest --selectProjects mobile`.
+
+## End-to-end tests (Maestro)
+
+The flows are in `e2e/flows` (E2E-01 to E2E-15 and E2E-17). Shared steps are in `e2e/common`. With a booted simulator running a Release build, and `npm run proxy:dev` running:
+
+```
+npm run e2e
+```
+
+**E2E-16 (offline)** needs the proxy to stop mid-flow, so it is split in two:
+
+1. Run `maestro test apps/mobile/e2e/offline/e2e-16a-prepare.yaml`. This leaves a recent while the proxy is up.
+2. Stop the proxy.
+3. Run `maestro test apps/mobile/e2e/offline/e2e-16b-offline.yaml`.
+
+The `E2E` GitHub workflow (`.github/workflows/e2e.yml`) does all of this on macOS:
+- it prebuilds the app, builds it for the simulator (Release, `EXPO_PUBLIC_MAP_PROVIDER=default`, `EXPO_PUBLIC_PROXY_URL=http://localhost:8080`) and boots a simulator;
+- it runs the flows;
+- on failure, it uploads Maestro's screenshots and logs.

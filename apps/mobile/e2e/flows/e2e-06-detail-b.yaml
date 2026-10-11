@@ -1,0 +1,15 @@
+# E2E-06: tap card B → "Go with route B" → detail shows B's cost breakdown.
+appId: com.routes.app.dev
+---
+- runFlow: ../common/results-union.yaml
+- tapOn:
+    id: 'route-card-B'
+- tapOn: 'Go with route B'
+- extendedWaitUntil:
+    visible:
+      id: 'cost-card'
+    timeout: 10000
+- assertVisible: 'via Elm Ave & 3rd St · Union Station'
+- assertVisible: 'No tolls'
+- assertVisible: "\\$1\\.48"
+- assertVisible: "Trip cost \\(estimated\\)"

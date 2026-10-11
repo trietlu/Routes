@@ -14,6 +14,7 @@ An iPhone app that shows drivers three routes to a destination, ranked **Fastest
 - [UX sketch](docs/ux-sketch.md)
 - [Plan of action](docs/PLAN.md)
 - [Test plan](docs/test-plan.md)
+- [Integration tests with Maestro](docs/INTEG.md)
 - [Instructions for coding agents](AGENTS.md)
 
 ## Repository layout

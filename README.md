@@ -9,6 +9,8 @@ An iPhone app that shows drivers three routes to a destination, ranked **Fastest
 
 - [Business requirements](docs/brd.md)
 - [Technical design](docs/technical-design.md)
+- [Architecture (as built)](docs/architecture.md)
+- [Developer guide](docs/developer.md)
 - [UX sketch](docs/ux-sketch.md)
 - [Plan of action](docs/PLAN.md)
 - [Test plan](docs/test-plan.md)

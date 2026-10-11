@@ -8,6 +8,8 @@ You are building **Routes**, an iPhone app that compares three driving routes by
 |---|---|
 | [docs/brd.md](docs/brd.md) | What to build: requirements FR-1 to FR-22, NFR-1 to NFR-11, business rules |
 | [docs/technical-design.md](docs/technical-design.md) | How to build it: stack, repo layout, proxy contract, algorithms |
+| [docs/architecture.md](docs/architecture.md) | How the code is organized and wired today; keep it current when you change structure |
+| [docs/developer.md](docs/developer.md) | Commands, running the app, testing, common changes, troubleshooting |
 | [docs/ux-sketch.md](docs/ux-sketch.md) | Screens, copy and states. The written spec beats the sketch images. |
 | [docs/test-plan.md](docs/test-plan.md) | Test IDs, canonical fixture values, definition of done |
 | [docs/PLAN.md](docs/PLAN.md) | Issue order and dependencies |

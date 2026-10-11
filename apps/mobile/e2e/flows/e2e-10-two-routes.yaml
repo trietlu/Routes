@@ -10,4 +10,8 @@ appId: com.routes.app.dev
 - extendedWaitUntil:
     visible: 'Only 2 routes found'
     timeout: 10000
-- assertVisible: 'Best of 2'
+# "Best of 2" sits inside card A's VoiceOver element; check there's no third card instead.
+- assertVisible:
+    id: 'route-card-B'
+- assertNotVisible:
+    id: 'route-card-C'

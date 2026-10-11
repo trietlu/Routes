@@ -14,7 +14,11 @@ appId: com.routes.app.dev
     id: 'vehicle-price'
 - eraseText: 10
 - inputText: '4.00'
-- hideKeyboard
+# The decimal keypad has no return key: tap outside the fields to dismiss it.
+- tapOn: 'Fuel price'
+- scrollUntilVisible:
+    element:
+      id: 'vehicle-save'
 - tapOn:
     id: 'vehicle-save'
 - extendedWaitUntil:

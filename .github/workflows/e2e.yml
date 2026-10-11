@@ -60,7 +60,7 @@ jobs:
       - name: Start the mock proxy
         run: |
           nohup npm run proxy:dev > proxy.log 2>&1 &
-          for attempt in $(seq 1 60); do
+          for _ in $(seq 1 60); do
             if curl -fsS http://localhost:8080/healthz; then exit 0; fi
             sleep 2
           done

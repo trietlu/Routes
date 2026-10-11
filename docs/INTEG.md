@@ -152,6 +152,7 @@ All expected values come from [test plan §2](test-plan.md#2-canonical-fixture-a
    ```
    xcrun simctl boot "iPhone 16"        # any available iPhone
    open -a Simulator
+   xcrun simctl location booted set 39.7392,-104.9903   # warm the location fix
    xcrun simctl install booted build/Build/Products/Release-iphonesimulator/Routes.app
    ```
 
@@ -178,7 +179,17 @@ Flows set the location and reset app data themselves, so they can run in any ord
 
 Workflow: [`.github/workflows/e2e.yml`](../.github/workflows/e2e.yml), job **"Maestro E2E (iOS simulator)"**.
 
-**Runs on** PRs touching `apps/mobile/**`, `apps/proxy/**`, `packages/**`, `fixtures/**`, `package.json`, `package-lock.json` or the workflow itself, and on every push to `main`. Docs-only changes don't trigger it. A newer push to the same branch cancels a running job.
+**When it runs:**
+
+1. **Path filter.** The workflow starts on PRs touching `apps/mobile/**`, `apps/proxy/**`, `packages/**`, `fixtures/**`, `package.json` or `package-lock.json`, and on every push to `main`.
+2. **Change gate.** A quick Linux job, "Decide whether E2E is needed", looks at what *this push* changed:
+   - a PR's first run is compared with its base;
+   - later pushes are compared only with the previous push;
+   - pushes to `main` are compared with the commit before.
+
+   If none of the changed files are code (the app, proxy, packages, fixtures or dependency files, excluding `.md`), the macOS job is skipped with an "E2E skipped" notice. So a docs-only push doesn't rebuild the app, even on a PR that also has code changes. If there's no usable base commit, E2E runs.
+
+A newer push to the same branch cancels a running job. Changes to `e2e.yml` itself don't trigger a run.
 
 **Steps** (runner `macos-26`, overall timeout 90 min):
 
@@ -189,7 +200,7 @@ Workflow: [`.github/workflows/e2e.yml`](../.github/workflows/e2e.yml), job **"Ma
 | 3 | Start the mock proxy | `npm run proxy:dev` in the background, logging to `proxy.log`; waits up to 2 min for `/healthz`. Rate limits are set to 10,000 per hour. |
 | 4 | Prebuild and `pod install` | CocoaPods cached by lockfile and `app.config.ts` |
 | 5 | Build | `xcodebuild` Release for the simulator, unsigned; derived data cached. On failure it prints the real compiler errors from `xcodebuild.log`. |
-| 6 | Boot and install | Picks the newest available iPhone simulator. Each boot attempt is limited to 4 min, with up to 3 attempts, erasing the device between tries, because hosted runners sometimes hang in `bootstatus`. Step limit 20 min. |
+| 6 | Boot and install | Picks the newest available iPhone simulator. Each boot attempt is limited to 4 min, with up to 3 attempts, erasing the device between tries, because hosted runners sometimes hang in `bootstatus`. Then it sets the simulator location to Denver (`xcrun simctl location … set`) **before** installing, so a cold simulator already has a location fix; otherwise the first fix can take longer than the app's 5 s location timeout and the app falls back to "location unavailable". Step limit 20 min. |
 | 7 | Run flows | `maestro test apps/mobile/e2e/flows --format junit --output e2e-report.xml` (limit 40 min) |
 | 8 | Run E2E-16 | Run `16a` → `pkill` the proxy → check `/healthz` is down (the step fails if it isn't) → run `16b` |
 | 9 | On failure | Upload artifact **`maestro-e2e`**: `~/.maestro/tests` (per-flow screenshots, command logs), `e2e-report.xml`, `proxy.log` and `xcodebuild.log` |
@@ -228,7 +239,8 @@ A full green run takes about **7–8 minutes** of flow time, plus build time (le
 | Rate limiting during repeated runs | Raise `RATE_LIMIT_*_PER_HOUR`, or restart the proxy |
 | Offline can't be simulated inside one flow | E2E-16 is split, and the runner stops the proxy in between |
 | `actionlint` doesn't know the `macos-26` label | Declared in `.github/actionlint.yaml` |
+| A cold simulator's first location fix can exceed the app's 5 s timeout | CI sets the simulator location right after boot. Locally, set Features → Location → Custom Location before running, or run `xcrun simctl location booted set 39.7392,-104.9903`. |
 
 ## 9. History
 
-The suite was added in PR #61 (issue #24, R-24). It took three rounds of fixes, covering the Xcode version, permission values, simulator boot, keypad dismissal, grouped card labels and timeouts, before reaching 16 of 16 flows passing. None of the failures along the way were app bugs; all were test or CI setup.
+The suite was added in PR #61 (issue #24, R-24). It took three rounds of fixes, covering the Xcode version, permission values, simulator boot, keypad dismissal, grouped card labels and timeouts, before reaching 16 of 16 flows passing. None of the failures along the way were app bugs; all were test or CI setup. PR #65 then added the change gate and the location warm-up.

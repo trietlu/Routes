@@ -302,7 +302,16 @@ flowchart LR
 
 **Environments**
 
-- Three environments: development, staging, production. Each has its own Google Cloud project, API keys and proxy URL.
+- Three environments (development, staging, production) in **two Google Cloud projects**:
+
+  | Project | Environments | Holds |
+  |---|---|---|
+  | `routes-nonprod` | development, staging | Staging Cloud Run proxy, Artifact Registry, a dev server key (local live-data testing), a staging server key, a non-prod iOS key |
+  | `routes-prod` | production | Production Cloud Run proxy, load balancer and Cloud Armor, the production server key and iOS key |
+
+  - Each environment keeps its own API keys and proxy URL, so a key can be revoked without affecting the others.
+  - Production is isolated: quotas, budget alerts and IAM are its own. Development and staging share them.
+  - Projects are free; costs come from API usage and running services, so two projects instead of three changes nothing on the bill.
 - The app reads `EXPO_PUBLIC_PROXY_URL` and `EXPO_PUBLIC_APP_ENV` via `app.config.ts`. In local development it points at `http://localhost:8080`, with the proxy in mock mode by default.
 - EAS build profiles and update channels map one-to-one to those environments, so a TestFlight build always talks to staging.
 - `EXPO_PUBLIC_MAP_PROVIDER=google|default`.

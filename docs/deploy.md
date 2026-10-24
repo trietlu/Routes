@@ -29,16 +29,23 @@ Related: [Technical design § Hosting and deployment](technical-design.md#hostin
 
 ## What H-04 (#33) needs to create
 
+There are two Google Cloud projects (see [technical design § Environments](technical-design.md#hosting-and-deployment)):
+
+- **`routes-nonprod`** for development and staging. It holds the staging Cloud Run service and the Artifact Registry.
+- **`routes-prod`** for production.
+
+"Staging project" below means `routes-nonprod`.
+
 ### GitHub repository variables (Settings → Secrets and variables → Actions → Variables)
 
 | Variable | Required | Example | Purpose |
 |---|---|---|---|
 | `GCP_WORKLOAD_IDENTITY_PROVIDER` | yes | `projects/123456/locations/global/workloadIdentityPools/github/providers/routes` | WIF provider for this repo |
-| `GCP_SERVICE_ACCOUNT` | yes | `proxy-deployer@routes-staging.iam.gserviceaccount.com` | Account the workflow impersonates |
-| `GCP_PROJECT_STAGING` | yes | `routes-staging` | Staging Cloud Run project |
+| `GCP_SERVICE_ACCOUNT` | yes | `proxy-deployer@routes-nonprod.iam.gserviceaccount.com` | Account the workflow impersonates |
+| `GCP_PROJECT_STAGING` | yes | `routes-nonprod` | Project for the staging Cloud Run service (shared with development) |
 | `GCP_PROJECT_PRODUCTION` | for production | `routes-prod` | Production Cloud Run project |
 | `GCP_REGION` | no | `us-central1` | Cloud Run and Artifact Registry region |
-| `GCP_ARTIFACT_PROJECT` | no | `routes-staging` | Project that holds the registry (default: staging) |
+| `GCP_ARTIFACT_PROJECT` | no | `routes-nonprod` | Project that holds the registry (default: the staging project) |
 | `GCP_ARTIFACT_REPO` | no | `routes` | Artifact Registry Docker repository |
 | `CLOUD_RUN_SERVICE` | no | `routes-proxy` | Service name in both projects |
 | `GOOGLE_MAPS_SECRET_NAME` | no | `google-maps-api-key` | Secret Manager secret holding the server key |
@@ -54,7 +61,7 @@ No GitHub **secrets** are needed. Authentication is keyless (WIF), and the Maps 
 - `staging`: no protection needed.
 - `production`: add **required reviewers**. This is the manual promotion gate.
 
-### Google Cloud, per project
+### Google Cloud, in both projects (`routes-nonprod` and `routes-prod`)
 
 1. Enable the Cloud Run, Artifact Registry, Secret Manager and IAM Credentials APIs.
 2. Create the Artifact Registry Docker repository `GCP_ARTIFACT_REPO` in `GCP_REGION`, in the artifact project.

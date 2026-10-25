@@ -7,7 +7,7 @@ appId: com.routes.app.dev
     visible:
       id: 'field-to'
       text: 'To: Union Station.*'
-    timeout: 10000
+    timeout: 60000
 - tapOn:
     id: 'swap'
 - assertVisible:

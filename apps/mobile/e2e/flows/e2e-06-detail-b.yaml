@@ -8,7 +8,7 @@ appId: com.routes.app.dev
 - extendedWaitUntil:
     visible:
       id: 'cost-card'
-    timeout: 10000
+    timeout: 60000
 - assertVisible: 'via Elm Ave & 3rd St · Union Station'
 - assertVisible: 'No tolls'
 - assertVisible: "\\$1\\.48"

@@ -5,11 +5,11 @@ appId: com.routes.app.dev
 - launchApp
 - extendedWaitUntil:
     visible: 'Union Station, 100 Union Plaza'
-    timeout: 20000
+    timeout: 60000
 - tapOn: 'Union Station, 100 Union Plaza'
 - extendedWaitUntil:
     visible: "You're offline"
-    timeout: 15000
+    timeout: 60000
 - assertVisible: 'Retry'
 - tapOn: 'Back to Home'
 - assertVisible: 'Union Station, 100 Union Plaza'

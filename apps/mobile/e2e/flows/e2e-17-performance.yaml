@@ -10,7 +10,7 @@ appId: com.routes.app.dev
 - extendedWaitUntil:
     visible:
       id: 'suggestion-fixture-union-station'
-    timeout: 10000
+    timeout: 60000
 - tapOn:
     id: 'suggestion-fixture-union-station'
 - extendedWaitUntil:

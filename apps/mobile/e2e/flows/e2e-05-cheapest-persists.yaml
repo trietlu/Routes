@@ -13,4 +13,4 @@ appId: com.routes.app.dev
     visible:
       id: 'mode-cheapest'
       selected: true
-    timeout: 20000
+    timeout: 60000

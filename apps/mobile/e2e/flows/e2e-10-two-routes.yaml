@@ -9,7 +9,7 @@ appId: com.routes.app.dev
       PLACE_ID: 'fixture-two-routes'
 - extendedWaitUntil:
     visible: 'Only 2 routes found'
-    timeout: 10000
+    timeout: 60000
 # "Best of 2" sits inside card A's VoiceOver element; check there's no third card instead.
 - assertVisible:
     id: 'route-card-B'

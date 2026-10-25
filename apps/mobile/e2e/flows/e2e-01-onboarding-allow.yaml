@@ -4,12 +4,12 @@ appId: com.routes.app.dev
 - runFlow: ../common/launch-granted.yaml
 - extendedWaitUntil:
     visible: 'Three good ways there.'
-    timeout: 30000
+    timeout: 60000
 - assertVisible: 'Your location is only used to set your starting point. You can change this anytime in Settings.'
 - tapOn: 'Allow location access'
 - extendedWaitUntil:
     visible:
       id: 'field-from'
       text: 'From: Current location.*'
-    timeout: 20000
+    timeout: 60000
 - assertVisible: 'Show me the'

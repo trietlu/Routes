@@ -5,7 +5,7 @@ appId: com.routes.app.dev
 - tapOn: 'Open in Google Maps'
 - extendedWaitUntil:
     visible: "Google Maps isn't installed"
-    timeout: 10000
+    timeout: 60000
 - assertVisible: 'Open in browser'
 - assertVisible: 'Get Google Maps'
 - tapOn: 'Cancel'

@@ -231,7 +231,7 @@ A full green run takes about **7–8 minutes** of flow time, plus build time (le
 
 | Quirk | Handling |
 |---|---|
-| Expo SDK 57 needs Swift tools 6.2 | Use Xcode 26 or newer (`macos-26` in CI). Xcode 16 fails in `Build ExpoModulesJSI xcframework`. |
+| Expo SDK 57 needs Swift tools 6.2 | Use Xcode 26 or newer (`macos-26` in CI). Xcode 16 fails in `Build ExpoModulesJSI xcframework`. Xcode 27 (Swift 6.4) needs `expo` 57.0.31 or later; older patches fail with `cannot find type '__ObjC::expo'`. |
 | iOS permission values | `inuse` / `never`, not `allow` / `deny` |
 | Decimal keypad has no return key, so `hideKeyboard` can't dismiss it | E2E-07 taps the "Fuel price" label outside the field, then uses `scrollUntilVisible` to reach Save |
 | Text inside a route card isn't separately visible to Maestro | Assert on the card's accessibility label, or on card presence (E2E-10) |

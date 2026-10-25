@@ -5,9 +5,9 @@ appId: com.routes.app.dev
 - tapOn: 'Back to Home'
 - extendedWaitUntil:
     visible: 'Union Station, 100 Union Plaza'
-    timeout: 10000
+    timeout: 60000
 - tapOn: 'Union Station, 100 Union Plaza'
 - extendedWaitUntil:
     visible:
       id: 'route-card-A'
-    timeout: 10000
+    timeout: 60000

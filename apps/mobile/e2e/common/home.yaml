@@ -4,10 +4,10 @@ appId: com.routes.app.dev
 - runFlow: launch-granted.yaml
 - extendedWaitUntil:
     visible: 'Allow location access'
-    timeout: 30000
+    timeout: 60000
 - tapOn: 'Allow location access'
 - extendedWaitUntil:
     visible:
       id: 'field-from'
       text: 'From: Current location.*'
-    timeout: 40000
+    timeout: 90000

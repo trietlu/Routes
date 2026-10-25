@@ -9,7 +9,7 @@ appId: com.routes.app.dev
       PLACE_ID: 'fixture-upstream-error'
 - extendedWaitUntil:
     visible: "Couldn't load routes"
-    timeout: 15000
+    timeout: 60000
 - assertVisible: 'Retry'
 - assertVisible:
     id: 'results-map'

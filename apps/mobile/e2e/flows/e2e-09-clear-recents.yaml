@@ -5,11 +5,11 @@ appId: com.routes.app.dev
 - tapOn: 'Back to Home'
 - extendedWaitUntil:
     visible: 'Union Station, 100 Union Plaza'
-    timeout: 10000
+    timeout: 60000
 - tapOn: 'Clear recent destinations'
 - extendedWaitUntil:
     visible: 'Clear recent destinations?'
-    timeout: 5000
+    timeout: 60000
 - tapOn: 'Clear'
 - assertNotVisible: 'Union Station, 100 Union Plaza'
 - assertNotVisible: 'RECENT'

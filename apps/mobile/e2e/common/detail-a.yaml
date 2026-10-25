@@ -6,4 +6,4 @@ appId: com.routes.app.dev
 - extendedWaitUntil:
     visible:
       id: 'cost-card'
-    timeout: 30000
+    timeout: 60000

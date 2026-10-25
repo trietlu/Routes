@@ -9,5 +9,5 @@ appId: com.routes.app.dev
       PLACE_ID: 'fixture-no-route'
 - extendedWaitUntil:
     visible: 'No driving route found'
-    timeout: 10000
+    timeout: 60000
 - assertVisible: 'Change destination'

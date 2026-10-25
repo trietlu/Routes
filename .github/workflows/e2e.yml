@@ -77,7 +77,7 @@ jobs:
     if: needs.changes.outputs.code == 'true'
     # Expo SDK 57's ExpoModulesJSI needs Swift tools 6.2, i.e. Xcode 26 or newer.
     runs-on: macos-26
-    timeout-minutes: 90
+    timeout-minutes: 120
     env:
       EXPO_PUBLIC_MAP_PROVIDER: default
       EXPO_PUBLIC_PROXY_URL: http://localhost:8080
@@ -201,7 +201,7 @@ jobs:
           xcrun simctl install "$device" apps/mobile/ios/build/Build/Products/Release-iphonesimulator/Routes.app
 
       - name: Run flows (E2E-01 to E2E-15, E2E-17)
-        timeout-minutes: 40
+        timeout-minutes: 75
         run: maestro test apps/mobile/e2e/flows --format junit --output e2e-report.xml
 
       - name: Run E2E-16 (offline)

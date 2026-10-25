@@ -191,7 +191,7 @@ Workflow: [`.github/workflows/e2e.yml`](../.github/workflows/e2e.yml), job **"Ma
 
 A newer push to the same branch cancels a running job. Changes to `e2e.yml` itself don't trigger a run.
 
-**Steps** (runner `macos-26`, overall timeout 90 min):
+**Steps** (runner `macos-26`, overall timeout 120 min):
 
 | # | Step | Detail |
 |---|---|---|
@@ -201,7 +201,7 @@ A newer push to the same branch cancels a running job. Changes to `e2e.yml` itse
 | 4 | Prebuild and `pod install` | CocoaPods cached by lockfile and `app.config.ts` |
 | 5 | Build | `xcodebuild` Release for the simulator, unsigned; derived data cached. On failure it prints the real compiler errors from `xcodebuild.log`. |
 | 6 | Boot and install | Picks the newest available iPhone simulator. Each boot attempt is limited to 4 min, with up to 3 attempts, erasing the device between tries, because hosted runners sometimes hang in `bootstatus`. Then it sets the simulator location to Denver (`xcrun simctl location … set`) **before** installing, so a cold simulator already has a location fix; otherwise the first fix can take longer than the app's 5 s location timeout and the app falls back to "location unavailable". Step limit 20 min. |
-| 7 | Run flows | `maestro test apps/mobile/e2e/flows --format junit --output e2e-report.xml` (limit 40 min) |
+| 7 | Run flows | `maestro test apps/mobile/e2e/flows --format junit --output e2e-report.xml` (limit 75 min) |
 | 8 | Run E2E-16 | Run `16a` → `pkill` the proxy → check `/healthz` is down (the step fails if it isn't) → run `16b` |
 | 9 | On failure | Upload artifact **`maestro-e2e`**: `~/.maestro/tests` (per-flow screenshots, command logs), `e2e-report.xml`, `proxy.log` and `xcodebuild.log` |
 
@@ -222,7 +222,7 @@ A full green run takes about **7–8 minutes** of flow time, plus build time (le
 3. **Reuse `common/`** for setup. Add a new common step only when two or more flows need it.
 4. **Prefer testIDs** for anything whose text varies. Add a `testID` in the component if needed; it's invisible to users. Keep copy assertions for copy that matters to the spec.
 5. **Use exact values from [test plan §2](test-plan.md#2-canonical-fixture-and-expected-values),** not values read off the screen. Escape regex characters.
-6. **Wait, don't sleep.** Use `extendedWaitUntil` with a timeout after every navigation or request. Hosted simulators are slow: allow 30–40 s for the first location fix and first request, and about 10 s after that. Only E2E-17 uses a tight timeout on purpose.
+6. **Wait, don't sleep.** Use `extendedWaitUntil` with a timeout after every navigation or request. Hosted simulators are slow and uneven, so every wait is at least **60 s**, and the first location fix in `common/home.yaml` gets **90 s**. A generous timeout only costs time when something is actually slow, because Maestro continues as soon as the element appears. Only E2E-17 uses a tight timeout (3 s) on purpose, since that's the speed requirement it checks.
 7. **Start clean.** Begin with `launch-granted.yaml` (or `setLocation` plus `launchApp: { clearState: true }`), so flows don't depend on each other.
 8. **New fixture data?** Add it in `scripts/fixtures/build.ts`, run `npm run fixtures:generate`, and reference the new place ID. See [fixtures/README.md](../fixtures/README.md).
 9. **Run it locally,** then push. The E2E job must be green before merging.

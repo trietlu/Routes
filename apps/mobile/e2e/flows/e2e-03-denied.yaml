@@ -10,11 +10,11 @@ appId: com.routes.app.dev
       location: never
 - extendedWaitUntil:
     visible: 'Allow location access'
-    timeout: 30000
+    timeout: 60000
 - tapOn: 'Allow location access'
 - extendedWaitUntil:
     visible:
       id: 'field-from'
       text: 'From: Enter a start address'
-    timeout: 20000
+    timeout: 60000
 - assertVisible: 'Turn on in Settings'

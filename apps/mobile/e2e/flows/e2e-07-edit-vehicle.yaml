@@ -5,7 +5,7 @@ appId: com.routes.app.dev
 - tapOn: 'Set your vehicle'
 - extendedWaitUntil:
     visible: 'Your vehicle'
-    timeout: 10000
+    timeout: 60000
 - tapOn:
     id: 'vehicle-mpg'
 - eraseText: 10
@@ -23,5 +23,5 @@ appId: com.routes.app.dev
     id: 'vehicle-save'
 - extendedWaitUntil:
     visible: "\\$4\\.73"
-    timeout: 10000
+    timeout: 60000
 - assertVisible: 'Fuel uses your vehicle settings.'

@@ -63,6 +63,8 @@ export function HomeScreen() {
 
   const coords = location.state === 'ready' ? location.coords : null;
   const locationOff = location.state === 'denied' || location.state === 'unavailable';
+  // Location is on but no fix yet; the app keeps trying, so no Settings link.
+  const locationSearching = location.state === 'searching';
   const startSet = start !== null && (start !== 'current' || locationReady);
   const from = fieldView(
     start ?? (location.state === 'locating' ? 'current' : null),
@@ -174,6 +176,19 @@ export function HomeScreen() {
             </Pressable>
           </View>
         ) : null}
+        {locationSearching ? (
+          <View
+            accessibilityLiveRegion="polite"
+            testID="location-searching"
+            style={[
+              styles.note,
+              styles.noteText,
+              { backgroundColor: theme.colors.surface, borderRadius: theme.radii.md },
+            ]}
+          >
+            <AppText variant="secondary">{t('home.locationSearching')}</AppText>
+          </View>
+        ) : null}
         {isOffline ? (
           <View
             accessibilityRole="alert"
@@ -275,6 +290,8 @@ const styles = StyleSheet.create({
     gap: 4,
     paddingHorizontal: 12,
   },
+  // A note with no button still needs the button row's height for its text.
+  noteText: { minHeight: MIN_TOUCH_TARGET },
   inlineButton: {
     minHeight: MIN_TOUCH_TARGET,
     minWidth: MIN_TOUCH_TARGET,

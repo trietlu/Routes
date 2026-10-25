@@ -174,7 +174,7 @@ sequenceDiagram
 |---|---|
 | `api/` | `createApiClient` (typed fetch, 10 s timeout, schema-validated responses, `X-Device-Id`, attestation hook); `errors.ts` maps failures to `offline`, `noRoute`, `rateLimited` and `generic`; `hooks.ts` (`useAutocomplete` with a 300 ms debounce, `usePlaceDetails`, `useRoutes`); `session.ts` (Places session tokens); `network.ts` (NetInfo) |
 | `storage/` | `SqlDatabase` adapter interface; `expoDatabase.ts` (expo-sqlite); `migrations.ts` (numbered, append-only); repos `places.ts` (recents capped at 10, Home/Work), `vehicle.ts`, `preferences.ts` (`lastMode`, prompt flags, `deviceId`) |
-| `location/` | `permissions.ts` (foreground only, never requested automatically); `currentLocation.ts` (`useCurrentLocation` with a 5 s timeout and reverse geocoding; `deviceLocationSource`) |
+| `location/` | `permissions.ts` (foreground only, never requested automatically); `currentLocation.ts` (`useCurrentLocation` via `trackLocation`: `searching` after 5 s without a fix, re-asks every 10 s, `ready` whenever a fix arrives; reverse geocoding; `deviceLocationSource`, which reuses a fix under 60 s old) |
 | `handoff/` | `link.ts` (`buildDirectionsUrl`, `APP_STORE_URL`); `open.ts` (`openInGoogleMaps` through an injectable `Linker`); `share.ts` (`buildShareText`) |
 
 ### Screens

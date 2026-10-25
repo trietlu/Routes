@@ -22,6 +22,7 @@ export const APP_STRINGS = {
   'home.fieldHint': 'Opens search',
   'home.swap': 'Swap start and destination',
   'home.locationOff': 'Location is off.',
+  'home.locationSearching': "Can't find your location yet. You can enter a start address.",
   'home.turnOnInSettings': 'Turn on in Settings',
   'home.recenter': 'Re-center map',
   'home.showMeThe': 'Show me the',

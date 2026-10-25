@@ -239,7 +239,7 @@ A full green run takes about **7–8 minutes** of flow time, plus build time (le
 | Rate limiting during repeated runs | Raise `RATE_LIMIT_*_PER_HOUR`, or restart the proxy |
 | Offline can't be simulated inside one flow | E2E-16 is split, and the runner stops the proxy in between |
 | `actionlint` doesn't know the `macos-26` label | Declared in `.github/actionlint.yaml` |
-| A cold simulator's first location fix can exceed the app's 5 s timeout | CI sets the simulator location right after boot. Locally, set Features → Location → Custom Location before running, or run `xcrun simctl location booted set 39.7392,-104.9903`. |
+| A cold simulator's first location fix can exceed the app's 5 s timeout | The app keeps trying after the timeout (`searching`, re-asking every 10 s) and switches to Current location when the fix arrives, so the flows' 60–90 s waits cover a slow first fix. CI also sets the simulator location right after boot. Locally, set Features → Location → Custom Location before running, or run `xcrun simctl location booted set 39.7392,-104.9903`. |
 
 ## 9. History
 

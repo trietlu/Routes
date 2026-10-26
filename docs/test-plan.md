@@ -11,7 +11,7 @@ This plan tells the coding agent how to prove each piece works. Every issue list
 | Unit | Jest | Any OS, CI (ubuntu) | `packages/routing-core`, `packages/api-types`, pure app modules (`handoff/`, `storage/` logic, `api/` mapping) | `RC-`, `AT-`, `APP-` |
 | Integration (proxy) | Jest + supertest + nock | Any OS, CI (ubuntu) | `apps/proxy` endpoints with Google stubbed | `PX-` |
 | Component | Jest + React Native Testing Library | Any OS, CI (ubuntu) | Screens and components, with fixture API responses and mocked native modules | `UI-` |
-| End-to-end | Maestro on iOS simulator | macOS only, CI (macos runner) | Real app build against the proxy in `PROVIDER=mock` | `E2E-` |
+| End-to-end | Maestro on iOS simulator | macOS only; CI on demand (manual `E2E` workflow) | Real app build against the proxy in `PROVIDER=mock` | `E2E-` |
 | Manual | Human on a real iPhone | Before beta | Handoff with and without Google Maps, VoiceOver, live Google data | `MAN-` |
 
 **Commands** (defined in R-01 and kept working by every issue):
@@ -340,6 +340,6 @@ Notes on the implementation (`apps/mobile/e2e`):
 
 1. All test IDs listed in the issue exist and pass.
 2. `npm run lint`, `npm run typecheck`, `npm test` and `npm run test:coverage` pass locally and in CI.
-3. If the issue touches screens and the E2E job exists, the E2E job passes.
+3. E2E (Maestro) is not a merge gate; it runs manually (see [INTEG.md §6](INTEG.md#6-in-ci)). If the issue changes native modules, `app.config.ts`, Expo/React Native versions, iOS permissions or the E2E flows, run the E2E workflow on the branch and note the result in the PR.
 4. No real network calls in automated tests; no secrets committed.
 5. The issue's acceptance checklist is ticked in the PR description.

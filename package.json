@@ -18,6 +18,7 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "proxy:dev": "tsc --build apps/proxy && PROVIDER=mock ATTEST_MODE=off tsx watch apps/proxy/src/server.ts",
+    "proxy:live": "tsc --build apps/proxy && PROVIDER=google ATTEST_MODE=off tsx watch --env-file=.env apps/proxy/src/server.ts",
     "fixtures:generate": "tsc --build scripts && node scripts/dist/generate-fixtures.js",
     "e2e": "maestro test apps/mobile/e2e/flows"
   },

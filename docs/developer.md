@@ -56,7 +56,23 @@ npm run ios -w @routes/mobile      # prebuild, compile and launch in the simulat
 
 Full lists: `apps/proxy/src/config.ts` and `apps/mobile/app.config.ts`. Put local values in `.env` files, which are git-ignored. Never commit keys.
 
-**Testing against live Google data:** run the proxy with `PROVIDER=google GOOGLE_MAPS_API_KEY=… npm run proxy:dev`, using a dev key from H-02 (#31).
+**Testing against live Google data:**
+
+1. Put a non-prod **server** key from H-02 (#31) in `.env` at the repo root: `GOOGLE_MAPS_API_KEY=<key>`. The file is git-ignored.
+2. Run `npm run proxy:live` instead of `proxy:dev`. It runs the proxy with `PROVIDER=google` and loads `.env`.
+
+Live calls are billed to `routes-nonprod`. (`proxy:dev` always forces mock mode, so setting `PROVIDER` in front of it has no effect.)
+
+**Google map tiles in the simulator:**
+
+1. Put a non-prod **iOS** key, restricted to Maps SDK for iOS and `com.routes.app.dev`, in `apps/mobile/.env`:
+
+   ```
+   GOOGLE_MAPS_IOS_KEY=<key>
+   EXPO_PUBLIC_MAP_PROVIDER=google
+   ```
+
+2. Rebuild with `npm run ios -w @routes/mobile`. Expo loads that file automatically.
 
 ## Commands
 
@@ -68,6 +84,7 @@ Full lists: `apps/proxy/src/config.ts` and `apps/mobile/app.config.ts`. Put loca
 | `npm test` | All Jest projects |
 | `npm run test:coverage` | Jest with the coverage gates from the test plan (what CI runs) |
 | `npm run proxy:dev` | Proxy in watch mode, mock provider |
+| `npm run proxy:live` | Proxy in watch mode against live Google, with the key from `.env` |
 | `npm run fixtures:generate` | Regenerate `fixtures/` from `scripts/fixtures/build.ts` |
 | `npm run ios -w @routes/mobile` | Build and run the app in the simulator |
 | `npm run start -w @routes/mobile` | Metro for an installed development build |

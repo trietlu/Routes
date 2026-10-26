@@ -179,17 +179,19 @@ Flows set the location and reset app data themselves, so they can run in any ord
 
 Workflow: [`.github/workflows/e2e.yml`](../.github/workflows/e2e.yml), job **"Maestro E2E (iOS simulator)"**.
 
-**When it runs:**
+**When it runs: manually only.** It doesn't gate PRs or run on merges. PRs are gated on the fast checks in `ci.yml` (lint, typecheck, and the Jest unit, proxy and screen tests, about 2 minutes). A full E2E run takes about an hour on GitHub's macOS runners (roughly 21 min to build, up to 13 min to boot the simulator, 15 min of flows), which was too slow to wait on for every PR.
 
-1. **Path filter.** The workflow starts on PRs touching `apps/mobile/**`, `apps/proxy/**`, `packages/**`, `fixtures/**`, `package.json` or `package-lock.json`, and on every push to `main`.
-2. **Change gate.** A quick Linux job, "Decide whether E2E is needed", looks at what *this push* changed:
-   - a PR's first run is compared with its base;
-   - later pushes are compared only with the previous push;
-   - pushes to `main` are compared with the commit before.
+**Run it** from GitHub → Actions → **E2E** → **Run workflow**, choosing a branch, or from the terminal:
 
-   If none of the changed files are code (the app, proxy, packages, fixtures or dependency files, excluding `.md`), the macOS job is skipped with an "E2E skipped" notice. So a docs-only push doesn't rebuild the app, even on a PR that also has code changes. If there's no usable base commit, E2E runs.
+```
+gh workflow run E2E --repo trietlu/Routes --ref <branch>
+```
 
-A newer push to the same branch cancels a running job. Changes to `e2e.yml` itself don't trigger a run.
+Do run it before a release (TestFlight or App Store), and after changes that only show up in a real build: native modules, `app.config.ts` or Expo/React Native upgrades, iOS permissions, or the E2E flows themselves.
+
+A newer run on the same branch cancels a running one.
+
+**Post-launch speed-ups** are tracked as issues labelled `post-launch`: boot the simulator in parallel with the build, cache the built app and use ccache, and shard the flows across runners. Together they'd bring a run to about 20–25 minutes, at which point E2E could gate PRs again.
 
 **Steps** (runner `macos-26`, overall timeout 120 min):
 
@@ -225,7 +227,7 @@ A full green run takes about **7–8 minutes** of flow time, plus build time (le
 6. **Wait, don't sleep.** Use `extendedWaitUntil` with a timeout after every navigation or request. Hosted simulators are slow and uneven, so every wait is at least **60 s**, and the first location fix in `common/home.yaml` gets **90 s**. A generous timeout only costs time when something is actually slow, because Maestro continues as soon as the element appears. Only E2E-17 uses a tight timeout (3 s) on purpose, since that's the speed requirement it checks.
 7. **Start clean.** Begin with `launch-granted.yaml` (or `setLocation` plus `launchApp: { clearState: true }`), so flows don't depend on each other.
 8. **New fixture data?** Add it in `scripts/fixtures/build.ts`, run `npm run fixtures:generate`, and reference the new place ID. See [fixtures/README.md](../fixtures/README.md).
-9. **Run it locally,** then push. The E2E job must be green before merging.
+9. **Run it locally,** then push, and start the E2E workflow on your branch (see §6). It doesn't run automatically.
 
 ## 8. Known quirks
 

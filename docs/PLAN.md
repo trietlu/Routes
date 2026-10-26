@@ -95,7 +95,7 @@ None of the R-issues wait on an H-issue to be **built and tested**. Each R-issue
 | **A: Core logic** | R-01 to R-05 merged. All `RC-` tests pass. |
 | **B: Proxy (mock)** | R-06 to R-10 merged. `npm run proxy:dev` serves every fixture. |
 | **C: App works end to end in mock mode** | R-11 to R-23 merged. Every screen is navigable in the simulator. |
-| **D: Verified** | R-24 to R-27 merged. E2E is green in CI, with accessibility checks. |
+| **D: Verified** | R-24 to R-27 merged. A manual E2E run is green, with accessibility checks. |
 | **E: Release-ready** | R-28, R-29 and H-01 to H-07 done. The staging build is on TestFlight and talks to the staging proxy with live data. |
 | **F: Launch** | H-08 done. |
 

@@ -1,17 +1,13 @@
 name: E2E
 
 # Maestro flows on the iOS simulator against the mock proxy (test plan §8).
+#
+# Manual only (Actions → E2E → Run workflow). PRs are gated on the fast checks in
+# ci.yml (lint, typecheck, Jest). A full run takes about an hour on a hosted
+# macOS runner, so run it before a release or after native or build changes.
+# Speed-ups are tracked as post-launch issues (docs/INTEG.md).
 on:
-  pull_request:
-    paths:
-      - 'apps/mobile/**'
-      - 'apps/proxy/**'
-      - 'packages/**'
-      - 'fixtures/**'
-      - 'package.json'
-      - 'package-lock.json'
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 concurrency:
   group: e2e-${{ github.ref }}
@@ -21,60 +17,8 @@ permissions:
   contents: read
 
 jobs:
-  # The path filter above looks at the whole PR, so a docs-only push to a PR that
-  # also changes code would still rebuild the app. This gate looks at what the
-  # push itself changed and skips the macOS job unless it touches code.
-  changes:
-    name: Decide whether E2E is needed
-    runs-on: ubuntu-latest
-    outputs:
-      code: ${{ steps.diff.outputs.code }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - id: diff
-        env:
-          BEFORE: ${{ github.event.before }}
-          AFTER: ${{ github.sha }}
-          PR_BASE: ${{ github.event.pull_request.base.sha }}
-          PR_HEAD: ${{ github.event.pull_request.head.sha }}
-          ACTION: ${{ github.event.action }}
-        run: |
-          # On a PR's first run compare with its base; afterwards only the new push.
-          if [ -n "$PR_HEAD" ]; then
-            head="$PR_HEAD"
-            if [ "$ACTION" = "synchronize" ] && [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
-              base="$BEFORE"
-            else
-              base="$PR_BASE"
-            fi
-          else
-            head="$AFTER"
-            base="$BEFORE"
-          fi
-          if [ -z "$base" ] || ! git cat-file -e "$base^{commit}" 2>/dev/null; then
-            echo "code=true" >> "$GITHUB_OUTPUT"
-            echo "No usable base commit; running E2E."
-            exit 0
-          fi
-          changed=$(git diff --name-only "$base" "$head")
-          echo "Changed files:"
-          echo "$changed"
-          # Code: the app, proxy, shared packages, fixtures and dependencies. Markdown,
-          # docs and CI configuration don't need an iOS build.
-          code=$(echo "$changed" | grep -E '^(apps/(mobile|proxy)/|packages/|fixtures/|package(-lock)?\.json$)' | grep -vE '\.md$' || true)
-          if [ -n "$code" ]; then
-            echo "code=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "code=false" >> "$GITHUB_OUTPUT"
-            echo "::notice title=E2E skipped::No code changes in this push (only docs, Markdown or CI configuration)."
-          fi
-
   e2e:
     name: Maestro E2E (iOS simulator)
-    needs: changes
-    if: needs.changes.outputs.code == 'true'
     # Expo SDK 57's ExpoModulesJSI needs Swift tools 6.2, i.e. Xcode 26 or newer.
     runs-on: macos-26
     timeout-minutes: 120

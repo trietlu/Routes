@@ -2,6 +2,7 @@ import { Alert } from 'react-native';
 import * as Location from 'expo-location';
 import * as Linking from 'expo-linking';
 import { act, fireEvent, screen, waitFor, within } from 'expo-router/testing-library';
+import { LOCATION_RETRY_MS, LOCATION_TIMEOUT_MS, forgetLastFix, locationTiming } from '../location';
 import { type Storage } from '../storage';
 import { type PlaceInput } from '../storage/places';
 import { a11yProblems, pressables } from './a11y';
@@ -30,8 +31,13 @@ beforeEach(() => {
     timestamp: 0,
   });
   mocked.reverseGeocodeAsync!.mockResolvedValue([{ streetNumber: '1437', street: 'Bannock St' }]);
+  forgetLastFix();
 });
-afterEach(() => resetNetworkState());
+afterEach(() => {
+  resetNetworkState();
+  locationTiming.timeoutMs = LOCATION_TIMEOUT_MS;
+  locationTiming.retryMs = LOCATION_RETRY_MS;
+});
 
 async function showHome(seed?: (storage: Storage) => Promise<void>) {
   const storage = await useTestStorage(async (s) => {
@@ -83,6 +89,24 @@ describe('Screen 2 — Home', () => {
     expect(screen.queryByTestId('recenter')).toBeNull();
     await fireEvent.press(screen.getByRole('link', { name: 'Turn on in Settings' }));
     expect(Linking.openURL).toHaveBeenCalledWith('app-settings:');
+  });
+
+  it('UI-HOME-09: no fix yet → "Can\'t find your location yet" with no Settings link; a later fix switches From to Current location', async () => {
+    locationTiming.timeoutMs = 20;
+    locationTiming.retryMs = 50;
+    // The first request never answers; the retry gets a fix.
+    mocked.getCurrentPositionAsync!.mockImplementationOnce(() => new Promise(() => undefined));
+    await showHome();
+    await screen.findByTestId('location-searching');
+    expect(
+      screen.getByText("Can't find your location yet. You can enter a start address."),
+    ).toBeTruthy();
+    expect(within(fromField()).getByText('Enter a start address')).toBeTruthy();
+    expect(screen.queryByText('Location is off.')).toBeNull();
+    expect(screen.queryByRole('link', { name: 'Turn on in Settings' })).toBeNull();
+
+    await waitFor(() => expect(within(fromField()).getByText('Current location')).toBeTruthy());
+    expect(screen.queryByTestId('location-searching')).toBeNull();
   });
 
   it('unavailable location behaves like denied', async () => {

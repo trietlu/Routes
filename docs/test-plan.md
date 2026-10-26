@@ -191,8 +191,11 @@ Google is stubbed with `nock`. No test may make a real network call (`nock.disab
 | APP-STATE-03 | Swap exchanges start and destination, including `current` | FR-4 |
 | APP-STATE-04 | Selecting a route by letter; mode change selects new A | FR-14 |
 | APP-LOC-01 | Permission flow: never requests before explicit call; granted → coordinates + address; denied → `denied` state | FR-1, 2, 3 |
-| APP-LOC-02 | No fix within 5 s → `unavailable` | FR-3 |
+| APP-LOC-02 | No fix within 5 s → `searching`, not `unavailable` | FR-3 |
 | APP-LOC-03 | Only foreground permission APIs are used (no background) | NFR-4 |
+| APP-LOC-04 | A fix arriving after the 5 s timeout still switches the hook to `ready` | FR-2 |
+| APP-LOC-05 | While `searching`, re-requests every 10 s; errors keep searching; stops at the first fix and on unmount | FR-2 |
+| APP-LOC-06 | Route requests reuse a fix under 60 s old; otherwise wait up to 30 s for a new one | FR-2, NFR-1 |
 | APP-HAND-01 | Link for current-location start omits `origin`; has `destination`, `destination_place_id`, `travelmode=driving`, `dir_action=navigate` | FR-16 |
 | APP-HAND-02 | Typed start → `origin=lat,lng`; destination `current` (after swap) → `destination=lat,lng`, no place ID | FR-16 |
 | APP-HAND-03 | Names with `&`, `#`, spaces, unicode are URL-encoded | FR-16 |
@@ -218,6 +221,7 @@ Use RNTL with mocked native modules (maps, location, linking, sqlite) and fixtur
 | UI-HOME-06 | 2 | Clear → confirm → recents gone, Home/Work kept | FR-6 |
 | UI-HOME-07 | 2 | Unset Home shows "Set Home" → opens Set Home | FR-7 |
 | UI-HOME-08 | 2 | Offline: banner with Retry; recents still tappable | FR-21 |
+| UI-HOME-09 | 2 | No fix yet: "Can't find your location yet" note with no Settings link; a later fix switches From to "Current location" | FR-2, FR-3 |
 | UI-SRCH-01 | 3 | Typing "Union" shows 3 suggestions with distances "9.1 mi" etc. | FR-5 |
 | UI-SRCH-02 | 3 | No "Choose on map" row | Scope |
 | UI-SRCH-03 | 3 | Picking a result saves a recent and navigates to Results when both ends are set | US-3, FR-6 |
@@ -299,8 +303,8 @@ Notes on the implementation (`apps/mobile/e2e`):
 | Req | Tests |
 |---|---|
 | FR-1 | APP-LOC-01, UI-ONB-01, UI-ONB-02, E2E-01 |
-| FR-2 | APP-LOC-01, UI-HOME-01, E2E-01 |
-| FR-3 | APP-LOC-01, APP-LOC-02, UI-HOME-02, E2E-03 |
+| FR-2 | APP-LOC-01, APP-LOC-04…06, UI-HOME-01, UI-HOME-09, E2E-01 |
+| FR-3 | APP-LOC-01, APP-LOC-02, UI-HOME-02, UI-HOME-09, E2E-03 |
 | FR-4 | APP-STATE-03, UI-HOME-03, E2E-15 |
 | FR-5 | PX-PLACES-01, UI-SRCH-01, E2E-04 |
 | FR-6 | APP-STORE-02, APP-STORE-03, UI-HOME-06, E2E-08, E2E-09 |

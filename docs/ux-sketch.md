@@ -79,7 +79,11 @@ Onboarding shows only on first launch (`locationPromptShown`). After that, the a
   - From shows the placeholder "Enter a start address".
   - An inline note below the card reads "Location is off. **Turn on in Settings**". The link opens `app-settings:`.
   - No blue dot. The map centers on the last known region, or on the continental US if there is none.
-- **Locating:** From shows "Finding your location…" until the first fix. After a 5 s timeout, the screen behaves as if location is unavailable.
+- **Locating:** From shows "Finding your location…" until the first fix.
+- **Still searching** (permission granted, no fix after 5 s):
+  - From shows the placeholder "Enter a start address", and a note reads "Can't find your location yet. You can enter a start address." There's no Settings link, because location is on.
+  - The app keeps trying, asking again every 10 s while Home is open.
+  - When a fix arrives, From switches to "Current location" and the note disappears, unless the user has already chosen a start.
 - **Offline (FR-21):**
   - A banner below the card reads "You're offline", with a **Retry** button.
   - Recents and saved places stay listed and tappable; Results then shows its offline state.

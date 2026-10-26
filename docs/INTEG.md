@@ -201,7 +201,7 @@ A newer push to the same branch cancels a running job. Changes to `e2e.yml` itse
 | 4 | Prebuild and `pod install` | CocoaPods cached by lockfile and `app.config.ts` |
 | 5 | Build | `xcodebuild` Release for the simulator, unsigned; derived data cached. On failure it prints the real compiler errors from `xcodebuild.log`. |
 | 6 | Boot and install | Picks the newest available iPhone simulator. Each boot attempt is limited to 4 min, with up to 3 attempts, erasing the device between tries, because hosted runners sometimes hang in `bootstatus`. Then it sets the simulator location to Denver (`xcrun simctl location … set`) **before** installing, so a cold simulator already has a location fix; otherwise the first fix can take longer than the app's 5 s location timeout and the app falls back to "location unavailable". Step limit 20 min. |
-| 7 | Run flows | `maestro test apps/mobile/e2e/flows --format junit --output e2e-report.xml` (limit 75 min) |
+| 7 | Run flows | `apps/mobile/e2e/run-maestro.sh apps/mobile/e2e/flows --format junit --output e2e-report.xml` (limit 75 min). The wrapper runs `maestro test`. If Maestro's iOS driver fails to start ("iOS driver not ready", so no flow ran), it retries **once** with a warning. Test failures are never retried. |
 | 8 | Run E2E-16 | Run `16a` → `pkill` the proxy → check `/healthz` is down (the step fails if it isn't) → run `16b` |
 | 9 | On failure | Upload artifact **`maestro-e2e`**: `~/.maestro/tests` (per-flow screenshots, command logs), `e2e-report.xml`, `proxy.log` and `xcodebuild.log` |
 
@@ -233,6 +233,7 @@ A full green run takes about **7–8 minutes** of flow time, plus build time (le
 |---|---|
 | Expo SDK 57 needs Swift tools 6.2 | Use Xcode 26 or newer (`macos-26` in CI). Xcode 16 fails in `Build ExpoModulesJSI xcframework`. |
 | iOS permission values | `inuse` / `never`, not `allow` / `deny` |
+| Maestro's iOS driver sometimes fails to start on the hosted runner ("iOS driver not ready in time") | `run-maestro.sh` retries once, for this failure only. Look for the "Maestro driver" warning in the job summary. |
 | Decimal keypad has no return key, so `hideKeyboard` can't dismiss it | E2E-07 taps the "Fuel price" label outside the field, then uses `scrollUntilVisible` to reach Save |
 | Text inside a route card isn't separately visible to Maestro | Assert on the card's accessibility label, or on card presence (E2E-10) |
 | Hosted simulator boot can hang | Bounded boot with retries (CI step 6) |

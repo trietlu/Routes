@@ -202,16 +202,17 @@ jobs:
 
       - name: Run flows (E2E-01 to E2E-15, E2E-17)
         timeout-minutes: 75
-        run: maestro test apps/mobile/e2e/flows --format junit --output e2e-report.xml
+        # run-maestro.sh retries once only if the iOS driver fails to start (no flow ran).
+        run: bash apps/mobile/e2e/run-maestro.sh apps/mobile/e2e/flows --format junit --output e2e-report.xml
 
       - name: Run E2E-16 (offline)
         run: |
-          maestro test apps/mobile/e2e/offline/e2e-16a-prepare.yaml
+          bash apps/mobile/e2e/run-maestro.sh apps/mobile/e2e/offline/e2e-16a-prepare.yaml
           # Stop the proxy: route requests now fail as a network error.
           pkill -f "apps/proxy/src/server.ts" || true
           sleep 2
           if curl -fsS http://localhost:8080/healthz; then echo "proxy still up"; exit 1; fi
-          maestro test apps/mobile/e2e/offline/e2e-16b-offline.yaml
+          bash apps/mobile/e2e/run-maestro.sh apps/mobile/e2e/offline/e2e-16b-offline.yaml
 
       - name: Upload screenshots and logs
         if: failure()

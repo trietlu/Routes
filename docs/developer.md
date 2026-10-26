@@ -9,7 +9,7 @@ How to set up, run, test and change the code. Everything runs on fixture data, s
 | Tool | Needed for | Install (macOS) |
 |---|---|---|
 | Node 22 (`.nvmrc`) and npm | Everything | `brew install nvm && nvm install 22` |
-| Xcode (full app) with an iOS simulator runtime | Building and running the app | App Store; then `sudo xcodebuild -license accept`; Xcode → Settings → Components |
+| Xcode 26 or 27 (full app) with an iOS simulator runtime | Building and running the app | App Store; then `sudo xcodebuild -license accept`; Xcode → Settings → Components |
 | CocoaPods | iOS native dependencies | `brew install cocoapods` |
 | Watchman | Metro file watching (recommended) | `brew install watchman` |
 | GitHub CLI | Issues and PRs | `brew install gh && gh auth login` |
@@ -158,6 +158,7 @@ npx jest -t "RC-RANK-02"                     # one test by ID
 |---|---|
 | `git` or `xcodebuild` errors about the Xcode license | `sudo xcodebuild -license accept` |
 | `expo run:ios` fails resolving Swift packages | Expo SDK 57 needs Xcode 26 or later (Swift tools 6.2). Check with `xcodebuild -version`. |
+| Build fails with `cannot find type '__ObjC::expo'` or "this SDK is not supported by the compiler" | Precompiled Expo modules don't match your Xcode's Swift. Xcode 27 needs `expo` 57.0.31 or later (`expo-modules-core` 57.0.24 or later). Run `npm ci` after pulling, then delete `apps/mobile/ios` and rebuild. |
 | `apps/mobile/tsconfig.json` shows as modified after a build | Expo rewrites it. Discard with `git checkout apps/mobile/tsconfig.json`; don't commit it. |
 | App shows "Couldn't load routes" or "You're offline" | Is `npm run proxy:dev` running on :8080? Check with `curl localhost:8080/healthz`. |
 | Map routes are far from the blue dot | Set the simulator location to 39.7392, -104.9903. |

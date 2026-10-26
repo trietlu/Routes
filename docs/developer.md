@@ -134,14 +134,14 @@ npx jest -t "RC-RANK-02"                     # one test by ID
 
 ## CI
 
-`.github/workflows/ci.yml` runs on every PR and on pushes to `main`. `e2e.yml` runs the Maestro suite:
+`.github/workflows/ci.yml` runs on every PR and on pushes to `main`; its jobs are the merge gate (about 2 minutes). `e2e.yml` runs the Maestro suite **manually only**:
 
 | Job | Runs on | Checks |
 |---|---|---|
 | Lint, typecheck and test | ubuntu | `npm ci`, lint, typecheck, `test:coverage` |
 | Proxy Docker image | ubuntu | Builds `apps/proxy/Dockerfile`, checks `/healthz` and the non-root user |
 | actionlint | ubuntu | Workflow files |
-| Maestro E2E (`e2e.yml`) | macOS 26 | iOS Release build with Xcode 26 and Maestro flows against the mock proxy. It runs only when a push changes code (the app, proxy, packages, fixtures or dependencies). Pushes that change only docs, Markdown or CI configuration skip it. Screenshots and logs are uploaded on failure. |
+| Maestro E2E (`e2e.yml`) | macOS 26 | iOS Release build and Maestro flows against the mock proxy, about an hour. **Not a merge gate.** Start it from Actions → E2E → Run workflow, or with `gh workflow run E2E --ref <branch>`, before releases and after native or build changes. Screenshots and logs are uploaded on failure. See [INTEG.md §6](INTEG.md#6-in-ci). |
 
 `proxy-deploy.yml` deploys the proxy after merges and skips until GCP is configured. See [deploy.md](deploy.md).
 

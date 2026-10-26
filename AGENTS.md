@@ -67,5 +67,5 @@ Stop when no open `agent` issue is actionable, and summarize what's left in a co
 ## Environment notes
 
 - Node 22 LTS, npm workspaces.
-- Unit, integration and component tests run on Linux. iOS simulator builds and Maestro E2E need macOS with Xcode; in CI they run on the macOS job (R-24). If you can't run the simulator locally, rely on that CI job.
+- Unit, integration and component tests run on Linux, and they (with lint and typecheck) are the merge gate. iOS simulator builds and Maestro E2E need macOS with Xcode. In CI, E2E is **manual only and doesn't gate merges** (about an hour per run). When your change touches native modules, `app.config.ts`, Expo/React Native versions, iOS permissions or the E2E flows, start it with `gh workflow run E2E --ref <your-branch>` and note the result in the PR. Don't block on it otherwise.
 - Never run Expo Go. The app uses dev builds (`npx expo run:ios`, or `eas build --profile development`).

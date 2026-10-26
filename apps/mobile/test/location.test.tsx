@@ -4,10 +4,15 @@ import { act, renderHook, waitFor } from '@testing-library/react-native';
 import * as Location from 'expo-location';
 import * as Linking from 'expo-linking';
 import {
+  FIX_MAX_AGE_MS,
+  LOCATION_RETRY_MS,
   LOCATION_TIMEOUT_MS,
+  ROUTE_LOCATION_TIMEOUT_MS,
   deviceLocationSource,
+  forgetLastFix,
   getPermissionStatus,
   locate,
+  locationTiming,
   openAppSettings,
   requestPermission,
   streetAddress,
@@ -29,8 +34,20 @@ beforeEach(() => {
   mocked.requestForegroundPermissionsAsync!.mockResolvedValue(granted);
   mocked.getCurrentPositionAsync!.mockResolvedValue(position);
   mocked.reverseGeocodeAsync!.mockResolvedValue([{ streetNumber: '1437', street: 'Bannock St' }]);
+  forgetLastFix();
+  Object.assign(locationTiming, {
+    timeoutMs: LOCATION_TIMEOUT_MS,
+    retryMs: LOCATION_RETRY_MS,
+    routeTimeoutMs: ROUTE_LOCATION_TIMEOUT_MS,
+  });
 });
 afterEach(() => jest.useRealTimers());
+
+const hang = () => new Promise(() => undefined);
+const advance = (ms: number) =>
+  act(async () => {
+    await jest.advanceTimersByTimeAsync(ms);
+  });
 
 describe('location', () => {
   it('APP-LOC-01: never requests permission unless asked', async () => {
@@ -73,22 +90,108 @@ describe('location', () => {
     expect(await requestPermission()).toBe('denied');
   });
 
-  it('APP-LOC-02: no fix within 5 s → unavailable', async () => {
+  it('APP-LOC-02: no fix within 5 s → searching (not unavailable)', async () => {
     expect(LOCATION_TIMEOUT_MS).toBe(5000);
     jest.useFakeTimers();
-    mocked.getCurrentPositionAsync!.mockImplementation(() => new Promise(() => undefined));
+    mocked.getCurrentPositionAsync!.mockImplementation(hang);
     const pending = locate();
-    await act(async () => {
-      await jest.advanceTimersByTimeAsync(4999);
-    });
+    await advance(4999);
     let settled = false;
     void pending.then(() => (settled = true));
     await Promise.resolve();
     expect(settled).toBe(false);
+    await advance(1);
+    expect(await pending).toEqual({ state: 'searching' });
+  });
+
+  it('APP-LOC-04: a fix that arrives after the 5 s timeout still switches to ready', async () => {
+    jest.useFakeTimers();
+    let deliver: (value: typeof position) => void = () => undefined;
+    mocked.getCurrentPositionAsync!.mockImplementationOnce(
+      () => new Promise((done) => (deliver = done)),
+    );
+    const { result } = await renderHook(() => useCurrentLocation());
+    expect(result.current.state).toBe('locating');
+    await advance(LOCATION_TIMEOUT_MS);
+    expect(result.current.state).toBe('searching');
     await act(async () => {
-      await jest.advanceTimersByTimeAsync(1);
+      deliver(position);
+      await jest.advanceTimersByTimeAsync(0);
     });
-    expect(await pending).toEqual({ state: 'unavailable' });
+    expect(result.current).toMatchObject({
+      state: 'ready',
+      coords: { lat: 39.7392, lng: -104.9903 },
+      address: '1437 Bannock St',
+    });
+  });
+
+  it('APP-LOC-05: while searching, asks again every 10 s; errors keep searching; stops at the first fix', async () => {
+    expect(LOCATION_RETRY_MS).toBe(10_000);
+    jest.useFakeTimers();
+    mocked.getCurrentPositionAsync!.mockImplementation(hang);
+    const { result } = await renderHook(() => useCurrentLocation());
+    await advance(LOCATION_TIMEOUT_MS);
+    expect(result.current.state).toBe('searching');
+    expect(mocked.getCurrentPositionAsync).toHaveBeenCalledTimes(1);
+
+    mocked.getCurrentPositionAsync!.mockRejectedValueOnce(new Error('kCLErrorLocationUnknown'));
+    await advance(LOCATION_RETRY_MS);
+    expect(mocked.getCurrentPositionAsync).toHaveBeenCalledTimes(2);
+    expect(result.current.state).toBe('searching');
+
+    mocked.getCurrentPositionAsync!.mockResolvedValueOnce(position);
+    await advance(LOCATION_RETRY_MS);
+    expect(mocked.getCurrentPositionAsync).toHaveBeenCalledTimes(3);
+    expect(result.current.state).toBe('ready');
+
+    await advance(LOCATION_RETRY_MS * 3);
+    expect(mocked.getCurrentPositionAsync).toHaveBeenCalledTimes(3);
+  });
+
+  it('APP-LOC-05: stops asking once the screen unmounts', async () => {
+    jest.useFakeTimers();
+    mocked.getCurrentPositionAsync!.mockImplementation(hang);
+    const { result, unmount } = await renderHook(() => useCurrentLocation());
+    await advance(LOCATION_TIMEOUT_MS);
+    expect(result.current.state).toBe('searching');
+    await unmount();
+    await advance(LOCATION_RETRY_MS * 3);
+    expect(mocked.getCurrentPositionAsync).toHaveBeenCalledTimes(1);
+  });
+
+  it('APP-LOC-06: routes reuse a fix under a minute old, else wait up to 30 s for a new one', async () => {
+    expect(ROUTE_LOCATION_TIMEOUT_MS).toBe(30_000);
+    jest.useFakeTimers();
+    await locate();
+    mocked.getCurrentPositionAsync!.mockClear();
+    expect(await deviceLocationSource.getCurrentCoordinates()).toEqual({
+      lat: 39.7392,
+      lng: -104.9903,
+    });
+    expect(mocked.getCurrentPositionAsync).not.toHaveBeenCalled();
+
+    jest.setSystemTime(Date.now() + FIX_MAX_AGE_MS);
+    mocked.getCurrentPositionAsync!.mockImplementation(hang);
+    const pending = deviceLocationSource.getCurrentCoordinates();
+    let settled = false;
+    void pending.then(() => (settled = true));
+    await advance(ROUTE_LOCATION_TIMEOUT_MS - 1);
+    expect(settled).toBe(false);
+    await advance(1);
+    expect(await pending).toBeNull();
+    expect(mocked.getCurrentPositionAsync).toHaveBeenCalledTimes(1);
+  });
+
+  it('a location error before the timeout → unavailable in the hook too (e.g. Location Services off)', async () => {
+    mocked.getCurrentPositionAsync!.mockRejectedValue(new Error('kCLErrorDenied'));
+    const { result } = await renderHook(() => useCurrentLocation());
+    await waitFor(() => expect(result.current.state).toBe('unavailable'));
+  });
+
+  it('a permission check that throws → unavailable', async () => {
+    mocked.getForegroundPermissionsAsync!.mockRejectedValue(new Error('boom'));
+    const { result } = await renderHook(() => useCurrentLocation());
+    await waitFor(() => expect(result.current.state).toBe('unavailable'));
   });
 
   it('a location error → unavailable; a reverse-geocode failure still yields ready without an address', async () => {

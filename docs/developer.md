@@ -1,6 +1,6 @@
 # Routes — Developer guide
 
-Related: [Command reference](COMMANDS.md) · [Architecture](architecture.md) · [Technical design](technical-design.md) · [Test plan](test-plan.md) · [Agent rules](../AGENTS.md)
+Related: [Command reference](COMMANDS.md) · [Device testing](DEVICE-TESTING.md) · [Architecture](architecture.md) · [Technical design](technical-design.md) · [Test plan](test-plan.md) · [Agent rules](../AGENTS.md)
 
 How to set up, run, test and change the code. Everything runs on fixture data, so you need no Google keys or Apple account.
 

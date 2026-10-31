@@ -1,6 +1,6 @@
 # Routes — Command reference
 
-Related: [Developer guide](developer.md) (explanations) · [Integration tests](INTEG.md) (E2E details) · [Deploy](deploy.md)
+Related: [Developer guide](developer.md) (explanations) · [Device testing](DEVICE-TESTING.md) (simulator and real iPhone) · [Integration tests](INTEG.md) (E2E details) · [Deploy](deploy.md)
 
 Copy-paste commands for everyday work. Run everything **from the repo root** (`~/projects/Routes`) unless noted. `-w @routes/mobile` runs a script in the app's workspace (`apps/mobile`).
 

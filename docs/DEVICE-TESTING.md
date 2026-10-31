@@ -15,12 +15,21 @@ The simulator covers most manual testing. A real iPhone is needed for what the s
 
 ## Real iPhone: setup (once)
 
-You need a Mac with Xcode 26 or 27, an iPhone on iOS 16.4 or later, a USB cable, and both on the **same Wi-Fi network**.
+You need a Mac with Xcode 26 or 27, an iPhone on iOS 16.4 or later, a **data** USB cable, and both on the **same Wi-Fi network**.
+
+Do these in order. The phone's **Developer Mode** switch is hidden until the Mac has recognised and trusted the phone and Xcode has connected to it.
 
 1. **Apple ID in Xcode:** Xcode → Settings → Accounts → **+** → Apple ID. A free Apple ID works for your own phone; see [Free vs paid account](#free-vs-paid-apple-account).
-2. **Developer Mode on the phone:** Settings → Privacy & Security → **Developer Mode** → on. The phone restarts; confirm when asked.
-3. **Trust the Mac:** connect the cable, unlock the phone, and tap **Trust**.
-4. **Point the app at your Mac.** On the phone, `localhost` means the phone itself, so the app must call the proxy by your Mac's Wi-Fi address. Find it:
+2. **Get the Mac to see the phone:**
+   - Unlock the phone and keep the screen on.
+   - Use a **data** cable (the iPhone's own cable is safest) plugged **directly into the Mac**, not a hub, dock or monitor. Many USB-C cables only charge.
+   - Allow the accessory on the Mac: if macOS asks "Allow accessory to connect?", choose **Allow**. Otherwise check System Settings → Privacy & Security → **Allow accessories to connect** ("Ask for new accessories" or "Automatically when unlocked"), then reconnect.
+   - The iPhone should now appear in **Finder's sidebar** under Locations. Don't continue until it does.
+3. **Trust the Mac:** click the iPhone in Finder; the phone asks **"Trust This Computer?"** Tap **Trust** and enter your passcode. If it never asks (you may have tapped "Don't Trust" before), reset it on the phone with Settings → General → Transfer or Reset iPhone → Reset → **Reset Location & Privacy**, then reconnect.
+4. **Let Xcode connect:** Xcode → **Window → Devices and Simulators** (⇧⌘2) → select the iPhone, and wait while it prepares the device (minutes, the first time).
+5. **Turn on Developer Mode:** iPhone → Settings → Privacy & Security, then scroll to the bottom → **Developer Mode** → on. The phone restarts; confirm when asked.
+6. **Check:** `xcrun devicectl list devices` lists your iPhone as `physical`, not just `simulated` entries.
+7. **Point the app at your Mac.** On the phone, `localhost` means the phone itself, so the app must call the proxy by your Mac's Wi-Fi address. Find it:
 
    ```
    ipconfig getifaddr en0
@@ -84,7 +93,7 @@ Google Maps may pick a different road than the route you chose; that's expected 
 |---|---|---|
 | Install on your own phone over USB | Yes | Yes |
 | How long the build works | **7 days**, then re-run step 2 to reinstall | One year |
-| Bundle ID | Must be unique to you (see setup step 4) | Registered in your account |
+| Bundle ID | Must be unique to you (see setup step 7) | Registered in your account |
 | TestFlight (install without a cable, share with testers) | No | Yes, via EAS builds (#28) |
 | App Attest on device (#27, MAN-09) | No | Yes |
 
@@ -95,6 +104,7 @@ Google Maps may pick a different road than the route you chose; that's expected 
 | App shows "You're offline" or "Couldn't load routes" | Is `npm run proxy:live` running? Is `EXPO_PUBLIC_PROXY_URL` your Mac's *current* address (`ipconfig getifaddr en0`)? Are the phone and Mac on the same Wi-Fi? On the phone, open `http://<address>:8080/healthz` in Safari; it should show `{"ok":true}`. After changing `.env`, stop Metro and run step 2 again. |
 | App opens to a red error screen or a blank screen | It can't reach Metro. Keep the step 2 terminal open, check the Wi-Fi, and shake the phone → **Reload**. |
 | iOS never asks for local network access, and requests to the Mac fail | The app's settings don't yet include the text iOS shows for that prompt (`NSLocalNetworkUsageDescription`). Add it under `ios.infoPlist` in `apps/mobile/app.config.ts` (for example "Routes connects to your development computer on the local network."), then delete `apps/mobile/ios` and rebuild. |
-| "Untrusted Developer" when opening the app | See step 4: trust the profile in VPN & Device Management. |
+| "Untrusted Developer" when opening the app | See build step 4: trust the profile in VPN & Device Management. |
+| **Developer Mode isn't in the phone's Settings**, or Xcode never asks to trust the phone | The Mac isn't seeing the phone yet. Follow setup steps 2–4 in order: data cable directly into the Mac, allow the accessory, Finder shows the phone, Trust, Xcode Devices window. `xcrun devicectl list devices` must list it as `physical`. Work- or school-managed iPhones may block this. |
 | App stops opening after about a week | The free-account build expired. Run step 2 again. |
 | Scanning the QR code from `npm run start` does nothing | The QR workflow needs `expo-dev-client`, which the project doesn't include yet. Use the USB steps above. |

@@ -1,6 +1,6 @@
 # Routes — Developer guide
 
-Related: [Architecture](architecture.md) · [Technical design](technical-design.md) · [Test plan](test-plan.md) · [Agent rules](../AGENTS.md)
+Related: [Command reference](COMMANDS.md) · [Architecture](architecture.md) · [Technical design](technical-design.md) · [Test plan](test-plan.md) · [Agent rules](../AGENTS.md)
 
 How to set up, run, test and change the code. Everything runs on fixture data, so you need no Google keys or Apple account.
 
@@ -75,6 +75,8 @@ Live calls are billed to `routes-nonprod`. (`proxy:dev` always forces mock mode,
 2. Rebuild with `npm run ios -w @routes/mobile`. Expo loads that file automatically.
 
 ## Commands
+
+The main scripts are below. [COMMANDS.md](COMMANDS.md) has the full copy-paste reference: testing one file, E2E, Docker, GitHub and disk cleanup.
 
 | Command | What it does |
 |---|---|

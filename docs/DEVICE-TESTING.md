@@ -19,7 +19,7 @@ You need a Mac with Xcode 26 or 27, an iPhone on iOS 16.4 or later, a **data** U
 
 Do these in order. The phone's **Developer Mode** switch is hidden until the Mac has recognised and trusted the phone and Xcode has connected to it.
 
-1. **Apple ID in Xcode:** Xcode → Settings → Accounts → **+** → Apple ID. A free Apple ID works for your own phone; see [Free vs paid account](#free-vs-paid-apple-account).
+1. **Apple ID in Xcode:** Xcode → Settings → **Apple Accounts** (called "Accounts" in older Xcode) → **Sign In…**. Xcode creates a free **Personal Team** for you. A free Apple ID works for your own phone; see [Free vs paid account](#free-vs-paid-apple-account).
 2. **Get the Mac to see the phone:**
    - Unlock the phone and keep the screen on.
    - Use a **data** cable (the iPhone's own cable is safest) plugged **directly into the Mac**, not a hub, dock or monitor. Many USB-C cables only charge.
@@ -65,11 +65,13 @@ Do these in order. The phone's **Developer Mode** switch is hidden until the Mac
 
    Choose your iPhone from the list. Deleting `apps/mobile/ios` makes the new bundle ID take effect; you only need to do that when `apps/mobile/.env` or `app.config.ts` changes.
 
-3. **If it fails with a signing error** ("No account", "requires a development team", or similar):
-   1. Open `apps/mobile/ios/Routes.xcworkspace` in Xcode.
-   2. Select the **Routes** target → **Signing & Capabilities**.
-   3. Tick **Automatically manage signing**, and choose your Apple ID under **Team**.
-   4. Run the command from step 2 again, without deleting `apps/mobile/ios` this time.
+3. **If it fails with a signing error** ("No code signing certificates are available to use", "No account", "requires a development team", or similar). On a new Mac this is expected: signing in to Xcode doesn't create the **Apple Development certificate**.
+   1. Open the project: `open apps/mobile/ios/Routes.xcworkspace`.
+   2. Click the blue **Routes** project in the sidebar → the **Routes** target → **Signing & Capabilities**.
+   3. Tick **Automatically manage signing**, and choose your **Personal Team** (or your paid team) under **Team**. Xcode then creates the certificate and a provisioning profile for your bundle ID and iPhone. Wait until no red error remains.
+      - Alternative for the certificate alone: Xcode → Settings → **Apple Accounts** → your account → **Manage Certificates…** → **+** → **Apple Development**.
+      - "Failed to register bundle identifier" means the ID is taken. Change `IOS_BUNDLE_IDENTIFIER` in `apps/mobile/.env`, delete `apps/mobile/ios`, and start again.
+   4. Run the command from step 2 again, **without** deleting `apps/mobile/ios`, so the signing settings are kept.
 
 4. **The first time, trust your developer profile on the phone** if iOS says "Untrusted Developer": Settings → General → **VPN & Device Management** → your Apple ID → **Trust**.
 
@@ -137,7 +139,7 @@ Commands for checking the toolchain, devices and the app when something's off. R
 | Another view (connected devices first) | `xcrun xctrace list devices` | Your iPhone under `== Devices ==` |
 | Mac's Wi-Fi address (for `EXPO_PUBLIC_PROXY_URL`) | `ipconfig getifaddr en0` | e.g. `192.168.1.20` |
 
-GUI equivalents: **Window → Devices and Simulators** (⇧⌘2) for devices, **Settings → Accounts** for Apple IDs and teams, **Settings → Components** for simulator runtimes, and the **Routes target → Signing & Capabilities** for code signing.
+GUI equivalents: **Window → Devices and Simulators** (⇧⌘2) for devices, **Settings → Apple Accounts** for Apple IDs, teams and certificates (**Manage Certificates…**), **Settings → Components** for simulator runtimes, and the **Routes target → Signing & Capabilities** for code signing.
 
 ### Simulators
 

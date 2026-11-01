@@ -13,6 +13,7 @@ An iPhone app that shows drivers three routes to a destination, ranked **Fastest
 - [Developer guide](docs/developer.md)
 - [Command reference](docs/COMMANDS.md)
 - [Testing on the simulator and a real iPhone](docs/DEVICE-TESTING.md)
+- [How the iOS app is built and run](docs/HOW-IT-WORKS.md)
 - [UX sketch](docs/ux-sketch.md)
 - [Plan of action](docs/PLAN.md)
 - [Test plan](docs/test-plan.md)

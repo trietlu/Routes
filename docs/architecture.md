@@ -1,6 +1,6 @@
 # Routes — Architecture (as built)
 
-Related: [Technical design](technical-design.md) (the why and the contracts) · [Developer guide](developer.md) (how to work in the repo)
+Related: [Technical design](technical-design.md) (the why and the contracts) · [Developer guide](developer.md) (how to work in the repo) · [How it works](HOW-IT-WORKS.md) (iOS build pipeline, Metro, signing)
 
 This document describes how the code is actually organized and wired. For the reasoning behind each choice, see the technical design. For exact API shapes, see `packages/api-types`. Where this document and the code disagree, the code wins; fix this document.
 

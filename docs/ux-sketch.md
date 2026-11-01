@@ -47,7 +47,7 @@ Onboarding shows only on first launch (`locationPromptShown`). After that, the a
 - **Launch (splash) screen:**
   - The icon's routes and pin, without the grid, centred, with **"Routes"** below in bold and the tagline **"Get there fast or cheap"**.
   - Light: `#FAF7F2` background, light-theme colours. Dark: `#121212` background, dark-theme colours and a light pin.
-  - It stays up until the app is ready (storage open, first screen mounted), then fades out, so launch never shows a blank frame.
+  - It stays up until the app is ready (storage open, first screen mounted), so launch never shows a blank frame, then for **1.5 s more** so it doesn't just flash by, then fades out over 0.25 s. Both values are in `apps/mobile/features/app/services.tsx` (`SPLASH_MIN_VISIBLE_MS`, `setOptions`).
 - **Artwork:** sources and rendering are in `apps/mobile/assets/README.md`.
 
 ---

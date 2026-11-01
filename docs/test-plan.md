@@ -205,7 +205,7 @@ Google is stubbed with `nock`. No test may make a real network call (`nock.disab
 | APP-CFG-01 | `app.config.ts` contains `LSApplicationQueriesSchemes: ["comgooglemaps"]`, a when-in-use location string, and no background location modes | FR-17, NFR-4 |
 | APP-CFG-02 | The app icon is configured and is a 1024×1024 PNG with no alpha channel; its SVG source exists | App Store |
 | APP-CFG-03 | The splash screen is configured (image and background, light and dark) and its images and SVG sources exist | Launch |
-| APP-SPL-01 | The splash is held from startup (`preventAutoHideAsync`, fade options) and hidden only after storage opens and the first screen mounts | Launch |
+| APP-SPL-01 | The splash is held from startup (`preventAutoHideAsync`, fade options) and hidden `SPLASH_MIN_VISIBLE_MS` (1.5 s) after storage opens and the first screen mounts, not before | Launch |
 | APP-I18N-01 | Every user-visible string in screens comes from the strings table (lint rule or test scanning for raw JSX text) | NFR-11 |
 
 ## 7. Component tests — screens (`UI-`)

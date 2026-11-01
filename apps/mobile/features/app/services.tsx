@@ -10,6 +10,9 @@ import { type Storage, openStorage } from '../../storage';
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 SplashScreen.setOptions({ duration: 250, fade: true });
 
+/** How long the splash stays visible after the app is ready, in ms, so it doesn't just flash by. */
+export const SPLASH_MIN_VISIBLE_MS = 1500;
+
 let openAppStorage: () => Promise<Storage> = openStorage;
 let makeApiClient: (getDeviceId: () => Promise<string>) => ApiClient = createAppApiClient;
 
@@ -52,9 +55,13 @@ export function AppProviders({ children }: { children: ReactNode }) {
 
 function LoadedProviders({ storage, children }: { storage: Storage; children: ReactNode }) {
   const [client] = useState(() => makeApiClient(() => storage.preferences.getDeviceId()));
-  // Storage is open and the screens below have mounted: reveal the app.
+  // Storage is open and the screens below have mounted: reveal the app after
+  // SPLASH_MIN_VISIBLE_MS, then fade out.
   useEffect(() => {
-    void SplashScreen.hideAsync().catch(() => undefined);
+    const timer = setTimeout(() => {
+      void SplashScreen.hideAsync().catch(() => undefined);
+    }, SPLASH_MIN_VISIBLE_MS);
+    return () => clearTimeout(timer);
   }, []);
   return (
     <StorageContext.Provider value={storage}>

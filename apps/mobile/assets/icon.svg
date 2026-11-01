@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Map: city blocks with white streets (matches the onboarding illustration). -->
+  <rect width="1024" height="1024" fill="#EDE7DD"/>
+  <g fill="#FFFFFF">
+    <rect x="356" y="0" width="34" height="1024"/>
+    <rect x="652" y="0" width="34" height="1024"/>
+    <rect x="0" y="352" width="1024" height="34"/>
+    <rect x="0" y="648" width="1024" height="34"/>
+  </g>
+
+  <!-- Routes end at the pin's tip (780, 360). White halos first, then the route colours. -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke="#FFFFFF" stroke-width="96">
+      <path d="M232 792 L 600 792 C 742 792, 780 700, 780 360"/>
+      <path d="M232 792 C 232 576, 400 540, 520 474 S 716 382, 780 360"/>
+      <path d="M232 792 C 452 772, 552 574, 632 486 S 736 380, 780 360"/>
+    </g>
+    <path d="M232 792 L 600 792 C 742 792, 780 700, 780 360" stroke="#B4530F" stroke-width="60"/>
+    <path d="M232 792 C 232 576, 400 540, 520 474 S 716 382, 780 360" stroke="#1E7B3A" stroke-width="60"/>
+    <path d="M232 792 C 452 772, 552 574, 632 486 S 736 380, 780 360" stroke="#1F5FD1" stroke-width="60"/>
+  </g>
+
+  <!-- Start: blue dot. -->
+  <circle cx="232" cy="792" r="66" fill="#1F5FD1" stroke="#FFFFFF" stroke-width="20"/>
+
+  <!-- Destination: map pin whose tip is the routes' end point. -->
+  <path d="M780 372
+           C 740 318, 676 262, 676 200
+           A 104 104 0 1 1 884 200
+           C 884 262, 820 318, 780 372 Z"
+        fill="#1A1A1A" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round"/>
+  <circle cx="780" cy="200" r="40" fill="#FFFFFF"/>
+</svg>

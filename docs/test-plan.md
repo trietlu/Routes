@@ -203,6 +203,7 @@ Google is stubbed with `nock`. No test may make a real network call (`nock.disab
 | APP-HAND-05 | App Store URL is `https://apps.apple.com/app/id585027354` | FR-17 |
 | APP-HAND-06 | Share text matches the UX format for priced, toll-free and unknown-toll routes | FR-18 |
 | APP-CFG-01 | `app.config.ts` contains `LSApplicationQueriesSchemes: ["comgooglemaps"]`, a when-in-use location string, and no background location modes | FR-17, NFR-4 |
+| APP-CFG-02 | The app icon is configured and is a 1024×1024 PNG with no alpha channel; its SVG source exists | App Store |
 | APP-I18N-01 | Every user-visible string in screens comes from the strings table (lint rule or test scanning for raw JSX text) | NFR-11 |
 
 ## 7. Component tests — screens (`UI-`)

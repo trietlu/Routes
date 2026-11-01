@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports -- jest.mock factories are hoisted above imports, so they must use require(). */
 /**
  * Native modules are mocked for every test (test plan §7): maps, location,
- * SQLite, linking, crypto and network state. The mocks live in `test/mocks/`.
+ * SQLite, linking, crypto, network state and the splash screen. The mocks live in `test/mocks/`.
  */
+jest.mock('expo-splash-screen', () => require('./mocks/expo-splash-screen'));
 jest.mock('react-native-maps', () => require('./mocks/react-native-maps'));
 jest.mock('expo-location', () => require('./mocks/expo-location'));
 jest.mock('expo-sqlite', () => require('./mocks/expo-sqlite'));

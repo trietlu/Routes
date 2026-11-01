@@ -21,7 +21,7 @@
     "proxy:live": "tsc --build apps/proxy && PROVIDER=google ATTEST_MODE=off tsx watch --env-file=.env apps/proxy/src/server.ts",
     "fixtures:generate": "tsc --build scripts && node scripts/dist/generate-fixtures.js",
     "e2e": "maestro test apps/mobile/e2e/flows",
-    "icons": "npm --prefix tools/icons ci --no-audit --no-fund && node tools/icons/render.mjs"
+    "icons": "cd tools/icons && npm ci --no-audit --no-fund && cd ../.. && node tools/icons/render.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",

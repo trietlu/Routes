@@ -1,8 +1,14 @@
+import * as SplashScreen from 'expo-splash-screen';
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 import { type ApiClient, ApiProvider, createAppApiClient, wireOnlineManager } from '../../api';
 import { deviceLocationSource } from '../../location';
 import { StateProvider } from '../../state';
 import { type Storage, openStorage } from '../../storage';
+
+// Keep the native splash screen up until storage has opened and the first
+// screen has mounted, so launch never shows a blank frame (#85).
+void SplashScreen.preventAutoHideAsync().catch(() => undefined);
+SplashScreen.setOptions({ duration: 250, fade: true });
 
 let openAppStorage: () => Promise<Storage> = openStorage;
 let makeApiClient: (getDeviceId: () => Promise<string>) => ApiClient = createAppApiClient;
@@ -40,12 +46,16 @@ export function AppProviders({ children }: { children: ReactNode }) {
       active = false;
     };
   }, []);
-  if (!storage) return null; // the native splash screen covers this brief moment
+  if (!storage) return null; // the native splash screen stays up meanwhile
   return <LoadedProviders storage={storage}>{children}</LoadedProviders>;
 }
 
 function LoadedProviders({ storage, children }: { storage: Storage; children: ReactNode }) {
   const [client] = useState(() => makeApiClient(() => storage.preferences.getDeviceId()));
+  // Storage is open and the screens below have mounted: reveal the app.
+  useEffect(() => {
+    void SplashScreen.hideAsync().catch(() => undefined);
+  }, []);
   return (
     <StorageContext.Provider value={storage}>
       <ApiProvider client={client}>

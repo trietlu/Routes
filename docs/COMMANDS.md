@@ -94,6 +94,18 @@ Needs macOS, Xcode 26 or 27, Maestro and Java 17. Details are in [INTEG.md](INTE
 | Blocked issues | `gh issue list --repo trietlu/Routes --label blocked` |
 | The tracking issue | `gh issue view 38 --repo trietlu/Routes` |
 
+## Xcode, devices and simulators
+
+The full diagnostic list is in [DEVICE-TESTING.md → Diagnostic commands](DEVICE-TESTING.md#diagnostic-commands-xcode-and-simulator). The most useful:
+
+| Task | Command |
+|---|---|
+| Xcode and Swift versions | `xcodebuild -version` · `xcrun swift --version` |
+| Does Xcode see my iPhone? (look for `physical`) | `xcrun devicectl list devices` |
+| Grant location to the app in the simulator | `xcrun simctl privacy booted grant location com.routes.app.dev` |
+| Stream the app's logs from the simulator | `xcrun simctl spawn booted log stream --predicate 'process == "Routes"'` |
+| Open the project in Xcode (for signing) | `open apps/mobile/ios/Routes.xcworkspace` |
+
 ## Clean up disk space
 
 These are safe; everything is rebuilt or re-downloaded when needed.

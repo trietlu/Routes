@@ -108,3 +108,62 @@ Google Maps may pick a different road than the route you chose; that's expected 
 | **Developer Mode isn't in the phone's Settings**, or Xcode never asks to trust the phone | The Mac isn't seeing the phone yet. Follow setup steps 2–4 in order: data cable directly into the Mac, allow the accessory, Finder shows the phone, Trust, Xcode Devices window. `xcrun devicectl list devices` must list it as `physical`. Work- or school-managed iPhones may block this. |
 | App stops opening after about a week | The free-account build expired. Run step 2 again. |
 | Scanning the QR code from `npm run start` does nothing | The QR workflow needs `expo-dev-client`, which the project doesn't include yet. Use the USB steps above. |
+| Phone is listed but its state is `unavailable` | Unlock it, keep it connected, and open Xcode → Window → Devices and Simulators until it finishes preparing. It should then show as available. |
+
+## Diagnostic commands (Xcode and simulator)
+
+Commands for checking the toolchain, devices and the app when something's off. Run them from the repo root. `booted` means "the simulator that's running"; you can use a simulator's UDID instead.
+
+### Xcode and toolchain
+
+| Check | Command | What to look for |
+|---|---|---|
+| Which Xcode version | `xcodebuild -version` | 26.x or 27.x (Expo SDK 57 needs Swift tools 6.2 or later) |
+| Which Xcode is active | `xcode-select -p` | `/Applications/Xcode.app/Contents/Developer`, or the Xcode you mean |
+| Switch the active Xcode | `sudo xcode-select -s /Applications/Xcode.app` | — |
+| Use another Xcode for one command only | `DEVELOPER_DIR=/Applications/Xcode-26.6.app/Contents/Developer npm run ios -w @routes/mobile` | Builds with that Xcode without changing the default |
+| Swift compiler version | `xcrun swift --version` | Must match what precompiled modules expect (see the `__ObjC::expo` row in [developer.md](developer.md#troubleshooting)) |
+| Accept the license (git or xcodebuild refuse to run) | `sudo xcodebuild -license accept` | — |
+| First-launch setup for a newly installed Xcode | `sudo xcodebuild -runFirstLaunch` | — |
+| Available SDKs | `xcodebuild -showsdks` | An `iphonesimulator` and an `iphoneos` SDK |
+| Schemes in the generated project | `xcodebuild -workspace apps/mobile/ios/Routes.xcworkspace -list` | A `Routes` scheme |
+| Open the project in Xcode (signing, settings) | `open apps/mobile/ios/Routes.xcworkspace` | Always open the `.xcworkspace`, not the `.xcodeproj` |
+
+### Devices
+
+| Check | Command | What to look for |
+|---|---|---|
+| All devices Xcode knows, physical and simulated | `xcrun devicectl list devices` | Your iPhone with `physical` in the last column. `unavailable` means locked or not prepared yet. |
+| Another view (connected devices first) | `xcrun xctrace list devices` | Your iPhone under `== Devices ==` |
+| Mac's Wi-Fi address (for `EXPO_PUBLIC_PROXY_URL`) | `ipconfig getifaddr en0` | e.g. `192.168.1.20` |
+
+GUI equivalents: **Window → Devices and Simulators** (⇧⌘2) for devices, **Settings → Accounts** for Apple IDs and teams, **Settings → Components** for simulator runtimes, and the **Routes target → Signing & Capabilities** for code signing.
+
+### Simulators
+
+| Task | Command |
+|---|---|
+| List simulators and their state | `xcrun simctl list devices` |
+| List installed iOS runtimes, with sizes | `xcrun simctl runtime list` |
+| Boot or shut down a simulator | `xcrun simctl boot "iPhone 17 Pro"` / `xcrun simctl shutdown booted` |
+| Show the Simulator window | `open -a Simulator` |
+| Set the location (fixture origin, Denver) | `xcrun simctl location booted set 39.7392,-104.9903` |
+| Clear a simulated location | `xcrun simctl location booted clear` |
+| Grant, revoke or reset location permission | `xcrun simctl privacy booted grant location com.routes.app.dev` (or `revoke`, or `reset`) |
+| Install, launch or uninstall a built app | `xcrun simctl install booted <path/to/Routes.app>` · `xcrun simctl launch booted com.routes.app.dev` · `xcrun simctl uninstall booted com.routes.app.dev` |
+| Open a URL, e.g. to test the Google Maps link | `xcrun simctl openurl booted "https://www.google.com/maps/dir/?api=1&destination=Union+Station&travelmode=driving"` |
+| Stream the app's logs | `xcrun simctl spawn booted log stream --predicate 'process == "Routes"'` |
+| Take a screenshot | `xcrun simctl io booted screenshot ~/Desktop/routes.png` |
+| Reset a simulator to factory state | `xcrun simctl erase "iPhone 17 Pro"` (shut it down first) |
+| Remove simulators whose runtime is gone | `xcrun simctl delete unavailable` |
+
+Replace `com.routes.app.dev` with your `IOS_BUNDLE_IDENTIFIER` if you set one.
+
+### The generated iOS project
+
+| Check | Command |
+|---|---|
+| App Transport Security settings (plain HTTP to your Mac) | `plutil -extract NSAppTransportSecurity json -o - apps/mobile/ios/Routes/Info.plist` |
+| Location permission text | `plutil -extract NSLocationWhenInUseUsageDescription raw -o - apps/mobile/ios/Routes/Info.plist` |
+| Start over (regenerate on the next build) | `rm -rf apps/mobile/ios` |
+| Clear Xcode's build cache | `rm -rf ~/Library/Developer/Xcode/DerivedData` |

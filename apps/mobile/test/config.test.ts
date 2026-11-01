@@ -43,7 +43,8 @@ describe('app.config.ts', () => {
     expect(plist.UIBackgroundModes).toBeUndefined();
     expect(plist.NSLocationAlwaysAndWhenInUseUsageDescription).toBeUndefined();
     expect(plist.NSLocationAlwaysUsageDescription).toBeUndefined();
-    expect(JSON.stringify(config)).not.toMatch(/background|Always/i);
+    // No background modes or "Always" location anywhere (the splash's backgroundColor is fine).
+    expect(JSON.stringify(config)).not.toMatch(/BackgroundModes|background-location|Always/i);
   });
 
   it('APP-CFG-02: the app icon is a 1024×1024 PNG with no alpha channel (App Store requirement)', () => {
@@ -56,6 +57,26 @@ describe('app.config.ts', () => {
     expect(png.readUInt32BE(20)).toBe(1024);
     expect(png[25]).toBe(2); // colour type 2 = RGB, no alpha
     expect(fs.existsSync(path.join(__dirname, '..', 'assets', 'icon.svg'))).toBe(true);
+  });
+
+  it('APP-CFG-03: the splash screen is configured (light and dark) and its images exist', () => {
+    const config = build();
+    const splash = (config.plugins ?? []).find(
+      (p) => Array.isArray(p) && p[0] === 'expo-splash-screen',
+    ) as [string, Record<string, unknown>] | undefined;
+    expect(splash?.[1]).toMatchObject({
+      image: './assets/splash-icon.png',
+      backgroundColor: '#FAF7F2',
+      dark: { image: './assets/splash-icon-dark.png', backgroundColor: '#121212' },
+    });
+    for (const file of [
+      'splash-icon.png',
+      'splash-icon-dark.png',
+      'splash.svg',
+      'splash-dark.svg',
+    ]) {
+      expect(fs.existsSync(path.join(__dirname, '..', 'assets', file))).toBe(true);
+    }
   });
 
   it('is an iPhone-only, portrait app following the system appearance', () => {

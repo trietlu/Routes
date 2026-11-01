@@ -55,6 +55,17 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     plugins: [
       'expo-router',
       'expo-sqlite',
+      [
+        'expo-splash-screen',
+        {
+          // Mark, "Routes" and tagline, rendered from assets/splash*.svg (`npm run icons`).
+          image: './assets/splash-icon.png',
+          imageWidth: 220,
+          resizeMode: 'contain',
+          backgroundColor: '#FAF7F2',
+          dark: { image: './assets/splash-icon-dark.png', backgroundColor: '#121212' },
+        },
+      ],
       ['expo-build-properties', { ios: { deploymentTarget: '16.4' } }],
     ],
     experiments: { typedRoutes: false },

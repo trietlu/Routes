@@ -41,6 +41,15 @@ flowchart LR
 
 Onboarding shows only on first launch (`locationPromptShown`). After that, the app opens on Home.
 
+## App icon and launch screen
+
+- **App icon:** three routes (A blue, B green, C orange) on a street grid, from a blue start dot to a dark destination pin, on the warm off-white background.
+- **Launch (splash) screen:**
+  - The icon's routes and pin, without the grid, centred, with **"Routes"** below in bold and the tagline **"Get there fast or cheap"**.
+  - Light: `#FAF7F2` background, light-theme colours. Dark: `#121212` background, dark-theme colours and a light pin.
+  - It stays up until the app is ready (storage open, first screen mounted), then fades out, so launch never shows a blank frame.
+- **Artwork:** sources and rendering are in `apps/mobile/assets/README.md`.
+
 ---
 
 ## Screen 1 — Onboarding (FR-1, US-1, US-2)

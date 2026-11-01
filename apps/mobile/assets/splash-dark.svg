@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1180" viewBox="130 70 800 1180">
+  <!-- Splash (dark): dark-theme route colours, light pin, light text. Transparent background. -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke="#121212" stroke-width="96">
+      <path d="M232 792 L 600 792 C 742 792, 780 700, 780 360"/>
+      <path d="M232 792 C 232 576, 400 540, 520 474 S 716 382, 780 360"/>
+      <path d="M232 792 C 452 772, 552 574, 632 486 S 736 380, 780 360"/>
+    </g>
+    <path d="M232 792 L 600 792 C 742 792, 780 700, 780 360" stroke="#F0A060" stroke-width="60"/>
+    <path d="M232 792 C 232 576, 400 540, 520 474 S 716 382, 780 360" stroke="#6CCB8A" stroke-width="60"/>
+    <path d="M232 792 C 452 772, 552 574, 632 486 S 736 380, 780 360" stroke="#86AEF7" stroke-width="60"/>
+  </g>
+  <circle cx="232" cy="792" r="66" fill="#86AEF7" stroke="#121212" stroke-width="20"/>
+  <path d="M780 372 C 740 318, 676 262, 676 200 A 104 104 0 1 1 884 200 C 884 262, 820 318, 780 372 Z"
+        fill="#F2F2F2" stroke="#121212" stroke-width="20" stroke-linejoin="round"/>
+  <circle cx="780" cy="200" r="40" fill="#121212"/>
+
+  <text x="530" y="1050" text-anchor="middle" font-family="Helvetica Neue"
+        font-size="156" font-weight="700" fill="#F2F2F2">Routes</text>
+  <text x="530" y="1160" text-anchor="middle" font-family="SF Pro, Helvetica Neue"
+        font-size="64" font-weight="400" fill="#B3B3B3">Get there fast or cheap</text>
+</svg>

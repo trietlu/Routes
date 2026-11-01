@@ -1,6 +1,6 @@
 # Routes — Testing on the simulator and a real iPhone
 
-Related: [Command reference](COMMANDS.md) · [Developer guide](developer.md) · [Test plan §9 (manual tests)](test-plan.md#9-manual-tests-man--human-real-iphone-before-beta)
+Related: [How it works](HOW-IT-WORKS.md) (build pipeline, Metro, signing) · [Command reference](COMMANDS.md) · [Developer guide](developer.md) · [Test plan §9 (manual tests)](test-plan.md#9-manual-tests-man--human-real-iphone-before-beta)
 
 The simulator covers most manual testing. A real iPhone is needed for what the simulator can't do: real GPS, handing off to the installed Google Maps app, and checking how the app feels on a phone.
 
@@ -109,7 +109,7 @@ Google Maps may pick a different road than the route you chose; that's expected 
 | "Untrusted Developer" when opening the app | See build step 4: trust the profile in VPN & Device Management. |
 | **Developer Mode isn't in the phone's Settings**, or Xcode never asks to trust the phone | The Mac isn't seeing the phone yet. Follow setup steps 2–4 in order: data cable directly into the Mac, allow the accessory, Finder shows the phone, Trust, Xcode Devices window. `xcrun devicectl list devices` must list it as `physical`. Work- or school-managed iPhones may block this. |
 | App stops opening after about a week | The free-account build expired. Run step 2 again. |
-| Scanning the QR code from `npm run start` does nothing | The QR workflow needs `expo-dev-client`, which the project doesn't include yet. Use the USB steps above. |
+| Scanning the QR code from `npm run start` does nothing | Routes isn't installed on the phone yet. Install it once with the USB steps above. After that, scanning opens the app (see [HOW-IT-WORKS.md → The QR code](HOW-IT-WORKS.md#the-qr-code)). |
 | Phone is listed but its state is `unavailable` | Unlock it, keep it connected, and open Xcode → Window → Devices and Simulators until it finishes preparing. It should then show as available. |
 
 ## Diagnostic commands (Xcode and simulator)

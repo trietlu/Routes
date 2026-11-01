@@ -37,6 +37,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     version: '0.1.0',
     orientation: 'portrait',
     userInterfaceStyle: 'automatic',
+    // 1024×1024 opaque PNG rendered from assets/icon.svg (`npm run icons`).
+    icon: './assets/icon.png',
     platforms: ['ios'],
     ios: {
       bundleIdentifier: env.IOS_BUNDLE_IDENTIFIER ?? 'com.routes.app.dev',

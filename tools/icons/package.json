@@ -1,0 +1,11 @@
+{
+  "name": "routes-icon-tools",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Renders the app icon (and splash artwork) from SVG to PNG. Not part of the app or its workspaces.",
+  "type": "module",
+  "devDependencies": {
+    "@resvg/resvg-js": "2.6.2",
+    "pngjs": "7.0.0"
+  }
+}

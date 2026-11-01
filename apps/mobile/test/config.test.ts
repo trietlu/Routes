@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { type ExpoConfig } from 'expo/config';
 import appConfig, { LOCATION_USAGE } from '../app.config';
 import { getAppConfig } from '../config/env';
@@ -42,6 +44,18 @@ describe('app.config.ts', () => {
     expect(plist.NSLocationAlwaysAndWhenInUseUsageDescription).toBeUndefined();
     expect(plist.NSLocationAlwaysUsageDescription).toBeUndefined();
     expect(JSON.stringify(config)).not.toMatch(/background|Always/i);
+  });
+
+  it('APP-CFG-02: the app icon is a 1024×1024 PNG with no alpha channel (App Store requirement)', () => {
+    const config = build();
+    expect(config.icon).toBe('./assets/icon.png');
+    const png = fs.readFileSync(path.join(__dirname, '..', 'assets', 'icon.png'));
+    // PNG signature, then the IHDR chunk: width and height (big-endian), bit depth, colour type.
+    expect(png.subarray(1, 4).toString('ascii')).toBe('PNG');
+    expect(png.readUInt32BE(16)).toBe(1024);
+    expect(png.readUInt32BE(20)).toBe(1024);
+    expect(png[25]).toBe(2); // colour type 2 = RGB, no alpha
+    expect(fs.existsSync(path.join(__dirname, '..', 'assets', 'icon.svg'))).toBe(true);
   });
 
   it('is an iPhone-only, portrait app following the system appearance', () => {

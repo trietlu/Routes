@@ -22,6 +22,10 @@ inputs:
     description: Public /healthz URL to smoke-test when ingress is load-balancer only.
     required: false
     default: ''
+  service-account:
+    description: Runtime service account for the service (default proxy-runtime@<project>.iam.gserviceaccount.com).
+    required: false
+    default: ''
 
 runs:
   using: composite
@@ -34,13 +38,16 @@ runs:
         ATTEST_MODE: ${{ inputs.attest-mode }}
         MIN_INSTANCES: ${{ inputs.min-instances }}
         LB_ONLY: ${{ inputs.lb-only }}
+        RUNTIME_SA: ${{ inputs.service-account }}
       run: |
         ingress=all
         if [ "$LB_ONLY" = "true" ]; then ingress=internal-and-cloud-load-balancing; fi
+        runtime_sa="${RUNTIME_SA:-proxy-runtime@${PROJECT}.iam.gserviceaccount.com}"
         gcloud run deploy "$SERVICE" \
           --project "$PROJECT" \
           --region "$REGION" \
           --image "$IMAGE" \
+          --service-account "$runtime_sa" \
           --platform managed \
           --allow-unauthenticated \
           --ingress "$ingress" \

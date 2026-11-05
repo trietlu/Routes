@@ -31,21 +31,21 @@ Related: [Technical design § Hosting and deployment](technical-design.md#hostin
 
 There are two Google Cloud projects (see [technical design § Environments](technical-design.md#hosting-and-deployment)):
 
-- **`routes-nonprod`** for development and staging. It holds the staging Cloud Run service and the Artifact Registry.
-- **`routes-prod`** for production.
+- **`routes-nonprod`** (project ID `routes-dev-512619`) for development and staging. It holds the staging Cloud Run service, the Artifact Registry and the Workload Identity pool.
+- **`routes-prod`** (project ID `routes-prod-512619`) for production.
 
-"Staging project" below means `routes-nonprod`.
+"Staging project" below means `routes-nonprod`. Commands need the project **ID**, not the display name.
 
 ### GitHub repository variables (Settings → Secrets and variables → Actions → Variables)
 
 | Variable | Required | Example | Purpose |
 |---|---|---|---|
-| `GCP_WORKLOAD_IDENTITY_PROVIDER` | yes | `projects/123456/locations/global/workloadIdentityPools/github/providers/routes` | WIF provider for this repo |
-| `GCP_SERVICE_ACCOUNT` | yes | `proxy-deployer@routes-nonprod.iam.gserviceaccount.com` | Account the workflow impersonates |
-| `GCP_PROJECT_STAGING` | yes | `routes-nonprod` | Project for the staging Cloud Run service (shared with development) |
-| `GCP_PROJECT_PRODUCTION` | for production | `routes-prod` | Production Cloud Run project |
+| `GCP_WORKLOAD_IDENTITY_PROVIDER` | yes | `projects/649062240980/locations/global/workloadIdentityPools/github/providers/routes` | WIF provider for this repo |
+| `GCP_SERVICE_ACCOUNT` | yes | `proxy-deployer@routes-dev-512619.iam.gserviceaccount.com` | Account the workflow impersonates |
+| `GCP_PROJECT_STAGING` | yes | `routes-dev-512619` | Project for the staging Cloud Run service (shared with development) |
+| `GCP_PROJECT_PRODUCTION` | for production | `routes-prod-512619` | Production Cloud Run project |
 | `GCP_REGION` | no | `us-central1` | Cloud Run and Artifact Registry region |
-| `GCP_ARTIFACT_PROJECT` | no | `routes-nonprod` | Project that holds the registry (default: the staging project) |
+| `GCP_ARTIFACT_PROJECT` | no | `routes-dev-512619` | Project that holds the registry (default: the staging project) |
 | `GCP_ARTIFACT_REPO` | no | `routes` | Artifact Registry Docker repository |
 | `CLOUD_RUN_SERVICE` | no | `routes-proxy` | Service name in both projects |
 | `GOOGLE_MAPS_SECRET_NAME` | no | `google-maps-api-key` | Secret Manager secret holding the server key |
@@ -61,16 +61,40 @@ No GitHub **secrets** are needed. Authentication is keyless (WIF), and the Maps 
 - `staging`: no protection needed.
 - `production`: add **required reviewers**. This is the manual promotion gate.
 
-### Google Cloud, in both projects (`routes-nonprod` and `routes-prod`)
+### Google Cloud
 
-1. Enable the Cloud Run, Artifact Registry, Secret Manager and IAM Credentials APIs.
-2. Create the Artifact Registry Docker repository `GCP_ARTIFACT_REPO` in `GCP_REGION`, in the artifact project.
-3. Store the Google Maps server key as a Secret Manager secret named `GOOGLE_MAPS_SECRET_NAME`.
-4. Create a Workload Identity pool and provider trusting `token.actions.githubusercontent.com`, restricted to this repository. Let it impersonate `GCP_SERVICE_ACCOUNT`.
-5. Grant the deployer service account:
-   - `roles/run.admin` on both Cloud Run projects;
-   - `roles/artifactregistry.writer` on the artifact project;
-   - `roles/iam.serviceAccountUser` on the Cloud Run runtime service account.
-6. Grant the Cloud Run **runtime** service account in each project:
-   - `roles/secretmanager.secretAccessor` on the Maps secret;
-   - `roles/artifactregistry.reader` on the artifact project, so production can pull the staging-built image.
+One deployer service account, `proxy-deployer@routes-dev-512619.iam.gserviceaccount.com`, deploys to both projects. Each project has its own runtime service account, `proxy-runtime@<project-id>.iam.gserviceaccount.com`. The deploy action uses it by default (input `service-account` overrides it).
+
+**Staging (`routes-dev-512619`).** Done for H-04:
+
+```sh
+gcloud services enable run.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com iamcredentials.googleapis.com iam.googleapis.com sts.googleapis.com cloudresourcemanager.googleapis.com --project routes-dev-512619
+gcloud artifacts repositories create routes --repository-format=docker --location=us-central1 --project routes-dev-512619
+gcloud iam service-accounts create proxy-deployer --project routes-dev-512619
+gcloud iam service-accounts create proxy-runtime --project routes-dev-512619
+
+# Deployer: deploy Cloud Run, push images, act as the runtime account
+gcloud projects add-iam-policy-binding routes-dev-512619 --member=serviceAccount:proxy-deployer@routes-dev-512619.iam.gserviceaccount.com --role=roles/run.admin --condition=None
+gcloud artifacts repositories add-iam-policy-binding routes --location=us-central1 --member=serviceAccount:proxy-deployer@routes-dev-512619.iam.gserviceaccount.com --role=roles/artifactregistry.writer --project routes-dev-512619
+gcloud iam service-accounts add-iam-policy-binding proxy-runtime@routes-dev-512619.iam.gserviceaccount.com --member=serviceAccount:proxy-deployer@routes-dev-512619.iam.gserviceaccount.com --role=roles/iam.serviceAccountUser --project routes-dev-512619
+
+# Runtime: read the Maps key
+gcloud secrets add-iam-policy-binding google-maps-api-key --member=serviceAccount:proxy-runtime@routes-dev-512619.iam.gserviceaccount.com --role=roles/secretmanager.secretAccessor --project routes-dev-512619
+
+# Keyless GitHub sign-in, limited to trietlu/Routes
+gcloud iam workload-identity-pools create github --location=global --project routes-dev-512619
+gcloud iam workload-identity-pools providers create-oidc routes --location=global --workload-identity-pool=github --issuer-uri=https://token.actions.githubusercontent.com --attribute-mapping=google.subject=assertion.sub,attribute.repository=assertion.repository,attribute.ref=assertion.ref --attribute-condition="assertion.repository=='trietlu/Routes'" --project routes-dev-512619
+gcloud iam service-accounts add-iam-policy-binding proxy-deployer@routes-dev-512619.iam.gserviceaccount.com --role=roles/iam.workloadIdentityUser --member=principalSet://iam.googleapis.com/projects/649062240980/locations/global/workloadIdentityPools/github/attribute.repository/trietlu/Routes --project routes-dev-512619
+```
+
+**Production (`routes-prod-512619`).** To do before setting `GCP_PROJECT_PRODUCTION`:
+
+```sh
+gcloud services enable run.googleapis.com secretmanager.googleapis.com iam.googleapis.com --project routes-prod-512619
+gcloud iam service-accounts create proxy-runtime --project routes-prod-512619
+gcloud projects add-iam-policy-binding routes-prod-512619 --member=serviceAccount:proxy-deployer@routes-dev-512619.iam.gserviceaccount.com --role=roles/run.admin --condition=None
+gcloud iam service-accounts add-iam-policy-binding proxy-runtime@routes-prod-512619.iam.gserviceaccount.com --member=serviceAccount:proxy-deployer@routes-dev-512619.iam.gserviceaccount.com --role=roles/iam.serviceAccountUser --project routes-prod-512619
+gcloud secrets add-iam-policy-binding google-maps-api-key --member=serviceAccount:proxy-runtime@routes-prod-512619.iam.gserviceaccount.com --role=roles/secretmanager.secretAccessor --project routes-prod-512619
+# Production pulls the staging-built image: give its Cloud Run service agent read access to the registry
+gcloud artifacts repositories add-iam-policy-binding routes --location=us-central1 --member=serviceAccount:service-177070804521@serverless-robot-prod.iam.gserviceaccount.com --role=roles/artifactregistry.reader --project routes-dev-512619
+```

@@ -11,7 +11,7 @@ Related: [Technical design § Hosting and deployment](technical-design.md#hostin
    - builds `apps/proxy/Dockerfile`;
    - pushes it to Artifact Registry, tagged with the git SHA;
    - deploys that image **by digest** to Cloud Run in the staging project;
-   - smoke-tests `/healthz`, expecting `{"ok":true}`.
+   - smoke-tests `/health`, expecting `{"ok":true}` (run.app URLs reserve paths ending in `z`, so `/healthz` only works locally).
 3. **Production.** It deploys the **same digest** to the production project. The job runs in the `production` GitHub environment. Give that environment required reviewers so promotion is a manual approval. The job is skipped if `GCP_PROJECT_PRODUCTION` is unset.
 
 **Cloud Run settings** live in `.github/actions/cloud-run-deploy/action.yml`:
@@ -52,7 +52,7 @@ There are two Google Cloud projects (see [technical design § Environments](tech
 | `ATTEST_MODE_STAGING` / `ATTEST_MODE_PRODUCTION` | no | `off` / `enforce` | App Attest mode (defaults `off` / `enforce`; `ATTEST_MODE` sets both) |
 | `CLOUD_RUN_MIN_INSTANCES_STAGING` / `_PRODUCTION` | no | `0` / `1` | Warm instances (NFR-1) |
 | `CLOUD_RUN_INGRESS_LB_ONLY` | no | `true` | Restrict ingress to the load balancer |
-| `STAGING_HEALTH_URL` / `PRODUCTION_HEALTH_URL` | when LB-only | `https://api-staging.example.com/healthz` | Public URL for the smoke test |
+| `STAGING_HEALTH_URL` / `PRODUCTION_HEALTH_URL` | when LB-only | `https://api-staging.example.com/health` | Public URL for the smoke test |
 
 No GitHub **secrets** are needed. Authentication is keyless (WIF), and the Maps key stays in Secret Manager.
 

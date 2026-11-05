@@ -160,7 +160,11 @@ export function buildApp(config: Config, options: AppOptions = {}): FastifyInsta
     sendError(reply, new ProxyError('BAD_REQUEST', 'Unknown endpoint', 404)),
   );
 
-  app.get('/healthz', async () => ({ ok: true }));
+  // Cloud Run's front end swallows paths ending in "z" on run.app URLs, so
+  // the deployed smoke test uses /health; /healthz stays for local use.
+  for (const path of ['/healthz', '/health']) {
+    app.get(path, async () => ({ ok: true }));
+  }
 
   // Everything but the health check needs a device ID. Limits count every
   // request, cache hits included; the cache is consulted after validation.

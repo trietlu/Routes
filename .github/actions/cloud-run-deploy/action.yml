@@ -1,5 +1,5 @@
 name: Deploy the proxy to Cloud Run
-description: Deploys one image digest to the routes-proxy service and smoke-tests /healthz.
+description: Deploys one image digest to the routes-proxy service and smoke-tests /health.
 
 inputs:
   project:
@@ -19,7 +19,7 @@ inputs:
     required: false
     default: 'false'
   health-url:
-    description: Public /healthz URL to smoke-test when ingress is load-balancer only.
+    description: Public /health URL to smoke-test when ingress is load-balancer only.
     required: false
     default: ''
   service-account:
@@ -62,7 +62,8 @@ runs:
           --set-secrets "GOOGLE_MAPS_API_KEY=${MAPS_SECRET}:latest" \
           --quiet
 
-    - name: Smoke-test /healthz
+    # /health, not /healthz: run.app reserves paths ending in "z".
+    - name: Smoke-test /health
       shell: bash
       env:
         PROJECT: ${{ inputs.project }}
@@ -76,12 +77,12 @@ runs:
             exit 0
           fi
           base=$(gcloud run services describe "$SERVICE" --project "$PROJECT" --region "$REGION" --format 'value(status.url)')
-          url="${base}/healthz"
+          url="${base}/health"
         fi
         for attempt in 1 2 3 4 5 6; do
           body=$(curl -fsS "$url" || true)
           if [ "$body" = '{"ok":true}' ]; then
-            echo "healthz: $body"
+            echo "health: $body"
             exit 0
           fi
           echo "Attempt $attempt: no healthy answer yet"

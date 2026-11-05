@@ -146,7 +146,7 @@ Google is stubbed with `nock`. No test may make a real network call (`nock.disab
 
 | ID | Test | Req |
 |---|---|---|
-| PX-HEALTH-01 | `GET /healthz` → 200 `{ ok: true }` | — |
+| PX-HEALTH-01 | `GET /healthz` and `GET /health` → 200 `{ ok: true }` | — |
 | PX-VAL-01 | Invalid body → 400 `BAD_REQUEST` and no upstream call | — |
 | PX-VAL-02 | Missing `X-Device-Id` → 400 | — |
 | PX-ROUTES-01 | Sends exactly two `computeRoutes` calls in parallel; the second has `routeModifiers.avoidTolls: true` | FR-10 |

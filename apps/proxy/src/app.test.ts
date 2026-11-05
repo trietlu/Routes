@@ -56,11 +56,13 @@ afterEach(async () => {
 });
 
 describe('proxy app', () => {
-  it('PX-HEALTH-01: GET /healthz → 200 { ok: true }, with no device ID needed', async () => {
+  it('PX-HEALTH-01: GET /healthz and /health → 200 { ok: true }, with no device ID needed', async () => {
     ({ app } = setup());
-    const response = await app.inject({ method: 'GET', url: '/healthz' });
-    expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual({ ok: true });
+    for (const url of ['/healthz', '/health']) {
+      const response = await app.inject({ method: 'GET', url });
+      expect(response.statusCode).toBe(200);
+      expect(response.json()).toEqual({ ok: true });
+    }
   });
 
   it('unknown routes return 404 in the error envelope', async () => {

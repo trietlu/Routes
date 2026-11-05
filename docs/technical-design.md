@@ -86,7 +86,7 @@ Schemas live in `packages/api-types` as zod schemas; the proxy validates every r
 | `POST /routes` | `{ origin: Waypoint, destination: Waypoint }` where `Waypoint = { placeId?: string, lat: number, lng: number }` | `{ routes: ProviderRoute[] }`, the merged list from both calls |
 | `GET /places/autocomplete` | `?q=&lat=&lng=&session=` (`lat`/`lng` = start, for distance and bias) | `{ suggestions: { placeId, primaryText, secondaryText, distanceMeters? }[] }` |
 | `GET /places/details` | `?placeId=&session=` | `{ placeId, name, address, lat, lng }` |
-| `GET /healthz` | none | `{ ok: true }` |
+| `GET /healthz`, `GET /health` | none | `{ ok: true }` (Cloud Run URLs reserve paths ending in `z`; deployed checks use `/health`) |
 
 `ProviderRoute` has these fields:
 

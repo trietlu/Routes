@@ -27,6 +27,20 @@ Related: [Technical design § Hosting and deployment](technical-design.md#hostin
 | Env | `NODE_ENV=production`, `PROVIDER=google`, `ATTEST_MODE` per environment |
 | Secret | `GOOGLE_MAPS_API_KEY` from Secret Manager (`GOOGLE_MAPS_SECRET_NAME`, latest version) |
 
+## Current setup (frugal)
+
+| Environment | URL | Notes |
+|---|---|---|
+| Staging | `https://routes-proxy-43ten57gha-uc.a.run.app` | Deploys on every qualifying merge |
+| Production | `https://routes-proxy-mpq2ul73ra-uc.a.run.app` | Deploys after approval in the `production` environment |
+
+Choices made to keep the bill near zero:
+
+- **Min instances 0 in both** (`CLOUD_RUN_MIN_INSTANCES_PRODUCTION=0`). Idle costs nothing, but the first request after a quiet spell has a cold start of a few seconds.
+- **No load balancer or Cloud Armor** (about $18/month). Ingress is `all`. Abuse protection is the proxy's per-device rate limits plus the Maps quota caps and budget alerts (#31). Revisit before wide release, together with App Attest (#27).
+- **`ATTEST_MODE_PRODUCTION=off`.** The proxy doesn't verify App Attest yet (#27), so `enforce` would only be a label.
+- **Artifact Registry cleanup policy:** keep the newest 5 images, delete images older than 30 days.
+
 ## What H-04 (#33) needs to create
 
 There are two Google Cloud projects (see [technical design § Environments](technical-design.md#hosting-and-deployment)):
@@ -87,7 +101,7 @@ gcloud iam workload-identity-pools providers create-oidc routes --location=globa
 gcloud iam service-accounts add-iam-policy-binding proxy-deployer@routes-dev-512619.iam.gserviceaccount.com --role=roles/iam.workloadIdentityUser --member=principalSet://iam.googleapis.com/projects/649062240980/locations/global/workloadIdentityPools/github/attribute.repository/trietlu/Routes --project routes-dev-512619
 ```
 
-**Production (`routes-prod-512619`).** To do before setting `GCP_PROJECT_PRODUCTION`:
+**Production (`routes-prod-512619`).** Done for H-04:
 
 ```sh
 gcloud services enable run.googleapis.com secretmanager.googleapis.com iam.googleapis.com --project routes-prod-512619

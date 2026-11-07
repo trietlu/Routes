@@ -63,5 +63,5 @@ There are two kinds of prompts:
 ## Notes
 
 - There is no human review: the agent merges its own PRs once CI is green. CI and the [test plan](test-plan.md) are the quality gate. It's worth skimming merged PRs now and then, especially #4 (R-04, ranking) and #19 (R-19, results cards).
-- The `needs-human` issues (#30 to #37) run in parallel and don't block the agent's build. They're listed in [GETTING-STARTED.md](GETTING-STARTED.md).
+- The `needs-human` issues (#30 to #37) run in parallel and don't block the agent's build. They're listed with `gh issue list --repo trietlu/Routes --label needs-human` and in [PLAN.md](PLAN.md#human-track-parallel).
 - **Fully hands-off option:** instead of the allowlist, run `claude --dangerously-skip-permissions`. Do this only in a VM or a separate macOS user account with nothing else valuable on it.

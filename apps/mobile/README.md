@@ -1,6 +1,6 @@
 # Routes app (Expo)
 
-iPhone app built with Expo SDK 57 and Expo Router. It uses **development builds only**; never use Expo Go.
+iPhone app built with Expo SDK 57 and Expo Router. It uses **development builds only**; never use Expo Go. For how React Native, Metro, Expo and the iOS shell fit together, see [docs/OVERVIEW.md](../../docs/OVERVIEW.md#3-react-native-metro-expo-and-the-ios-shell). For store builds, see [docs/release.md](../../docs/release.md).
 
 ## Simulator dev loop (no keys needed)
 
@@ -11,7 +11,7 @@ npm run proxy:dev                 # proxy on :8080, PROVIDER=mock, ATTEST_MODE=o
 npm run ios -w @routes/mobile     # expo run:ios: prebuild, build and launch in the simulator
 ```
 
-After the first build, `npm run start -w @routes/mobile` starts Metro for the installed dev build. This needs macOS with Xcode. CI builds and runs the simulator app in the macOS job (R-24).
+After the first build, `npm run start -w @routes/mobile` starts Metro for the installed dev build. This needs macOS with Xcode. The manual `E2E` workflow builds and tests a simulator Release build on a macOS runner.
 
 ## Configuration
 
@@ -32,7 +32,8 @@ At runtime, read them with `getAppConfig()` from `config/env.ts`.
 
 | Folder | Contents |
 |---|---|
-| `app/` | Expo Router routes, one per screen. They are placeholders until R-16 to R-23. |
+| `app/` | Expo Router routes, one per screen; each renders a component from `features/` |
+| `state/`, `api/`, `storage/`, `location/`, `handoff/` | Stores, proxy client, SQLite, location and Google Maps handoff (see [architecture.md](../../docs/architecture.md#mobile-app-appsmobile)) |
 | `features/` | Screen components. Text must come from `i18n/` (APP-I18N-01 fails on raw JSX strings). |
 | `i18n/` | en-US strings table and `t()`. `coreT` feeds routing-core's formatters. |
 | `theme/` | Light and dark color tokens (route colors A/B/C), type scale, spacing, radii and the contrast helper |

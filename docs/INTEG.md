@@ -29,7 +29,7 @@ flowchart LR
 
 The Jest suites test pieces in isolation, with mocks for native modules and the network. These flows are the only automated check that the pieces work together in a real build.
 
-**Not covered** (manual tests in [test plan §9](test-plan.md#9-manual-tests-man--human-real-iphone-before-beta)): live Google data, handing off to an installed Google Maps app, VoiceOver and Dynamic Type on a device, and App Attest.
+**Not covered** (manual tests in [test plan §9](test-plan.md#9-manual-tests-man---human-real-iphone-before-beta)): live Google data, handing off to an installed Google Maps app, VoiceOver and Dynamic Type on a device, and App Attest.
 
 ## 2. Layout
 

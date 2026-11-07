@@ -12,7 +12,10 @@ export interface AppExtra {
   mapProvider: MapProvider;
 }
 
-const mapProviderFrom = (value: string | undefined): MapProvider =>
+/** EAS project on expo.dev (account `triet05`). Not a secret. */
+export const EAS_PROJECT_ID = '022bd36f-6b57-45a0-95a9-95ee4ca005d5';
+
+const mapProviderFrom =(value: string | undefined): MapProvider =>
   value === 'google' ? 'google' : 'default';
 
 /**
@@ -34,6 +37,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ...config,
     name: 'Routes',
     slug: 'routes',
+    owner: 'triet05',
     scheme: 'routes',
     version: '0.1.0',
     orientation: 'portrait',
@@ -72,6 +76,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ['expo-build-properties', { ios: { deploymentTarget: '16.4' } }],
     ],
     experiments: { typedRoutes: false },
-    extra,
+    extra: { ...extra, eas: { projectId: EAS_PROJECT_ID } },
   };
 };

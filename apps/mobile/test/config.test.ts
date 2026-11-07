@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { type ExpoConfig } from 'expo/config';
-import appConfig, { LOCATION_USAGE } from '../app.config';
+import appConfig, { EAS_PROJECT_ID, LOCATION_USAGE } from '../app.config';
 import { getAppConfig } from '../config/env';
 
 const ENV_KEYS = [
@@ -100,6 +100,7 @@ describe('app.config.ts', () => {
       proxyUrl: 'http://localhost:8080',
       appEnv: 'development',
       mapProvider: 'default',
+      eas: { projectId: EAS_PROJECT_ID },
     });
     expect(config.ios?.config?.googleMapsApiKey).toBeUndefined();
   });
@@ -116,10 +117,18 @@ describe('app.config.ts', () => {
       proxyUrl: 'https://staging.example.com',
       appEnv: 'staging',
       mapProvider: 'google',
+      eas: { projectId: EAS_PROJECT_ID },
     });
     expect(config.ios?.config?.googleMapsApiKey).toBe('ios-key');
     expect(config.ios?.bundleIdentifier).toBe('com.routes.app');
     expect(build({ EXPO_PUBLIC_MAP_PROVIDER: 'bing' }).extra?.mapProvider).toBe('default');
+  });
+
+  it('links the EAS project and owner', () => {
+    const config = build();
+    expect(config.owner).toBe('triet05');
+    expect(config.slug).toBe('routes');
+    expect(config.extra?.eas).toEqual({ projectId: '022bd36f-6b57-45a0-95a9-95ee4ca005d5' });
   });
 
   it('sets the Apple signing team only when APPLE_TEAM_ID is set', () => {

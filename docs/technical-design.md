@@ -214,7 +214,7 @@ An `https://` link always opens somewhere (Safari if the app is missing), so the
 
 1. Call `Linking.canOpenURL("comgooglemaps://")`. This requires `comgooglemaps` in `ios.infoPlist.LSApplicationQueriesSchemes` in `app.config.ts`.
 2. If it returns true, call `Linking.openURL(universalLink)`; iOS opens the Google Maps app.
-3. If it returns false, or `openURL` rejects, show the [Google Maps isn't installed sheet](ux-sketch.md#s3--google-maps-isnt-installed-sheet):
+3. If it returns false, or `openURL` rejects, show the [Google Maps isn't installed sheet](ux-sketch.md#s3--google-maps-isnt-installed-sheet-fr-17):
    - "Open in browser" opens the same link.
    - "Get Google Maps" opens `https://apps.apple.com/app/id585027354`.
 
@@ -253,7 +253,7 @@ The proxy is stateless and keeps no trip history; it exists to hide the API key 
 
 - `PROVIDER=mock` serves responses from `/fixtures` instead of calling Google, so the app and all automated tests run without Google keys or an Apple device.
 - Fixtures are selected by destination place ID and cover:
-  - the canonical trip, Current location → Union Station (see [UX screen 4](ux-sketch.md#screen-4--results))
+  - the canonical trip, Current location → Union Station (see [UX screen 4](ux-sketch.md#screen-4--results-fr-8-to-fr-14-fr-20-fr-22-us-5-to-us-7))
   - only two routes
   - one route
   - an unknown toll price

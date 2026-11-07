@@ -2,59 +2,38 @@
 
 An iPhone app that shows drivers three routes to a destination, ranked **Fastest** or **Cheapest** (tolls plus estimated fuel), then hands the chosen route to Google Maps for navigation.
 
-## Docs
+**New here? Read [docs/OVERVIEW.md](docs/OVERVIEW.md).** It covers the design, tech stack, file layout, build and release flow, and the Expo, Google Cloud and Apple setup, and links to every other doc.
 
-- [Getting started (owner handoff)](docs/GETTING-STARTED.md)
-- [Running the coding agent](docs/AGENT-LOOP.md)
+## Quick start (simulator, no keys needed)
 
-- [Business requirements](docs/brd.md)
-- [Technical design](docs/technical-design.md)
-- [Architecture (as built)](docs/architecture.md)
-- [Developer guide](docs/developer.md)
-- [Command reference](docs/COMMANDS.md)
-- [Testing on the simulator and a real iPhone](docs/DEVICE-TESTING.md)
-- [How the iOS app is built and run](docs/HOW-IT-WORKS.md)
-- [UX sketch](docs/ux-sketch.md)
-- [Plan of action](docs/PLAN.md)
-- [Test plan](docs/test-plan.md)
-- [Integration tests with Maestro](docs/INTEG.md)
-- [Instructions for coding agents](AGENTS.md)
+```sh
+nvm use                          # Node 22
+npm ci
+npm run proxy:dev                # terminal 1: proxy with fixture data on :8080
+npm run ios -w @routes/mobile    # terminal 2: build, launch in the simulator, start Metro
+```
+
+Needs macOS with Xcode 26 or later and CocoaPods. See [docs/developer.md](docs/developer.md) for prerequisites, and [docs/COMMANDS.md](docs/COMMANDS.md) for every everyday command.
 
 ## Repository layout
 
-npm workspaces, Node 22 LTS (see `.nvmrc`).
-
 | Path | What it is |
 |---|---|
-| `apps/mobile/` | The Expo app (contents land in R-11) |
-| `apps/proxy/` | Node/TypeScript service for Cloud Run |
-| `packages/routing-core/` | Pure TypeScript: decode, dedupe, cost, rank, diff, format |
-| `packages/api-types/` | Request and response types plus zod schemas shared by app and proxy |
-| `fixtures/` | Provider responses used by mock mode and tests |
+| `apps/mobile/` | The iPhone app (Expo SDK 57, React Native, Expo Router) |
+| `apps/proxy/` | Fastify service on Cloud Run that fronts Google Routes and Places |
+| `packages/routing-core/` | Pure TypeScript: decode, dedupe, cost, rank, format |
+| `packages/api-types/` | zod schemas and types shared by app and proxy |
+| `fixtures/` | Google-format responses for mock mode and tests |
+| `docs/` | [Overview](docs/OVERVIEW.md) and detailed docs |
 
-## Getting started
+## Checks (what CI runs)
 
 ```sh
-nvm use      # Node 22
-npm ci
+npm run lint && npm run typecheck && npm run test:coverage
 ```
 
-## Scripts
-
-Run these from the repo root; they cover every workspace.
-
-| Command | What it runs |
-|---|---|
-| `npm run lint` | ESLint and a Prettier formatting check |
-| `npm run typecheck` | `tsc --build` across all TypeScript projects |
-| `npm test` | Jest (unit, integration and component tests) |
-| `npm run test:coverage` | Jest with the test plan's coverage gates enforced |
-| `npm run format` | Rewrites files with Prettier |
-
-Coverage gates come from the [test plan](docs/test-plan.md#1-test-levels) and are enforced per package: `routing-core` ≥ 95%, `api-types` ≥ 90%, `proxy` ≥ 85%.
-
-CI (`.github/workflows/ci.yml`) runs `lint`, `typecheck` and `test:coverage` on Ubuntu with Node 22, for every pull request and every push to `main`.
+Coverage gates: `routing-core` ≥ 95%, `api-types` ≥ 90%, `proxy` ≥ 85%, mobile non-UI modules ≥ 80%.
 
 ## Status
 
-In development. Work is tracked in GitHub issues; see the pinned tracking issue for order and progress.
+The app is feature-complete. The proxy runs on Cloud Run, and store builds go to TestFlight through EAS. Remaining launch work is tracked in GitHub issues; see the pinned tracker [#38](https://github.com/trietlu/Routes/issues/38).

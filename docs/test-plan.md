@@ -36,7 +36,7 @@ This plan tells the coding agent how to prove each piece works. Every issue list
 
 ## 2. Canonical fixture and expected values
 
-Source: [UX screen 4](ux-sketch.md#screen-4--results). Destination place ID: `fixture-union-station`. Vehicle: defaults (25 mpg, $3.50/gal → $0.14/mi).
+Source: [UX screen 4](ux-sketch.md#screen-4--results-fr-8-to-fr-14-fr-20-fr-22-us-5-to-us-7). Destination place ID: `fixture-union-station`. Vehicle: defaults (25 mpg, $3.50/gal → $0.14/mi).
 
 **Raw provider data**
 

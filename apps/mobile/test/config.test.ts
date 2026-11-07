@@ -103,6 +103,7 @@ describe('app.config.ts', () => {
       eas: { projectId: EAS_PROJECT_ID },
     });
     expect(config.ios?.config?.googleMapsApiKey).toBeUndefined();
+    expect(JSON.stringify(config.plugins)).not.toContain('react-native-maps');
   });
 
   it('reads EXPO_PUBLIC_* and passes the Google Maps key only when set', () => {
@@ -119,9 +120,44 @@ describe('app.config.ts', () => {
       mapProvider: 'google',
       eas: { projectId: EAS_PROJECT_ID },
     });
-    expect(config.ios?.config?.googleMapsApiKey).toBe('ios-key');
+    // Through react-native-maps' plugin, which also adds the Google Maps SDK pod.
+    expect(config.plugins).toContainEqual([
+      'react-native-maps',
+      { iosGoogleMapsApiKey: 'ios-key' },
+    ]);
     expect(config.ios?.bundleIdentifier).toBe('com.routes.app');
     expect(build({ EXPO_PUBLIC_MAP_PROVIDER: 'bing' }).extra?.mapProvider).toBe('default');
+  });
+
+  it('APP-CFG-04: eas.json has store profiles for staging and production with the right proxy', () => {
+    const eas = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'eas.json'), 'utf8'));
+    expect(eas.cli.appVersionSource).toBe('remote');
+    const profile = (name: string) => {
+      const { env: baseEnv, ...base } = eas.build.base;
+      const { env, extends: parent, ...rest } = eas.build[name];
+      expect(parent).toBe('base');
+      return { ...base, ...rest, env: { ...baseEnv, ...env } };
+    };
+    for (const [name, environment, appEnv, proxy] of [
+      ['staging', 'preview', 'staging', 'https://routes-proxy-43ten57gha-uc.a.run.app'],
+      ['production', 'production', 'production', 'https://routes-proxy-mpq2ul73ra-uc.a.run.app'],
+    ] as const) {
+      expect(profile(name)).toEqual({
+        distribution: 'store',
+        autoIncrement: true,
+        environment,
+        env: {
+          IOS_BUNDLE_IDENTIFIER: 'com.rebound.routes',
+          APPLE_TEAM_ID: '5T7CA68Q3C',
+          EXPO_PUBLIC_MAP_PROVIDER: 'google',
+          EXPO_PUBLIC_APP_ENV: appEnv,
+          EXPO_PUBLIC_PROXY_URL: proxy,
+        },
+      });
+      expect(eas.submit[name]).toBeDefined();
+    }
+    // The Maps key comes from EAS environment variables, never from the repo.
+    expect(JSON.stringify(eas)).not.toMatch(/GOOGLE_MAPS|AIza/);
   });
 
   it('links the EAS project and owner', () => {

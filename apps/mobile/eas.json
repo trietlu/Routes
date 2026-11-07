@@ -1,0 +1,37 @@
+{
+  "cli": {
+    "version": ">= 16.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "base": {
+      "distribution": "store",
+      "autoIncrement": true,
+      "env": {
+        "IOS_BUNDLE_IDENTIFIER": "com.rebound.routes",
+        "APPLE_TEAM_ID": "5T7CA68Q3C",
+        "EXPO_PUBLIC_MAP_PROVIDER": "google"
+      }
+    },
+    "staging": {
+      "extends": "base",
+      "environment": "preview",
+      "env": {
+        "EXPO_PUBLIC_APP_ENV": "staging",
+        "EXPO_PUBLIC_PROXY_URL": "https://routes-proxy-43ten57gha-uc.a.run.app"
+      }
+    },
+    "production": {
+      "extends": "base",
+      "environment": "production",
+      "env": {
+        "EXPO_PUBLIC_APP_ENV": "production",
+        "EXPO_PUBLIC_PROXY_URL": "https://routes-proxy-mpq2ul73ra-uc.a.run.app"
+      }
+    }
+  },
+  "submit": {
+    "staging": {},
+    "production": {}
+  }
+}

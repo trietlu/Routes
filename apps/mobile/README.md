@@ -24,6 +24,7 @@ After the first build, `npm run start -w @routes/mobile` starts Metro for the in
 | `EXPO_PUBLIC_MAP_PROVIDER` | `default` | `default` (Apple Maps, no key) or `google` |
 | `GOOGLE_MAPS_IOS_KEY` | unset | Passed to react-native-maps only when set |
 | `IOS_BUNDLE_IDENTIFIER` | `com.routes.app.dev` | iOS bundle ID |
+| `APPLE_TEAM_ID` | unset | Apple signing team (`ios.appleTeamId`) for device builds |
 
 At runtime, read them with `getAppConfig()` from `config/env.ts`.
 

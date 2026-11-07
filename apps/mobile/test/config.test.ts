@@ -10,6 +10,7 @@ const ENV_KEYS = [
   'EXPO_PUBLIC_MAP_PROVIDER',
   'GOOGLE_MAPS_IOS_KEY',
   'IOS_BUNDLE_IDENTIFIER',
+  'APPLE_TEAM_ID',
 ] as const;
 
 function build(env: Partial<Record<(typeof ENV_KEYS)[number], string>> = {}): ExpoConfig {
@@ -119,6 +120,11 @@ describe('app.config.ts', () => {
     expect(config.ios?.config?.googleMapsApiKey).toBe('ios-key');
     expect(config.ios?.bundleIdentifier).toBe('com.routes.app');
     expect(build({ EXPO_PUBLIC_MAP_PROVIDER: 'bing' }).extra?.mapProvider).toBe('default');
+  });
+
+  it('sets the Apple signing team only when APPLE_TEAM_ID is set', () => {
+    expect(build().ios?.appleTeamId).toBeUndefined();
+    expect(build({ APPLE_TEAM_ID: 'ABCDE12345' }).ios?.appleTeamId).toBe('ABCDE12345');
   });
 
   it('getAppConfig falls back to defaults when extra is missing', () => {

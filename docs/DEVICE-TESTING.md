@@ -40,7 +40,10 @@ Do these in order. The phone's **Developer Mode** switch is hidden until the Mac
    ```
    EXPO_PUBLIC_PROXY_URL=http://<your Mac's address>:8080
    IOS_BUNDLE_IDENTIFIER=com.<yourname>.routes.dev
+   APPLE_TEAM_ID=<your 10-character Team ID>
    ```
+
+   `APPLE_TEAM_ID` is optional. It's shown at developer.apple.com → Membership, or next to "App ID Prefix" when you register an identifier. With it set, every build signs with that team, so you don't have to pick the team in Xcode again after deleting `apps/mobile/ios`. Without it, Xcode may fall back to your free Personal Team.
 
    The bundle ID must be unique to you. A free Apple account can't use an ID someone else has registered, and the default `com.routes.app.dev` may be taken. Your Mac's address can change when you rejoin Wi-Fi; update the file if the app stops reaching the proxy.
 
@@ -68,7 +71,7 @@ Do these in order. The phone's **Developer Mode** switch is hidden until the Mac
 3. **If it fails with a signing error** ("No code signing certificates are available to use", "No account", "requires a development team", or similar). On a new Mac this is expected: signing in to Xcode doesn't create the **Apple Development certificate**.
    1. Open the project: `open apps/mobile/ios/Routes.xcworkspace`.
    2. Click the blue **Routes** project in the sidebar → the **Routes** target → **Signing & Capabilities**.
-   3. Tick **Automatically manage signing**, and choose your **Personal Team** (or your paid team) under **Team**. Xcode then creates the certificate and a provisioning profile for your bundle ID and iPhone. Wait until no red error remains.
+   3. Tick **Automatically manage signing**, and choose your team under **Team**: your paid team if you have one (set `APPLE_TEAM_ID` so it sticks), otherwise your **Personal Team**. Xcode then creates the certificate and a provisioning profile for your bundle ID and iPhone. Wait until no red error remains.
       - Alternative for the certificate alone: Xcode → Settings → **Apple Accounts** → your account → **Manage Certificates…** → **+** → **Apple Development**.
       - "Failed to register bundle identifier" means the ID is taken. Change `IOS_BUNDLE_IDENTIFIER` in `apps/mobile/.env`, delete `apps/mobile/ios`, and start again.
    4. Run the command from step 2 again, **without** deleting `apps/mobile/ios`, so the signing settings are kept.

@@ -15,7 +15,7 @@ export interface AppExtra {
 /** EAS project on expo.dev (account `triet05`). Not a secret. */
 export const EAS_PROJECT_ID = '022bd36f-6b57-45a0-95a9-95ee4ca005d5';
 
-const mapProviderFrom =(value: string | undefined): MapProvider =>
+const mapProviderFrom = (value: string | undefined): MapProvider =>
   value === 'google' ? 'google' : 'default';
 
 /**

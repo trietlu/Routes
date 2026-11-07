@@ -42,6 +42,8 @@ npx eas-cli@latest submit --profile staging --platform ios --latest
 
 - **`build`:** answer **yes** to "log in to your Apple account" and let EAS generate the distribution certificate and provisioning profile.
 - **`submit`:** let EAS create an App Store Connect API key. It's stored on EAS, so later submits (including from GitHub) need no Apple login.
+- **Target app:** submits go to the App Store Connect app with Apple ID `6832004102` ("Routes: Get there fast & cheap"), set as `ascAppId` in `eas.json`. Without it, `eas submit` doesn't apply the build profile's env, falls back to the default bundle ID `com.routes.app.dev`, and creates a new app record that Apple then rejects the build for (ITMS-90055).
+- **Export compliance:** `ITSAppUsesNonExemptEncryption` is `false` (HTTPS only), so builds don't stop at "Missing Compliance".
 
 After processing (about 10–30 minutes), the build appears in App Store Connect → TestFlight. Install it on your phone with the TestFlight app.
 

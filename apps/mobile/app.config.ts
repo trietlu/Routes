@@ -55,6 +55,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         NSLocationWhenInUseUsageDescription: LOCATION_USAGE,
         // Lets Linking.canOpenURL("comgooglemaps://") detect Google Maps (FR-17).
         LSApplicationQueriesSchemes: ['comgooglemaps'],
+        // Only standard HTTPS: exempt from export compliance, so TestFlight doesn't ask per build.
+        ITSAppUsesNonExemptEncryption: false,
         // No background modes: location is foreground only (NFR-4, APP-LOC-03).
       },
     },

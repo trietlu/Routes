@@ -37,6 +37,7 @@ describe('app.config.ts', () => {
     const config = build();
     const plist = config.ios?.infoPlist ?? {};
     expect(plist.LSApplicationQueriesSchemes).toEqual(['comgooglemaps']);
+    expect(plist.ITSAppUsesNonExemptEncryption).toBe(false);
     expect(plist.NSLocationWhenInUseUsageDescription).toBe(
       'Routes uses your location to set your starting point.',
     );
@@ -154,8 +155,11 @@ describe('app.config.ts', () => {
           EXPO_PUBLIC_PROXY_URL: proxy,
         },
       });
-      expect(eas.submit[name]).toBeDefined();
+      // Submits go to the existing App Store Connect app; without ascAppId, `eas submit`
+      // resolves the default bundle ID and creates a new app record.
+      expect(eas.submit[name].extends).toBe('base');
     }
+    expect(eas.submit.base.ios.ascAppId).toBe('6832004102');
     // The Maps key comes from EAS environment variables, never from the repo.
     expect(JSON.stringify(eas)).not.toMatch(/GOOGLE_MAPS|AIza/);
   });

@@ -15,7 +15,7 @@ Routes is an iPhone app that shows drivers up to three routes to a destination, 
 7. [CI/CD flow](#7-cicd-flow)
 8. [Platforms and their commands](#8-platforms-and-their-commands)
 9. [Code signing](#9-code-signing)
-10. [Lessons learned](#10-lessons-learned)
+10. [Known pitfalls](#10-known-pitfalls)
 11. [Doc map](#11-doc-map)
 
 ## 1. The system at a glance
@@ -109,7 +109,7 @@ Why it's built this way: [technical design](technical-design.md). What it must d
 How TypeScript in this repo becomes an app on a phone.
 
 ```
- YOUR CODE                          GENERATED / INSTALLED               ON THE DEVICE
+ SOURCE CODE                        GENERATED / INSTALLED               ON THE DEVICE
  apps/mobile (React, TypeScript)
  packages/* (routing-core, ...)  ──Metro──▶  JavaScript bundle ──────┐
                                                                       ▼
@@ -144,11 +144,13 @@ Nothing in `ios/` is hand-edited, so deleting it is always safe. **Change `app.c
 | | Debug (development build) | Release (TestFlight, App Store, E2E) |
 |---|---|---|
 | Made by | `npm run ios -w @routes/mobile` (`expo run:ios`) | EAS Build, `--configuration Release`, or the E2E workflow |
-| JavaScript | **Downloaded from Metro on your Mac** at each launch; edits reload in about a second (Fast Refresh) | **Embedded** in the app; no Mac needed |
+| JavaScript | **Downloaded from Metro on the development Mac** at each launch; edits reload in about a second (Fast Refresh) | **Embedded** in the app; no Mac needed |
 | Works without the Mac? | No: on cellular, or with Metro stopped, it can't load | Yes |
 | Dev menu (shake) and red error screen | Yes | No; errors close the app |
 
-### The two servers on your Mac
+### Running the app locally
+
+Local development runs two servers on the Mac:
 
 | Port | Server | Started by | Serves |
 |---|---|---|---|
@@ -158,7 +160,7 @@ Nothing in `ios/` is hand-edited, so deleting it is always safe. **Change `app.c
 `npm run ios` runs prebuild if needed, then `pod install`, the Xcode build, install and launch, **then starts Metro in the same terminal**. Closing that terminal disconnects a Debug app from its code.
 
 - **Simulator:** shares the Mac's network, so `localhost` works.
-- **Phone:** `localhost` is the phone itself. A Debug build records the Mac's address to find Metro, and the proxy address comes from `EXPO_PUBLIC_PROXY_URL`: your Mac's Wi-Fi IP, or a Cloud Run URL. Both devices must be on the same Wi-Fi to reach your Mac.
+- **Phone:** `localhost` is the phone itself. A Debug build records the Mac's address to find Metro, and the proxy address comes from `EXPO_PUBLIC_PROXY_URL`: the Mac's Wi-Fi IP, or a Cloud Run URL. The phone and the Mac must be on the same Wi-Fi.
 
 ### The QR code
 
@@ -219,8 +221,8 @@ Each tool has its own name for the same three stages:
 
 | Stage | What it is | Google Cloud project | Proxy | Expo (EAS) environment | `eas.json` profile | Bundle ID |
 |---|---|---|---|---|---|---|
-| **Local dev** | Builds from your Mac (`npm run ios`) | `routes-nonprod` | Your Mac (`proxy:dev` / `proxy:live`) or staging | not used | not used | `com.rebound.routes.dev` on a phone (`com.routes.app.dev` default on the simulator) |
-| **Staging** | TestFlight builds for everyday use | `routes-nonprod` | `https://routes-proxy-43ten57gha-uc.a.run.app` | `preview` | `staging` | `com.rebound.routes` |
+| **Local dev** | Builds on a developer's Mac (`npm run ios`) | `routes-nonprod` | Local (`proxy:dev` / `proxy:live`) or staging | not used | not used | `com.rebound.routes.dev` on a phone (`com.routes.app.dev` default on the simulator) |
+| **Staging** | TestFlight beta builds | `routes-nonprod` | `https://routes-proxy-43ten57gha-uc.a.run.app` | `preview` | `staging` | `com.rebound.routes` |
 | **Production** | The App Store build | `routes-prod` | `https://routes-proxy-mpq2ul73ra-uc.a.run.app` | `production` | `production` | `com.rebound.routes` |
 
 Google Cloud **project IDs** (what commands need) differ from the display names: `routes-nonprod` is `routes-dev-512619`, and `routes-prod` is `routes-prod-512619`.
@@ -248,13 +250,13 @@ Server keys never go in the app: anything in an app can be extracted. iOS keys a
 
 ## 6. Three ways to build: local, GitHub, Expo
 
-| | **Local (your Mac)** | **GitHub Actions** | **Expo (EAS Build)** |
+| | **Local (developer's Mac)** | **GitHub Actions** | **Expo (EAS Build)** |
 |---|---|---|---|
-| What it produces | A Debug app on the simulator or your phone (or a Release one with `--configuration Release`) | Test results, a Docker image deployed to Cloud Run, a simulator Release build for E2E | A signed store build (`.ipa`), sent to TestFlight |
-| How you start it | `npm run ios -w @routes/mobile` (add `-- --device` for the phone) | Automatically on PRs and merges, or by hand from the Actions tab | `npx eas-cli@latest build …`, or the **App release** workflow |
-| Signing | Your Apple Development certificate (Xcode, automatic) | None needed (simulator and container) | Apple Distribution certificate and profile, stored on EAS |
-| Runs the app's JavaScript from | Metro on your Mac (Debug) | Embedded (E2E Release build) | Embedded |
-| Cost | Free | Free for Linux jobs; the macOS E2E job is slow (about an hour) | Counts against the EAS plan's monthly builds; `--local` builds on your Mac for free |
+| What it produces | A Debug app on the simulator or a connected iPhone (or a Release one with `--configuration Release`) | Test results, a Docker image deployed to Cloud Run, a simulator Release build for E2E | A signed store build (`.ipa`), sent to TestFlight |
+| How to start it | `npm run ios -w @routes/mobile` (add `-- --device` for an iPhone) | Automatically on PRs and merges, or by hand from the Actions tab | `npx eas-cli@latest build …`, or the **App release** workflow |
+| Signing | The developer's Apple Development certificate (Xcode, automatic) | None needed (simulator and container) | Apple Distribution certificate and profile, stored on EAS |
+| Runs the app's JavaScript from | Metro on the Mac (Debug) | Embedded (E2E Release build) | Embedded |
+| Cost | Free | Free for Linux jobs; the macOS E2E job is slow (about an hour) | Counts against the EAS plan's monthly builds; `--local` builds on a Mac for free |
 | Use it for | Day-to-day development and on-device testing | The merge gate, deploying the proxy, E2E before releases | TestFlight and App Store builds |
 
 ## 7. CI/CD flow
@@ -277,10 +279,10 @@ flowchart TD
 |---|---|---|---|
 | `ci.yml` | Every PR and push to `main` | The merge gate (about 2 minutes) | [developer.md → CI](developer.md#ci) |
 | `e2e.yml` | Manual only | Maestro flows on a macOS runner (about an hour); not a merge gate | [INTEG.md](INTEG.md) |
-| `proxy-deploy.yml` | Merges touching the proxy or its inputs, or manual | Staging automatically; production after your approval | [deploy.md](deploy.md) |
+| `proxy-deploy.yml` | Merges touching the proxy or its inputs, or manual | Staging automatically; production after approval | [deploy.md](deploy.md) |
 | `app-release.yml` | Manual only (profile, submit on or off) | Queues an EAS build and optional TestFlight submit; production needs approval | [release.md](release.md) |
 
-**Approvals:** when a production deploy or release is waiting, GitHub emails you. Approve under **Actions** → the run → **Review deployments** → **Approve and deploy**. Ignoring a request is safe: production keeps the previous version.
+**Approvals:** production deploys and releases wait for a required reviewer of the `production` environment (the repository owner), and GitHub emails the reviewer. Approve under **Actions** → the run → **Review deployments** → **Approve and deploy**. Ignoring a request is safe: production keeps the previous version.
 
 **Work tracking:** GitHub issues, with the pinned tracker [#38](https://github.com/trietlu/Routes/issues/38). `R-xx` issues are code (originally for the coding agent, see [AGENT-LOOP.md](AGENT-LOOP.md)), and `H-xx` (`needs-human`) issues are account and launch tasks. The order is in [PLAN.md](PLAN.md).
 
@@ -303,7 +305,7 @@ Run these from `apps/mobile`:
 | Log in | `npx eas-cli@latest login` |
 | Build for TestFlight and submit when done | `npx eas-cli@latest build --profile staging --platform ios --auto-submit` |
 | Build only / submit the latest build | `npx eas-cli@latest build --profile staging --platform ios` / `npx eas-cli@latest submit --profile staging --platform ios --latest` |
-| Build on your Mac (free) and upload | `npx eas-cli@latest build --profile staging --platform ios --local`, then `npx eas-cli@latest submit --path <file>.ipa` |
+| Build on a local Mac (free) and upload | `npx eas-cli@latest build --profile staging --platform ios --local`, then `npx eas-cli@latest submit --path <file>.ipa` |
 | List builds | `npx eas-cli@latest build:list --platform ios` |
 | Signing and API keys | `npx eas-cli@latest credentials` |
 | Environment variables | `npx eas-cli@latest env:list --environment preview` |
@@ -336,13 +338,13 @@ Details: [release.md](release.md).
 | Developer Program | Individual, team ID `5T7CA68Q3C` |
 | App ID | `com.rebound.routes` (store); `com.rebound.routes.dev` registered automatically by Xcode for local device builds |
 | App Store Connect | "Routes: Get there fast & cheap", Apple ID `6832004102`; testing through TestFlight → Internal Testing |
-| Certificates | Apple Development (your Mac, managed by Xcode) for local device builds; Apple Distribution (managed by EAS) for store builds |
+| Certificates | Apple Development (on each developer's Mac, managed by Xcode) for local device builds; Apple Distribution (managed by EAS) for store builds |
 
 Where things are:
 
 - **developer.apple.com → Certificates, Identifiers & Profiles:** App IDs, capabilities, certificates, devices.
 - **appstoreconnect.apple.com:** the app record, TestFlight, listing, privacy and review.
-- **Xcode → Settings → Apple Accounts:** your teams and certificates on this Mac.
+- **Xcode → Settings → Apple Accounts:** the teams and certificates available on a Mac.
 
 Phone setup, signing errors and `xcrun` diagnostics are in [DEVICE-TESTING.md](DEVICE-TESTING.md).
 
@@ -352,7 +354,7 @@ Phone setup, signing errors and `xcrun` diagnostics are in [DEVICE-TESTING.md](D
 |---|---|
 | Repository variables | `GCP_WORKLOAD_IDENTITY_PROVIDER`, `GCP_SERVICE_ACCOUNT`, `GCP_PROJECT_STAGING`, `GCP_PROJECT_PRODUCTION`, `CLOUD_RUN_MIN_INSTANCES_PRODUCTION=0`, `ATTEST_MODE_PRODUCTION=off` |
 | Secrets | `EXPO_TOKEN` (EAS access token) |
-| Environments | `staging` (no protection), `production` (you as required reviewer) |
+| Environments | `staging` (no protection), `production` (the repository owner as required reviewer) |
 
 | Task | Command |
 |---|---|
@@ -360,7 +362,7 @@ Phone setup, signing errors and `xcrun` diagnostics are in [DEVICE-TESTING.md](D
 | Start a workflow | `gh workflow run app-release.yml --repo trietlu/Routes -f profile=staging -f submit=true` · `gh workflow run E2E --repo trietlu/Routes --ref main` |
 | Watch runs | `gh run list --repo trietlu/Routes --limit 5` · `gh run watch <run-id> --repo trietlu/Routes` |
 | Set a variable or secret | `gh variable set <NAME> --repo trietlu/Routes --body <value>` · `gh secret set <NAME> --repo trietlu/Routes` (prompts for the value) |
-| Issues waiting on you | `gh issue list --repo trietlu/Routes --label needs-human` |
+| Open human tasks (accounts, launch) | `gh issue list --repo trietlu/Routes --label needs-human` |
 
 Everyday local commands (proxy, simulator, tests, disk cleanup) are in [COMMANDS.md](COMMANDS.md).
 
@@ -373,15 +375,15 @@ An iPhone only runs **signed** apps. The simulator doesn't need signing.
 | **Team** | The developer identity | `5T7CA68Q3C`, set with `APPLE_TEAM_ID` in `.env`, so prebuild doesn't pick the free "(Personal Team)" Xcode also creates | Same |
 | **Certificate** | Signing key in the keychain | Apple Development (Xcode creates it) | Apple Distribution (EAS creates and stores it) |
 | **App ID** | Bundle ID | `com.rebound.routes.dev` | `com.rebound.routes` |
-| **Provisioning profile** | "This certificate may install this app on these devices, with these capabilities" | Development profile listing your iPhone (Xcode, automatic) | App Store profile (EAS) |
+| **Provisioning profile** | "This certificate may install this app on these devices, with these capabilities" | Development profile listing the registered test iPhones (Xcode, automatic) | App Store profile (EAS) |
 
 **Capabilities** (App Attest, push and so on) are switched on for the App ID and recorded in the profile. EAS syncs them to what the app uses on each build. App Attest is currently off because #27 isn't built yet.
 
 In Xcode: `open apps/mobile/ios/Routes.xcworkspace` → blue **Routes** project → **Routes** target → **Signing & Capabilities**.
 
-## 10. Lessons learned
+## 10. Known pitfalls
 
-Pitfalls hit while setting this up, kept here so they aren't repeated:
+Problems already met in this project, with their causes and fixes:
 
 | Symptom | Cause and fix |
 |---|---|
@@ -397,15 +399,15 @@ Pitfalls hit while setting this up, kept here so they aren't repeated:
 
 ## 11. Doc map
 
-| Doc | Read it when you want to… |
+| Doc | Read it to… |
 |---|---|
 | [brd.md](brd.md) | Know **what** the app must do: requirements FR-1 to FR-22, non-functional requirements, business rules |
 | [ux-sketch.md](ux-sketch.md) | See the screens, states and exact copy |
 | [technical-design.md](technical-design.md) | Understand **why** it's built this way: proxy contract, ranking and overlap algorithms, privacy, hosting |
-| [architecture.md](architecture.md) | Find your way around the code: modules, layers, provider tree, data flow, test seams |
+| [architecture.md](architecture.md) | Navigate the code: modules, layers, provider tree, data flow, test seams |
 | [developer.md](developer.md) | Set up, run, test and change the code; CI jobs; troubleshooting |
 | [COMMANDS.md](COMMANDS.md) | Copy-paste everyday commands |
-| [DEVICE-TESTING.md](DEVICE-TESTING.md) | Run on the simulator or your iPhone; signing errors; `xcrun` diagnostics |
+| [DEVICE-TESTING.md](DEVICE-TESTING.md) | Run on the simulator or a real iPhone; signing errors; `xcrun` diagnostics |
 | [test-plan.md](test-plan.md) | Look up test IDs, canonical fixture values and the definition of done |
 | [INTEG.md](INTEG.md) | Run or change the Maestro E2E flows |
 | [deploy.md](deploy.md) | Deploy the proxy to Cloud Run; the Google Cloud setup commands |

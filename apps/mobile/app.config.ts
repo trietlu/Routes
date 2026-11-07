@@ -23,6 +23,7 @@ const mapProviderFrom = (value: string | undefined): MapProvider =>
 export default ({ config }: ConfigContext): ExpoConfig => {
   const env = process.env;
   const googleMapsIosKey = env.GOOGLE_MAPS_IOS_KEY;
+  const appleTeamId = env.APPLE_TEAM_ID;
   const extra: AppExtra = {
     proxyUrl: env.EXPO_PUBLIC_PROXY_URL ?? 'http://localhost:8080',
     appEnv: env.EXPO_PUBLIC_APP_ENV ?? 'development',
@@ -42,6 +43,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     platforms: ['ios'],
     ios: {
       bundleIdentifier: env.IOS_BUNDLE_IDENTIFIER ?? 'com.routes.app.dev',
+      // Signing team for device builds, so prebuild doesn't fall back to a Personal Team.
+      ...(appleTeamId ? { appleTeamId } : {}),
       supportsTablet: false,
       infoPlist: {
         NSLocationWhenInUseUsageDescription: LOCATION_USAGE,

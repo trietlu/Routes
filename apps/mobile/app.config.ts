@@ -39,7 +39,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     slug: 'routes',
     owner: 'triet05',
     scheme: 'routes',
-    version: '0.1.0',
+    // Marketing version (App Store Connect "1.0"); EAS manages the build number.
+    version: '1.0.0',
     orientation: 'portrait',
     userInterfaceStyle: 'automatic',
     // 1024×1024 opaque PNG rendered from assets/icon.svg (`npm run icons`).
@@ -56,8 +57,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         LSApplicationQueriesSchemes: ['comgooglemaps'],
         // No background modes: location is foreground only (NFR-4, APP-LOC-03).
       },
-      // The react-native-maps Google provider needs a key; Apple Maps does not.
-      ...(googleMapsIosKey ? { config: { googleMapsApiKey: googleMapsIosKey } } : {}),
     },
     plugins: [
       'expo-router',
@@ -74,6 +73,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         },
       ],
       ['expo-build-properties', { ios: { deploymentTarget: '16.4' } }],
+      // The Google provider needs the Google Maps SDK and a key; Apple Maps needs neither.
+      // react-native-maps' own plugin adds both. `ios.config.googleMapsApiKey` is ignored.
+      ...(googleMapsIosKey
+        ? [['react-native-maps', { iosGoogleMapsApiKey: googleMapsIosKey }] as [string, object]]
+        : []),
     ],
     experiments: { typedRoutes: false },
     extra: { ...extra, eas: { projectId: EAS_PROJECT_ID } },

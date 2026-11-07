@@ -1,0 +1,83 @@
+name: App release
+
+# Builds the iOS app on EAS and, optionally, submits it to TestFlight.
+# Manual only: each run uses one EAS build. See docs/release.md.
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: EAS build profile
+        type: choice
+        options: [staging, production]
+        default: staging
+      submit:
+        description: Submit the build to TestFlight when it finishes
+        type: boolean
+        default: true
+  # Pull requests that change this workflow only run the configuration check.
+  pull_request:
+    paths:
+      - '.github/workflows/app-release.yml'
+
+concurrency:
+  group: app-release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  config:
+    name: Check release configuration
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.check.outputs.enabled }}
+    steps:
+      - id: check
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -n "$EXPO_TOKEN" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice title=App release skipped::EXPO_TOKEN is not set. See docs/release.md."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    name: EAS build (${{ inputs.profile }})
+    needs: config
+    if: needs.config.outputs.enabled == 'true' && github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    # Required reviewers on `production` make a store build a manual approval.
+    environment: ${{ inputs.profile == 'production' && 'production' || 'staging' }}
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # eas-cli evaluates app.config.ts, which needs the workspace's packages.
+      - name: Install dependencies
+        working-directory: .
+        run: npm ci
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      # --no-wait: the build runs on EAS; this job only queues it.
+      - name: Start the build
+        env:
+          PROFILE: ${{ inputs.profile }}
+          SUBMIT: ${{ inputs.submit }}
+        run: |
+          args=(--profile "$PROFILE" --platform ios --non-interactive --no-wait)
+          if [ "$SUBMIT" = "true" ]; then args+=(--auto-submit); fi
+          eas build "${args[@]}"

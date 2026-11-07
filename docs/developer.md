@@ -147,6 +147,8 @@ npx jest -t "RC-RANK-02"                     # one test by ID
 
 `proxy-deploy.yml` deploys the proxy after merges and skips until GCP is configured. See [deploy.md](deploy.md).
 
+`app-release.yml` builds the iOS app on EAS and submits it to TestFlight. It runs only when started by hand. See [release.md](release.md).
+
 ## Conventions
 
 - TypeScript `strict`, and no `any` without a comment explaining why.

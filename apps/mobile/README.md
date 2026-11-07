@@ -22,7 +22,7 @@ After the first build, `npm run start -w @routes/mobile` starts Metro for the in
 | `EXPO_PUBLIC_PROXY_URL` | `http://localhost:8080` | Proxy base URL |
 | `EXPO_PUBLIC_APP_ENV` | `development` | `development`, `staging` or `production` |
 | `EXPO_PUBLIC_MAP_PROVIDER` | `default` | `default` (Apple Maps, no key) or `google` |
-| `GOOGLE_MAPS_IOS_KEY` | unset | Passed to react-native-maps only when set |
+| `GOOGLE_MAPS_IOS_KEY` | unset | When set, adds the react-native-maps plugin with the Google Maps SDK and this key |
 | `IOS_BUNDLE_IDENTIFIER` | `com.routes.app.dev` | iOS bundle ID |
 | `APPLE_TEAM_ID` | unset | Apple signing team (`ios.appleTeamId`) for device builds |
 

@@ -393,6 +393,7 @@ Problems already met in this project, with their causes and fixes:
 | `eas build` fails: "brace_expansion_1.expand is not a function" | A lockfile entry was missing for `@expo/fingerprint`'s dependencies. Fixed in #95. If it recurs, `npm ls brace-expansion` shows the invalid copy. |
 | `eas submit` created a second App Store Connect app, and Apple rejected the build (ITMS-90055) | `eas submit` doesn't apply build-profile env, so it used the default bundle ID. `ascAppId` in `eas.json` now pins the real app. Delete stray app records under App Information → Remove App. |
 | The Xcode team keeps resetting to "(Personal Team)" | Xcode creates a free Personal Team for every Apple ID. Set `APPLE_TEAM_ID` in `apps/mobile/.env`. |
+| Search text and coordinates appear in Cloud Logging | Cloud Run's automatic request log records full URLs, including query strings. It's excluded on the `_Default` log sink in both projects ([deploy.md](deploy.md#current-setup-frugal)). Keep that exclusion in any new project. |
 | A `.env` or `app.config.ts` change has no effect | They're read at build time. Delete `apps/mobile/ios` and rebuild. |
 | "Missing Compliance" on each TestFlight build | Fixed with `ITSAppUsesNonExemptEncryption: false` (the app uses only HTTPS). |
 | Build fails with `cannot find type '__ObjC::expo'` on a new Xcode | Expo's precompiled modules must match Xcode's Swift. Update Expo patch versions, run `npm ci`, delete `apps/mobile/ios` and rebuild. See [developer.md → Troubleshooting](developer.md#troubleshooting). |
@@ -411,7 +412,8 @@ Problems already met in this project, with their causes and fixes:
 | [test-plan.md](test-plan.md) | Look up test IDs, canonical fixture values and the definition of done |
 | [INTEG.md](INTEG.md) | Run or change the Maestro E2E flows |
 | [deploy.md](deploy.md) | Deploy the proxy to Cloud Run; the Google Cloud setup commands |
-| [release.md](release.md) | Build with EAS, submit to TestFlight, release to the App Store |
+| [release.md](release.md) | Build with EAS, submit to TestFlight, and follow the App Store launch checklist |
+| [privacy.md](privacy.md) and [privacy-policy.md](privacy-policy.md) | Look up what data goes where and the App Privacy label answers; read the public privacy policy |
 | [PLAN.md](PLAN.md) | See the build order and milestones |
 | [AGENT-LOOP.md](AGENT-LOOP.md) and [AGENTS.md](../AGENTS.md) | Run the autonomous coding agent and see its rules |
 | [fixtures/README.md](../fixtures/README.md), [apps/mobile/assets/README.md](../apps/mobile/assets/README.md) | Mock data, and the icon and splash sources |

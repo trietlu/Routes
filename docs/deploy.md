@@ -41,6 +41,12 @@ Choices made to keep the bill near zero:
 - **`ATTEST_MODE_PRODUCTION=off`.** The proxy doesn't verify App Attest yet (#27), so `enforce` would only be a label.
 - **Artifact Registry cleanup policy:** keep the newest 5 images, delete images older than 30 days.
 
+**Privacy: Cloud Run request logs are excluded** in both projects. Cloud Run's automatic request log (`run.googleapis.com/requests`) records the full URL, and autocomplete URLs carry search text and coordinates. That breaks NFR-3 and the [privacy policy](privacy-policy.md). An exclusion on the `_Default` sink drops them. The proxy's own allow-listed line (method, route template, status, latency) still records every request.
+
+```sh
+gcloud logging sinks update _Default --project <project-id> --add-exclusion="name=cloud-run-request-urls,description=Request URLs carry search text and coordinates,filter=resource.type=\"cloud_run_revision\" AND log_id(\"run.googleapis.com/requests\")"
+```
+
 ## What H-04 (#33) needs to create
 
 There are two Google Cloud projects (see [technical design § Environments](technical-design.md#hosting-and-deployment)):
